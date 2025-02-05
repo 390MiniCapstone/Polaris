@@ -24,15 +24,6 @@ Provide a brief description of the feature or functionality. Include any relevan
 - [ ] [Second specific requirement or behavior]
 - [ ] [Third specific requirement or behavior]
 
----
-
-### **Priority**
-
-[High/Medium/Low]
-
----
-
-### **Additional Notes**
+### **Additional Notes (Optional)**
 
 Add any relevant details, notes, screenshots, links, or references here to provide more clarity.
-

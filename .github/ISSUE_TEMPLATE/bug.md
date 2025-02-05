@@ -6,12 +6,6 @@ labels: bug
 assignees: ""
 ---
 
-### **Bug Title**
-
-[Provide a concise title for the bug, e.g., "Map toggle button does not switch campuses."]
-
----
-
 ### **Description**
 
 Provide a detailed description of the bug, including:
@@ -49,15 +43,6 @@ Define the expected requirements for resolving this bug:
 Provide any relevant screenshots or error logs to help diagnose the issue.
 
 - [Include screenshot or link to logs here.]
-
----
-
-### **Priority**
-
-[High/Medium/Low]  
-[Set the priority based on the severity of the bug.]
-
----
 
 ### **Associated User Story**
 

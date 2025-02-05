@@ -1,15 +1,9 @@
 ---
-name: Task
+name: Internal Task
 about: Create an atomic task that can not be broken down into smaller issues
 title: "[TASK]"
 labels: task
 assignees: ""
----
-
-### **Task Title**
-
-[Provide a concise title for the task.]
-
 ---
 
 ### **Description**
@@ -18,7 +12,7 @@ Describe the specific work that needs to be done. Include context, the purpose o
 
 ---
 
-### **Completion Requirements**
+### **Completion Requirements (Optional)**
 
 Define the conditions under which this task will be considered complete:
 
@@ -28,22 +22,6 @@ Define the conditions under which this task will be considered complete:
 
 ---
 
-### **Subtasks**
+### **Additional Notes (Optional)**
 
-If necessary, break the task into smaller subtasks:
-
-- [ ] [Subtask 1: Describe the first actionable step.]
-- [ ] [Subtask 2: Describe the second actionable step.]
-- [ ] [Subtask 3: Describe the third actionable step.]
-
----
-
-### **Priority**
-
-[High/Medium/Low]
-
----
-
-### **Additional Notes**
-
-Add any relevant details, notes, screenshots, links, or references here to provide more clarity.
+[ Notes to be added by the assignee of the task for future references ]

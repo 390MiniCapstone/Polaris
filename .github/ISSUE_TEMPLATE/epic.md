@@ -6,12 +6,6 @@ labels: epic
 assignees: ""
 ---
 
-### **Epic Title**
-
-[Provide a concise, descriptive title for the epic.]
-
----
-
 ### **Epic Description**
 
 Provide an overview of the epic, including its purpose and value. Explain the problem it solves or the opportunity it addresses.
@@ -34,12 +28,6 @@ Define the conditions that must be met for this epic to be considered complete.
 - [ ] [First specific requirement or condition]
 - [ ] [Second specific requirement or condition]
 - [ ] [Third specific requirement or condition]
-
----
-
-### **Priority**
-
-[High/Medium/Low]
 
 ---
 
