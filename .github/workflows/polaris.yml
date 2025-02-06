@@ -14,17 +14,55 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Download repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch full history for proper analysis
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.17.0"
-      - name: Install modules
-        run: cd Polaris-FE && npm i
-      - name: Run Test Suite
-        run: cd Polaris-FE && npm run test:ci
-      - name: Run Linter
-        run: cd Polaris-FE && npm run lint
-      - name: Check Code Formatting
-        run: cd Polaris-FE && npm run format:check
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: |
+          cd Polaris-FE
+          npm install
+
+      - name: Run Jest with Coverage
+        run: |
+          cd Polaris-FE
+          npm run test:coverage
+
+      - name: Move Coverage File for SonarQube
+        run: |
+          mv Polaris-FE/coverage/lcov.info lcov.info
+
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE }}
+        run: |
+          cd Polaris-FE
+          npx sonarqube-scanner \
+            -Dsonar.projectKey=390MiniCapstone_Polaris \
+            -Dsonar.organization=390minicapstone \
+            -Dsonar.sources=. \
+            -Dsonar.exclusions=node_modules/**,dist/**,build/** \
+            -Dsonar.javascript.lcov.reportPaths=lcov.info \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN

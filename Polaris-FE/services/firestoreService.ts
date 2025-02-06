@@ -1,6 +1,8 @@
 import { db } from '@/firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 
+const unusedVar = 'This should be flagged!';
+
 export const fetchDepartmentsAndServices = async () => {
   try {
     const data = await getDocs(collection(db, 'CampusDepartmentAndServices'));
