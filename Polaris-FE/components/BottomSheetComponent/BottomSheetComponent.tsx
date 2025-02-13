@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import { Region } from 'react-native-maps';
@@ -11,6 +14,8 @@ import { bottomSheetRef } from '@/utils/refs';
 interface BottomSheetComponentProps {
   onSearchClick: (region: Region) => void;
   onFocus: () => void;
+  bottomSheetRef: React.RefObject<BottomSheet>;
+  children: React.ReactNode;
   animatedPosition: Animated.SharedValue<number>;
 }
 

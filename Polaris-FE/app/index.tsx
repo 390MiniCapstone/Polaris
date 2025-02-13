@@ -1,3 +1,6 @@
+import React, { useRef, useState } from 'react';
+import MapView, { Region } from 'react-native-maps';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
 import { Region } from 'react-native-maps';
 import { StyleSheet } from 'react-native';
@@ -6,19 +9,24 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
 import { mapRef, bottomSheetRef } from '@/utils/refs';
 import { MapComponent } from '@/components/Map';
+import { BottomSheetComponent } from '@/components/BottomSheetComponent/BottomSheetComponent';
+import { NavigationButtons } from '@/components/NavigationButtons';
 import { BottomSheetComponent } from '@/components/BottomSheetComponent';
 import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   handleCurrentLocation,
   handleCampusSelect,
   handleCampusToggle,
   handleLocation,
 } from '@/utils/mapHandlers';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const { location, region, setRegion } = useMapLocation();
   const [showCampusOptions, setShowCampusOptions] = useState(false);
+  const router = useRouter();
 
   const toggleAnimation = useSharedValue(0);
   const optionsAnimation = useSharedValue(0);
