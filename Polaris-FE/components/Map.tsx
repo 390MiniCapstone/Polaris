@@ -8,7 +8,7 @@ import { mapRef } from '@/utils/refs';
 import { LatLng } from '@/services/googleMapsRoutes';
 import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
 import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
-        
+
 type NavigationState = 'default' | 'planning' | 'navigating';
 type TransportMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE';
 
