@@ -15,7 +15,7 @@
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
     "prepare": "cd .. && husky",
-    "test:coverage":"jest --coverage"
+    "test:coverage": "jest --coverage"
   },
   "jest": {
     "preset": "jest-expo",
@@ -26,10 +26,12 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@gorhom/bottom-sheet": "^5.0.6",
+    "@mapbox/polyline": "^1.2.1",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@tanstack/react-query": "^5.66.0",
+    "@turf/turf": "^7.2.0",
     "dotenv": "^16.4.7",
     "expo": "~52.0.26",
     "expo-auth-session": "^6.0.3",
@@ -67,6 +69,7 @@
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.0.1",
     "@types/jest": "^29.5.12",
+    "@types/mapbox__polyline": "^1.0.5",
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.20.0",

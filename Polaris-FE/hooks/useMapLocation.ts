@@ -31,7 +31,7 @@ export const useMapLocation = () => {
         setPermissionStatus('granted');
         subscriber = await Location.watchPositionAsync(
           {
-            accuracy: Location.Accuracy.High,
+            accuracy: Location.Accuracy.BestForNavigation,
             timeInterval: 0,
             distanceInterval: 0,
           },

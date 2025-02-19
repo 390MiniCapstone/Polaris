@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { NavigationButtons } from '@/components/NavigationButtons';
+import { MapButtons } from '@/components/MapButtons';
 import { Downtown, Loyola } from '@/constants/mapConstants';
 import { SharedValue } from 'react-native-reanimated';
 
@@ -18,7 +18,7 @@ const mockOptionsAnimation = {
   removeListener: jest.fn(),
 } as unknown as SharedValue<number>;
 
-describe('NavigationButtons Component', () => {
+describe('MapButtons Component', () => {
   const mockOnCampusToggle = jest.fn();
   const mockOnCampusSelect = jest.fn();
   const mockOnCurrentLocationPress = jest.fn();
@@ -36,30 +36,30 @@ describe('NavigationButtons Component', () => {
   });
 
   it('renders without crashing', () => {
-    const { getByTestId } = render(<NavigationButtons {...defaultProps} />);
+    const { getByTestId } = render(<MapButtons {...defaultProps} />);
     expect(getByTestId('animated-container')).toBeTruthy();
   });
 
   it('calls onCampusSelect with DOWNTOWN when "Downtown" is pressed', () => {
-    const { getByText } = render(<NavigationButtons {...defaultProps} />);
+    const { getByText } = render(<MapButtons {...defaultProps} />);
     fireEvent.press(getByText('Downtown'));
     expect(mockOnCampusSelect).toHaveBeenCalledWith(Downtown);
   });
 
   it('calls onCampusSelect with LOYOLA when "Loyola" is pressed', () => {
-    const { getByText } = render(<NavigationButtons {...defaultProps} />);
+    const { getByText } = render(<MapButtons {...defaultProps} />);
     fireEvent.press(getByText('Loyola'));
     expect(mockOnCampusSelect).toHaveBeenCalledWith(Loyola);
   });
 
   it('calls onCampusToggle when the "Campus" button is pressed', () => {
-    const { getByText } = render(<NavigationButtons {...defaultProps} />);
+    const { getByText } = render(<MapButtons {...defaultProps} />);
     fireEvent.press(getByText('Campus'));
     expect(mockOnCampusToggle).toHaveBeenCalledTimes(1);
   });
 
   it('calls onCurrentLocationPress when the location button is pressed', () => {
-    const { getByTestId } = render(<NavigationButtons {...defaultProps} />);
+    const { getByTestId } = render(<MapButtons {...defaultProps} />);
     fireEvent.press(getByTestId('button-current-location'));
     expect(mockOnCurrentLocationPress).toHaveBeenCalledTimes(1);
   });
