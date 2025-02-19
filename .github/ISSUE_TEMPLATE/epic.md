@@ -3,7 +3,8 @@ name: Epic
 about: Create an epic issue for a core feature of the project
 title: "[EPIC]"
 labels: epic
-assignees: ""
+assignees: ''
+
 ---
 
 ### **Epic Description**

@@ -7,7 +7,8 @@ import { Navigation } from '@/components/Navigation/Navigation';
 import { mapRef } from '@/utils/refs';
 import { LatLng } from '@/services/googleMapsRoutes';
 import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
-
+import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
+        
 type NavigationState = 'default' | 'planning' | 'navigating';
 type TransportMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE';
 
@@ -29,6 +30,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   });
   const [snappedPoint, setSnappedPoint] = useState<LatLng | null>(null);
   const [clippedPolyline, setClippedPolyline] = useState<LatLng[] | null>(null);
+
+  const currentBuilding = useCurrentBuilding();
 
   return (
     <View style={styles.container}>
@@ -60,6 +63,27 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           clippedPolyline={clippedPolyline}
           snappedPoint={snappedPoint}
         />
+        {currentBuilding && (
+          <Geojson
+            geojson={{
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Polygon',
+                    coordinates: currentBuilding.geometry.coordinates,
+                  },
+                  properties: {},
+                },
+              ],
+            }}
+            fillColor="rgba(0, 0, 255, 0.5)"
+            strokeColor="rgba(0, 0, 255, 1)"
+            strokeWidth={3}
+          />
+        )}
+
         <Buildings />
       </MapView>
       <Navigation
