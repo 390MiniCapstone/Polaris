@@ -7,7 +7,6 @@ import {
   getDistanceFromLatLonInMeters,
 } from '@/utils/mapHandlers';
 
-// Haversine distance (in meters) between two LatLng points.
 export const getDistanceBetweenPoints = (p1: LatLng, p2: LatLng): number => {
   const R = 6371000;
   const dLat = ((p2.latitude - p1.latitude) * Math.PI) / 180;
@@ -21,7 +20,6 @@ export const getDistanceBetweenPoints = (p1: LatLng, p2: LatLng): number => {
   return R * c;
 };
 
-// Compute the total length of a polyline.
 export const calculatePolylineDistance = (poly: LatLng[]): number => {
   let total = 0;
   for (let i = 1; i < poly.length; i++) {
@@ -30,7 +28,6 @@ export const calculatePolylineDistance = (poly: LatLng[]): number => {
   return total;
 };
 
-// Projects point p onto the segment defined by p1 and p2.
 export const projectPointOnSegment = (
   p: LatLng,
   p1: LatLng,
@@ -55,8 +52,6 @@ export const projectPointOnSegment = (
   return { distanceAlongSegment: segmentDistance * param, isOnSegment };
 };
 
-// Computes the fraction (0 to 1) of the step's polyline that has been traversed.
-// Returns undefined if the snapped point does not lie near this step.
 export const computeStepFraction = (
   poly: LatLng[],
   snapped: LatLng
@@ -68,7 +63,6 @@ export const computeStepFraction = (
     const segmentStart = poly[i - 1];
     const segmentEnd = poly[i];
     const proj = projectPointOnSegment(snapped, segmentStart, segmentEnd);
-    // If the snapped point is close enough to this segment, we consider it on the step.
     const approxPoint = {
       latitude:
         segmentStart.latitude +
@@ -83,7 +77,6 @@ export const computeStepFraction = (
     };
     const distanceToSegment = getDistanceBetweenPoints(snapped, approxPoint);
     if (distanceToSegment < 15) {
-      // threshold in meters
       traveled += proj.distanceAlongSegment;
       return traveled / total;
     }
@@ -92,15 +85,6 @@ export const computeStepFraction = (
   return undefined;
 };
 
-/**
- * Computes the remaining time based on the total route time and step times.
- * For each step:
- *   - If the step is fully completed, subtract its full duration.
- *   - For the current step, subtract the fraction of its duration proportional to the distance traveled.
- *
- * This function returns the remaining time (in seconds) and behaves so that if the user stops moving,
- * the computed fraction remains constant and the remaining time does not decrease.
- */
 export const computeRemainingTime = (
   steps: Step[],
   snapped: LatLng,
@@ -109,14 +93,12 @@ export const computeRemainingTime = (
   let currentStepIndex = -1;
   let currentStepFraction = 0;
 
-  // Calculate total steps duration for normalization
   const totalStepsDuration = steps.reduce(
     (sum, step) => sum + step.duration,
     0
   );
   const normalizationFactor = totalDuration / totalStepsDuration;
 
-  // Find which step we're on
   for (let i = 0; i < steps.length; i++) {
     const fraction = computeStepFraction(steps[i].polyline, snapped);
     if (fraction !== undefined) {
@@ -130,25 +112,19 @@ export const computeRemainingTime = (
     return totalDuration;
   }
 
-  // Calculate normalized time for completed steps
   const completedStepsTime = steps
     .slice(0, currentStepIndex)
     .reduce((sum, step) => sum + step.duration * normalizationFactor, 0);
-  // Calculate normalized time used in current step
   const currentStep = steps[currentStepIndex];
   const currentStepTimeUsed =
     currentStep.duration * currentStepFraction * normalizationFactor;
 
-  // Calculate remaining time
   const remainingTime =
     totalDuration - (completedStepsTime + currentStepTimeUsed);
 
   return Math.max(remainingTime, 0);
 };
 
-/**
- * Computes remaining distance in a similar fashion to time.
- */
 export const computeRemainingDistance = (
   steps: Step[],
   snapped: LatLng,
@@ -189,20 +165,15 @@ export const determineNextInstruction = (
   const currentStep = steps[currentStepIndex];
   const remainingDistanceInStep = currentStep.distance * (1 - currentFraction);
 
-  // Define the base threshold depending on transport mode.
   let baseThreshold = 1000; // default for driving
   if (transportMode === 'WALK') {
     baseThreshold = 200;
   } else if (transportMode === 'BICYCLE') {
     baseThreshold = 300;
   }
-  // Effective threshold is the lesser of the base threshold and the current step's length.
   const effectiveThreshold =
     currentStep.distance < baseThreshold ? currentStep.distance : baseThreshold;
 
-  // Only show the next step's instruction when:
-  // • The current step's remaining distance is less than or equal to the effective threshold,
-  //   and the current step's full length is at least as long as the effective threshold.
   if (
     currentStep.distance >= effectiveThreshold &&
     remainingDistanceInStep <= effectiveThreshold
@@ -242,7 +213,6 @@ export const openTransitInMaps = (
     longitude: number;
   }
 ): void => {
-  // Convert the location objects into a "latitude,longitude" string.
   const originStr = `${origin.latitude},${origin.longitude}`;
   const destinationStr = `${destination.latitude},${destination.longitude}`;
 
@@ -281,7 +251,6 @@ export const startNavigation = (
     longitude: location.longitude,
   };
 
-  // Find a point further along the route
   const lookAheadDistance = 180; // meters
   let cumulativeDistance = 0;
   let centerPoint: LatLng = currentPosition;
