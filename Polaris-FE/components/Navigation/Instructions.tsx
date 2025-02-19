@@ -5,7 +5,7 @@ interface TurnByTurnNavigationProps {
   instruction: string;
 }
 
-export const TurnByTurnNavigation: React.FC<TurnByTurnNavigationProps> = ({
+export const Instructions: React.FC<TurnByTurnNavigationProps> = ({
   instruction,
 }) => {
   return (

@@ -2,7 +2,7 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { bottomSheetRef, mapRef } from '@/utils/refs';
 import React, { SetStateAction, useEffect, useState } from 'react';
 import { TransportMode } from '@/components/Navigation/TransportMode';
-import { TurnByTurnNavigation } from './TurnByTurnNavigation';
+import { Instructions } from './Instructions';
 import { NavigationInfo } from '@/components/Navigation/NavigationInfo';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { lineString, point } from '@turf/helpers';
@@ -188,7 +188,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       )}
 
       {navigationState === 'navigating' && (
-        <TurnByTurnNavigation instruction={nextInstruction} />
+        <Instructions instruction={nextInstruction} />
       )}
 
       {(navigationState === 'planning' || navigationState === 'navigating') &&
