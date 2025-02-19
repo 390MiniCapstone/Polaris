@@ -34,7 +34,11 @@ export const NavigationInfo: React.FC<NavigationInfoProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
+      <TouchableOpacity
+        testID="cancel-button"
+        style={styles.cancelButton}
+        onPress={onCancel}
+      >
         <FontAwesome5 name="times" size={20} color="white" />
       </TouchableOpacity>
 
@@ -47,6 +51,7 @@ export const NavigationInfo: React.FC<NavigationInfoProps> = ({
       </View>
 
       <TouchableOpacity
+        testID="action-button"
         style={isNavigating ? styles.currentButton : styles.goButton}
         onPress={
           isNavigating

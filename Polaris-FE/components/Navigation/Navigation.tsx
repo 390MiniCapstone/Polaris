@@ -21,10 +21,10 @@ import {
   startNavigation,
 } from '@/utils/navigationUtils';
 
-type NavigationState = 'default' | 'planning' | 'navigating';
+export type NavigationState = 'default' | 'planning' | 'navigating';
 type TransportMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE';
 
-interface NavigationProps {
+export interface NavigationProps {
   navigationState: NavigationState;
   setNavigationState: React.Dispatch<SetStateAction<NavigationState>>;
   destination: { latitude: number; longitude: number };

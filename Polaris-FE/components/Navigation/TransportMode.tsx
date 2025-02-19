@@ -18,12 +18,14 @@ export const TransportMode: React.FC<TransportModeProps> = ({
       <TouchableOpacity
         style={[styles.modeButton, selectedMode === 'DRIVE' && styles.selected]}
         onPress={() => onModeSelect('DRIVE')}
+        testID="transport-mode-button-DRIVE"
       >
         <FontAwesome6 name="car" size={22} color="white" />
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.modeButton, selectedMode === 'WALK' && styles.selected]}
         onPress={() => onModeSelect('WALK')}
+        testID="transport-mode-button-WALK"
       >
         <FontAwesome5 name="walking" size={22} color="white" />
       </TouchableOpacity>
@@ -33,6 +35,7 @@ export const TransportMode: React.FC<TransportModeProps> = ({
           selectedMode === 'TRANSIT' && styles.selected,
         ]}
         onPress={() => onModeSelect('TRANSIT')}
+        testID="transport-mode-button-TRANSIT"
       >
         <FontAwesome6 name="bus-simple" size={22} color="white" />
       </TouchableOpacity>
@@ -42,6 +45,7 @@ export const TransportMode: React.FC<TransportModeProps> = ({
           selectedMode === 'BICYCLE' && styles.selected,
         ]}
         onPress={() => onModeSelect('BICYCLE')}
+        testID="transport-mode-button-BICYCLE"
       >
         <FontAwesome name="bicycle" size={22} color="white" />
       </TouchableOpacity>
