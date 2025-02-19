@@ -5,16 +5,13 @@ import BottomSheet, {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
+import { bottomSheetRef } from '@/utils/refs';
 
 interface BottomSheetComponentProps {
-  bottomSheetRef: React.RefObject<BottomSheet>;
-  onFocus: () => void;
   animatedPosition: Animated.SharedValue<number>;
 }
 
 export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
-  bottomSheetRef,
-  onFocus,
   animatedPosition,
 }) => {
   const snapPoints = useMemo(() => ['15%', '50%', '93%'], []);
@@ -35,7 +32,7 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
           testID="container-bottom-sheet-text-input"
           placeholder={'Search Polaris'}
           style={styles.input}
-          onFocus={onFocus}
+          onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
         />
       </BottomSheetView>
     </BottomSheet>

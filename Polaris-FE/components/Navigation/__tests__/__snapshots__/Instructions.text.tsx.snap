@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Instructions component matches the snapshot 1`] = `
+<View
+  style={
+    {
+      "backgroundColor": "rgba(34, 34, 34, 0.992)",
+      "borderRadius": 20,
+      "height": 80,
+      "justifyContent": "center",
+      "left": 15,
+      "paddingHorizontal": 20,
+      "paddingVertical": 10,
+      "position": "absolute",
+      "right": 15,
+      "top": 64,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "white",
+        "fontSize": 20,
+        "fontWeight": "500",
+        "textAlign": "left",
+      }
+    }
+  >
+    Turn right in 50 meters
+  </Text>
+</View>
+`;

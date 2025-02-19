@@ -54,7 +54,8 @@ export default {
       firebaseAppId: process.env.FIREBASE_APP_ID,
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID,
       iosClientId: process.env.IOS_CLIENT_ID,
-      androidClientId: process.env.ANDROID_CLIENT_ID
+      androidClientId: process.env.ANDROID_CLIENT_ID,
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
     }
   }
 }
