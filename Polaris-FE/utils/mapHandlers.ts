@@ -19,6 +19,17 @@ export const handleCurrentLocation = (
   );
 };
 
+export const handleLocation = (
+  region: Region,
+  mapRef: MutableRefObject<MapView | null>,
+  toggleAnimation: SharedValue<number>,
+  optionsAnimation: SharedValue<number>
+) => {
+  mapRef.current?.animateToRegion(region, 1000);
+  toggleAnimation.value = withSpring(0);
+  optionsAnimation.value = withTiming(0, { duration: 300 });
+};
+
 export const handleCampusSelect = (
   region: Region,
   mapRef: MutableRefObject<MapView | null>,
@@ -42,5 +53,18 @@ export const handleCampusToggle = (
   toggleAnimation.value = withSpring(showCampusOptions ? 0 : 1);
   optionsAnimation.value = withTiming(showCampusOptions ? 0 : 1, {
     duration: 300,
+  });
+};
+
+export const handleSearchSelect = (
+  location: { latitude: number; longitude: number } | null,
+  setRegion: (region: Region) => void
+) => {
+  if (!location) return;
+  setRegion({
+    latitude: location.latitude,
+    longitude: location.longitude,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
   });
 };
