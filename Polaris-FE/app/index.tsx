@@ -33,7 +33,7 @@ export default function HomeScreen() {
         <MapComponent mapRef={mapRef} region={region} setRegion={setRegion} />
         <BottomSheetComponent
           bottomSheetRef={bottomSheetRef}
-          // onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
+          onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
           animatedPosition={animatedPosition}
           onSearchClick={(selectedRegion: Region) =>
             handleLocation(

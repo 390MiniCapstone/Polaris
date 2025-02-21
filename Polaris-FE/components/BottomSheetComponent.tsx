@@ -4,24 +4,34 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import { Region } from 'react-native-maps';
+import Constants from 'expo-constants';
 
 interface BottomSheetComponentProps {
   onSearchClick: (region: Region) => void;
   bottomSheetRef: React.RefObject<BottomSheet>;
+  onFocus: () => void;
   animatedPosition: Animated.SharedValue<number>;
 }
 
+interface SearchResult {
+  place_id: string;
+  description: string;
+}
+const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
+  ?.googleMapsApiKey as string;
+
 export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
   onSearchClick,
+  onFocus,
   bottomSheetRef,
   animatedPosition,
 }) => {
   const snapPoints = useMemo(() => ['15%', '50%', '93%'], []);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   const handleLocationSelect = (placeId: string, description: string) => {
     fetch(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=AIzaSyCIQzQHX5obH2Ev4jIX1qVy5i2zDn8nrYI`
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_MAPS_API_KEY}`
     )
       .then(res => res.json())
       .then(data => {
@@ -42,6 +52,8 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
 
           setSearchResults([]);
           onSearchClick(region);
+
+          bottomSheetRef.current?.snapToIndex(1);
         }
       })
       .catch(error => console.error(error));
@@ -63,7 +75,7 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
         {/* Search Results */}
         <View style={styles.resultsContainer}>
           {searchResults.map((result, index) => (
-            <View key={index}>
+            <View key={result.place_id}>
               <TouchableOpacity
                 style={styles.searchResult}
                 onPress={() =>
@@ -95,12 +107,6 @@ const styles = StyleSheet.create({
   },
   handleIndicator: {
     backgroundColor: '#5E5F62',
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginVertical: 10,
-    marginBottom: 0,
   },
   content: {
     flex: 1,

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import Constants from 'expo-constants';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   TextInput,
@@ -6,20 +7,39 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { useMapLocation } from '@/hooks/useMapLocation';
+
+interface Prediction {
+  place_id: string;
+  description: string;
+}
 
 interface GooglePlacesInputProps {
-  setSearchResults: (results: any[]) => void;
+  setSearchResults: (results: Prediction[]) => void;
 }
+
+const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
+  ?.googleMapsApiKey as string;
 
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setSearchResults,
 }) => {
   const [query, setQuery] = useState('');
+  const inputRef = useRef<React.ElementRef<typeof BottomSheetTextInput>>(null);
+  const { location } = useMapLocation();
 
   useEffect(() => {
-    if (query.length > 2) {
+    if (query.length > 2 && location) {
+      const params = new URLSearchParams({
+        input: query,
+        key: GOOGLE_MAPS_API_KEY,
+        location: `${location.latitude},${location.longitude}`,
+        radius: '5000',
+      });
+
       fetch(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=AIzaSyCIQzQHX5obH2Ev4jIX1qVy5i2zDn8nrYI`
+        `https://maps.googleapis.com/maps/api/place/autocomplete/json?${params.toString()}`
       )
         .then(res => res.json())
         .then(data => {
@@ -31,11 +51,12 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
     } else {
       setSearchResults([]);
     }
-  }, [query]);
+  }, [query, location]);
 
   return (
     <View style={styles.container}>
-      <TextInput
+      <BottomSheetTextInput
+        ref={inputRef}
         value={query}
         onChangeText={setQuery}
         placeholder="Search Polaris"
@@ -44,7 +65,10 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
       />
       {query.length > 0 && (
         <TouchableOpacity
-          onPress={() => setQuery('')}
+          onPress={() => {
+            setQuery('');
+            inputRef.current?.blur();
+          }}
           style={styles.clearButton}
         >
           <Text style={styles.clearButtonText}>✕</Text>
