@@ -2,8 +2,15 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 
+jest.mock('@/hooks/useMapLocation', () => ({
+  useMapLocation: () => ({
+    location: { latitude: 37.7749, longitude: -122.4194 },
+  }),
+}));
+
 describe('GooglePlacesInput', () => {
   const mockSetSearchResults = jest.fn();
+  const mockOnFocus = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -11,7 +18,10 @@ describe('GooglePlacesInput', () => {
 
   it('renders correctly', () => {
     const { getByPlaceholderText } = render(
-      <GooglePlacesInput setSearchResults={mockSetSearchResults} />
+      <GooglePlacesInput
+        setSearchResults={mockSetSearchResults}
+        onFocus={mockOnFocus}
+      />
     );
 
     expect(getByPlaceholderText('Search Polaris')).toBeTruthy();
@@ -19,7 +29,10 @@ describe('GooglePlacesInput', () => {
 
   it('updates query state on text input', () => {
     const { getByPlaceholderText } = render(
-      <GooglePlacesInput setSearchResults={mockSetSearchResults} />
+      <GooglePlacesInput
+        setSearchResults={mockSetSearchResults}
+        onFocus={mockOnFocus}
+      />
     );
 
     const input = getByPlaceholderText('Search Polaris');
@@ -30,7 +43,10 @@ describe('GooglePlacesInput', () => {
 
   it('clears the query when clear button is pressed', () => {
     const { getByPlaceholderText, getByText } = render(
-      <GooglePlacesInput setSearchResults={mockSetSearchResults} />
+      <GooglePlacesInput
+        setSearchResults={mockSetSearchResults}
+        onFocus={mockOnFocus}
+      />
     );
 
     const input = getByPlaceholderText('Search Polaris');
@@ -53,7 +69,10 @@ describe('GooglePlacesInput', () => {
     ) as jest.Mock;
 
     const { getByPlaceholderText } = render(
-      <GooglePlacesInput setSearchResults={mockSetSearchResults} />
+      <GooglePlacesInput
+        setSearchResults={mockSetSearchResults}
+        onFocus={mockOnFocus}
+      />
     );
 
     const input = getByPlaceholderText('Search Polaris');
@@ -68,7 +87,10 @@ describe('GooglePlacesInput', () => {
 
   it('does not fetch results when query length is 2 or less', async () => {
     const { getByPlaceholderText } = render(
-      <GooglePlacesInput setSearchResults={mockSetSearchResults} />
+      <GooglePlacesInput
+        setSearchResults={mockSetSearchResults}
+        onFocus={mockOnFocus}
+      />
     );
 
     const input = getByPlaceholderText('Search Polaris');

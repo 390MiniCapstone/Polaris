@@ -1,12 +1,6 @@
 import Constants from 'expo-constants';
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-} from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useMapLocation } from '@/hooks/useMapLocation';
 
@@ -17,6 +11,7 @@ interface Prediction {
 
 interface GooglePlacesInputProps {
   setSearchResults: (results: Prediction[]) => void;
+  onFocus: () => void;
 }
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
@@ -24,13 +19,14 @@ const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
 
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setSearchResults,
+  onFocus,
 }) => {
   const [query, setQuery] = useState('');
   const inputRef = useRef<React.ElementRef<typeof BottomSheetTextInput>>(null);
   const { location } = useMapLocation();
 
   useEffect(() => {
-    if (query.length > 2 && location) {
+    if (location) {
       const params = new URLSearchParams({
         input: query,
         key: GOOGLE_MAPS_API_KEY,
@@ -62,6 +58,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         placeholder="Search Polaris"
         placeholderTextColor="gray"
         style={styles.input}
+        onFocus={onFocus}
       />
       {query.length > 0 && (
         <TouchableOpacity

@@ -5,6 +5,7 @@ import Animated from 'react-native-reanimated';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import { Region } from 'react-native-maps';
 import Constants from 'expo-constants';
+import { Keyboard } from 'react-native';
 
 interface BottomSheetComponentProps {
   onSearchClick: (region: Region) => void;
@@ -30,6 +31,7 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   const handleLocationSelect = (placeId: string, description: string) => {
+    Keyboard.dismiss();
     fetch(
       `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_MAPS_API_KEY}`
     )
@@ -70,7 +72,10 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
     >
       <BottomSheetView style={styles.content}>
         {/* Google Places Input */}
-        <GooglePlacesInput setSearchResults={setSearchResults} />
+        <GooglePlacesInput
+          setSearchResults={setSearchResults}
+          onFocus={onFocus}
+        />
 
         {/* Search Results */}
         <View style={styles.resultsContainer}>
