@@ -59,7 +59,7 @@ describe('BottomSheetComponent', () => {
     );
 
     // Trigger the GooglePlacesInput component search simulation
-    const searchButton = getByText('Search');
+    const searchButton = getByText('Search Polaris');
     fireEvent.press(searchButton);
 
     // Wait for search results to be updated
