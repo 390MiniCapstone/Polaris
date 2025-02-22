@@ -52,6 +52,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   return (
     <View style={styles.container}>
       <BottomSheetTextInput
+        testID="places-input"
         ref={inputRef}
         value={query}
         onChangeText={setQuery}

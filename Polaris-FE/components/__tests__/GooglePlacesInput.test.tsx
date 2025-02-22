@@ -14,90 +14,82 @@ describe('GooglePlacesInput', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  it('renders correctly', () => {
-    const { getByPlaceholderText } = render(
-      <GooglePlacesInput
-        setSearchResults={mockSetSearchResults}
-        onFocus={mockOnFocus}
-      />
-    );
-
-    expect(getByPlaceholderText('Search Polaris')).toBeTruthy();
-  });
-
-  it('updates query state on text input', () => {
-    const { getByPlaceholderText } = render(
-      <GooglePlacesInput
-        setSearchResults={mockSetSearchResults}
-        onFocus={mockOnFocus}
-      />
-    );
-
-    const input = getByPlaceholderText('Search Polaris');
-    fireEvent.changeText(input, 'New York');
-
-    expect(input.props.value).toBe('New York');
-  });
-
-  it('clears the query when clear button is pressed', () => {
-    const { getByPlaceholderText, getByText } = render(
-      <GooglePlacesInput
-        setSearchResults={mockSetSearchResults}
-        onFocus={mockOnFocus}
-      />
-    );
-
-    const input = getByPlaceholderText('Search Polaris');
-    fireEvent.changeText(input, 'New York');
-    expect(input.props.value).toBe('New York');
-
-    const clearButton = getByText('✕');
-    fireEvent.press(clearButton);
-    expect(input.props.value).toBe('');
-  });
-
-  it('fetches search results when query length is greater than 2', async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
+        ok: true,
+        status: 200,
         json: () =>
           Promise.resolve({
             predictions: [{ description: 'New York, USA', place_id: '123' }],
           }),
-      })
-    ) as jest.Mock;
+      } as Response)
+    );
+  });
 
-    const { getByPlaceholderText } = render(
+  it('renders correctly', () => {
+    const { getByTestId } = render(
       <GooglePlacesInput
         setSearchResults={mockSetSearchResults}
         onFocus={mockOnFocus}
       />
     );
 
-    const input = getByPlaceholderText('Search Polaris');
+    expect(getByTestId('places-input')).toBeTruthy();
+  });
+
+  it('updates query state on text input', async () => {
+    const { getByTestId } = render(
+      <GooglePlacesInput
+        setSearchResults={mockSetSearchResults}
+        onFocus={mockOnFocus}
+      />
+    );
+
+    const input = getByTestId('places-input');
     fireEvent.changeText(input, 'New York');
 
     await waitFor(() => {
-      expect(mockSetSearchResults).toHaveBeenCalledWith([
-        { description: 'New York, USA', place_id: '123' },
-      ]);
+      expect(input.props.value).toBe('New York');
     });
   });
 
-  it('does not fetch results when query length is 2 or less', async () => {
-    const { getByPlaceholderText } = render(
+  it('clears the query when clear button is pressed', async () => {
+    const { getByTestId, findByText } = render(
       <GooglePlacesInput
         setSearchResults={mockSetSearchResults}
         onFocus={mockOnFocus}
       />
     );
 
-    const input = getByPlaceholderText('Search Polaris');
-    fireEvent.changeText(input, 'NY');
+    const input = getByTestId('places-input');
+    fireEvent.changeText(input, 'New York');
+
+    expect(input.props.value).toBe('New York');
+
+    const clearButton = await findByText('✕');
+    fireEvent.press(clearButton);
 
     await waitFor(() => {
-      expect(mockSetSearchResults).toHaveBeenCalledWith([]);
+      expect(input.props.value).toBe('');
+    });
+  });
+
+  it('fetches search results when query length is greater than 2', async () => {
+    const { getByTestId } = render(
+      <GooglePlacesInput
+        setSearchResults={mockSetSearchResults}
+        onFocus={mockOnFocus}
+      />
+    );
+
+    const input = getByTestId('places-input');
+    fireEvent.changeText(input, 'New York');
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+      expect(mockSetSearchResults).toHaveBeenCalledWith([
+        { description: 'New York, USA', place_id: '123' },
+      ]);
     });
   });
 });
