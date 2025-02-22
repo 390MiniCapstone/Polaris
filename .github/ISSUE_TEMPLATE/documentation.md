@@ -1,9 +1,11 @@
 ---
 name: Documentation
-about: Create an atomic documentation task that cannot be broken down into smaller tasks
+about: Create an atomic documentation task that cannot be broken down into smaller
+  tasks
 title: "[DOC]"
 labels: documentation
-assignees: ""
+assignees: ''
+
 ---
 
 ### **Description**

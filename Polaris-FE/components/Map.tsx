@@ -3,6 +3,7 @@ import MapView, { Geojson, Region } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import { downtownBuildings, loyolaBuildings } from '@/constants/buildings';
 import { Buildings } from './Buildings/Buildings';
+import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
 
 interface MapComponentProps {
   mapRef: React.RefObject<MapView>;
@@ -15,6 +16,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   region,
   setRegion,
 }) => {
+  const currentBuilding = useCurrentBuilding();
+
   return (
     <View>
       <MapView
@@ -35,6 +38,26 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           geojson={loyolaBuildings as GeoJSON.FeatureCollection}
           fillColor="rgba(143, 34, 54, 0.8)"
         />
+        {currentBuilding && (
+          <Geojson
+            geojson={{
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Polygon',
+                    coordinates: currentBuilding.geometry.coordinates,
+                  },
+                  properties: {},
+                },
+              ],
+            }}
+            fillColor="rgba(0, 0, 255, 0.5)"
+            strokeColor="rgba(0, 0, 255, 1)"
+            strokeWidth={3}
+          />
+        )}
         <Buildings />
       </MapView>
     </View>
