@@ -32,6 +32,24 @@ export const NavigationInfo: React.FC<NavigationInfoProps> = ({
 }) => {
   const { location } = useMapLocation();
 
+  const handlePress = () => {
+    if (isNavigating) {
+      if (is3d) {
+        handleCurrentLocation(mapRef, location);
+        updateIs3d && updateIs3d(false);
+      } else {
+        onStartNavigation();
+        updateIs3d && updateIs3d(true);
+      }
+    } else {
+      if (travelMode === 'TRANSIT' && location) {
+        openTransitInMaps(location, destination);
+      } else {
+        onStartNavigation();
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -53,25 +71,7 @@ export const NavigationInfo: React.FC<NavigationInfoProps> = ({
       <TouchableOpacity
         testID="action-button"
         style={isNavigating ? styles.currentButton : styles.goButton}
-        onPress={
-          isNavigating
-            ? () => {
-                if (is3d) {
-                  handleCurrentLocation(mapRef, location);
-                  updateIs3d && updateIs3d(false);
-                } else {
-                  onStartNavigation();
-                  updateIs3d && updateIs3d(true);
-                }
-              }
-            : () => {
-                if (travelMode === 'TRANSIT' && location) {
-                  openTransitInMaps(location, destination);
-                } else {
-                  onStartNavigation();
-                }
-              }
-        }
+        onPress={handlePress}
       >
         {isNavigating ? (
           <FontAwesome5 name="location-arrow" size={16} color="white" />
