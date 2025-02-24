@@ -1,13 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-interface TurnByTurnNavigationProps {
+interface InstructionsProps {
   instruction: string;
 }
 
-export const Instructions: React.FC<TurnByTurnNavigationProps> = ({
-  instruction,
-}) => {
+export const Instructions: React.FC<InstructionsProps> = ({ instruction }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.instruction}>{instruction}</Text>

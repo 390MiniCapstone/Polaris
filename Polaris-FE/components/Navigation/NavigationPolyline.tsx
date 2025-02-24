@@ -4,7 +4,7 @@ import { LatLng, Marker, Polyline } from 'react-native-maps';
 interface NavigationPolylineProps {
   navigationState: string;
   destination: { latitude: number; longitude: number };
-  transportMode: string;
+  travelMode: string;
   clippedPolyline: LatLng[] | null;
   snappedPoint: LatLng | null;
 }
@@ -12,7 +12,7 @@ interface NavigationPolylineProps {
 export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
   navigationState,
   destination,
-  transportMode,
+  travelMode,
   clippedPolyline,
   snappedPoint,
 }) => {
@@ -23,7 +23,7 @@ export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
         snappedPoint && (
           <>
             <Marker coordinate={destination} pinColor="#9C2F40" />
-            {transportMode === 'WALK' ? (
+            {travelMode === 'WALK' ? (
               <Polyline
                 coordinates={clippedPolyline}
                 strokeWidth={4}

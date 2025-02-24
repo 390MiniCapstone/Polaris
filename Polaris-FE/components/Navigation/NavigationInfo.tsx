@@ -11,7 +11,7 @@ interface NavigationInfoProps {
   distance: number;
   isNavigating: boolean;
   is3d: boolean;
-  transportMode: string;
+  travelMode: string;
   destination: { latitude: number; longitude: number };
   onCancel: () => void;
   onStartNavigation: () => void;
@@ -26,7 +26,7 @@ export const NavigationInfo: React.FC<NavigationInfoProps> = ({
   onCancel,
   onStartNavigation,
   is3d,
-  transportMode,
+  travelMode,
   updateIs3d,
   destination,
 }) => {
@@ -65,7 +65,7 @@ export const NavigationInfo: React.FC<NavigationInfoProps> = ({
                 }
               }
             : () => {
-                if (transportMode === 'TRANSIT' && location) {
+                if (travelMode === 'TRANSIT' && location) {
                   openTransitInMaps(location, destination);
                 } else {
                   onStartNavigation();

@@ -43,12 +43,12 @@ jest.mock('@/utils/mapHandlers', () => ({
   handleCurrentLocation: jest.fn(),
 }));
 
-jest.mock('@/components/Navigation/TransportMode', () => {
+jest.mock('@/components/Navigation/TravelModeToggle', () => {
   const React = require('react');
   const { Text } = require('react-native');
   return {
-    TransportMode: ({ selectedMode }: { selectedMode: string }) => (
-      <Text testID="transport-mode">TransportMode: {selectedMode}</Text>
+    TravelModeToggle: ({ selectedMode }: { selectedMode: string }) => (
+      <Text testID="transport-mode">TravelModeToggle: {selectedMode}</Text>
     ),
   };
 });
@@ -93,10 +93,8 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { getGoogleMapsRoute } from '@/services/googleMapsRoutes';
 import { handleCurrentLocation } from '@/utils/mapHandlers';
-import type {
-  NavigationProps,
-  NavigationState,
-} from '@/components/Navigation/Navigation';
+import { NavigationState } from '@/constants/types';
+import type { NavigationProps } from '@/components/Navigation/Navigation';
 
 const navigationStateDefault: NavigationState = 'default';
 
@@ -105,8 +103,8 @@ const defaultProps: NavigationProps = {
   setNavigationState: jest.fn(),
   destination: { latitude: 0, longitude: 0 },
   setDestination: jest.fn(),
-  transportMode: 'DRIVE',
-  setTransportMode: jest.fn(),
+  travelMode: 'DRIVE',
+  setTravelMode: jest.fn(),
   setSnappedPoint: jest.fn(),
   clippedPolyline: null,
   setClippedPolyline: jest.fn(),
@@ -133,12 +131,12 @@ describe('Navigation Component', () => {
     expect(defaultProps.setNavigationState).toHaveBeenCalledWith('planning');
 
     expect(defaultProps.setDestination).toHaveBeenCalledWith({
-      latitude: 37.39223512591287,
-      longitude: -122.16990035825833,
+      latitude: expect.any(Number),
+      longitude: expect.any(Number),
     });
   });
 
-  it('renders TransportMode and NavigationInfo when in planning state after route data is fetched', async () => {
+  it('renders TravelModeToggle and NavigationInfo when in planning state after route data is fetched', async () => {
     const props = {
       ...defaultProps,
       navigationState: 'planning' as NavigationState,

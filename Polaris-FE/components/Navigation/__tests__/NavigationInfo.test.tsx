@@ -43,7 +43,7 @@ describe('NavigationInfo Component', () => {
     distance: 1500,
     isNavigating: false,
     is3d: false,
-    transportMode: 'DRIVE',
+    travelMode: 'DRIVE',
     destination: { latitude: 10, longitude: 20 },
     onCancel: jest.fn(),
     onStartNavigation: jest.fn(),
@@ -74,8 +74,8 @@ describe('NavigationInfo Component', () => {
     expect(defaultProps.onCancel).toHaveBeenCalled();
   });
 
-  it('calls openTransitInMaps when not navigating, transportMode is TRANSIT, and location exists', () => {
-    const props = { ...defaultProps, transportMode: 'TRANSIT' };
+  it('calls openTransitInMaps when not navigating, travelMode is TRANSIT, and location exists', () => {
+    const props = { ...defaultProps, travelMode: 'TRANSIT' };
     const { getByTestId } = render(<NavigationInfo {...props} />);
     fireEvent.press(getByTestId('action-button'));
 
@@ -86,8 +86,8 @@ describe('NavigationInfo Component', () => {
     expect(props.onStartNavigation).not.toHaveBeenCalled();
   });
 
-  it('calls onStartNavigation when not navigating and transportMode is not TRANSIT', () => {
-    const props = { ...defaultProps, transportMode: 'DRIVE' };
+  it('calls onStartNavigation when not navigating and travelMode is not TRANSIT', () => {
+    const props = { ...defaultProps, travelMode: 'DRIVE' };
     const { getByTestId } = render(<NavigationInfo {...props} />);
     fireEvent.press(getByTestId('action-button'));
 

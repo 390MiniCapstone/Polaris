@@ -1,32 +1,10 @@
 import Constants from 'expo-constants';
 import polyline from '@mapbox/polyline';
-
-export type TravelMode = 'DRIVE' | 'WALK' | 'BICYCLE' | 'TRANSIT';
+import { LatLng } from 'react-native-maps';
+import { TravelMode, RouteData, Step } from '@/constants/types';
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
   ?.googleMapsApiKey as string;
-
-export interface LatLng {
-  latitude: number;
-  longitude: number;
-}
-
-export interface Step {
-  startLocation: LatLng;
-  endLocation: LatLng;
-  distance: number;
-  duration: number;
-  instruction: string;
-  polyline: LatLng[];
-  cumulativeDistance: number;
-}
-
-export interface RouteData {
-  polyline: LatLng[];
-  totalDistance: number;
-  totalDuration: number;
-  steps: Step[];
-}
 
 export const getGoogleMapsRoute = async (
   origin: { latitude: number; longitude: number },

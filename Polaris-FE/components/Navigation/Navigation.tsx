@@ -1,18 +1,17 @@
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { bottomSheetRef, mapRef } from '@/utils/refs';
 import React, { SetStateAction, useEffect, useState } from 'react';
-import { TransportMode } from '@/components/Navigation/TransportMode';
+import { TravelModeToggle } from '@/components/Navigation/TravelModeToggle';
 import { Instructions } from './Instructions';
 import { NavigationInfo } from '@/components/Navigation/NavigationInfo';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { lineString, point } from '@turf/helpers';
 import nearestPointOnLine from '@turf/nearest-point-on-line';
 import { handleCurrentLocation } from '@/utils/mapHandlers';
-import {
-  getGoogleMapsRoute,
-  LatLng,
-  RouteData,
-} from '@/services/googleMapsRoutes';
+import { NavigationState, TravelMode } from '@/constants/types';
+import { LatLng } from 'react-native-maps';
+import { RouteData } from '@/constants/types';
+import { getGoogleMapsRoute } from '@/services/googleMapsRoutes';
 import {
   clipPolylineFromSnappedPoint,
   computeRemainingDistance,
@@ -21,16 +20,13 @@ import {
   startNavigation,
 } from '@/utils/navigationUtils';
 
-export type NavigationState = 'default' | 'planning' | 'navigating';
-type TransportMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE';
-
 export interface NavigationProps {
   navigationState: NavigationState;
   setNavigationState: React.Dispatch<SetStateAction<NavigationState>>;
   destination: { latitude: number; longitude: number };
   setDestination: React.Dispatch<SetStateAction<LatLng>>;
-  transportMode: TransportMode;
-  setTransportMode: React.Dispatch<SetStateAction<TransportMode>>;
+  travelMode: TravelMode;
+  setTravelMode: React.Dispatch<SetStateAction<TravelMode>>;
   setSnappedPoint: React.Dispatch<SetStateAction<LatLng | null>>;
   clippedPolyline: LatLng[] | null;
   setClippedPolyline: React.Dispatch<SetStateAction<LatLng[] | null>>;
@@ -41,8 +37,8 @@ export const Navigation: React.FC<NavigationProps> = ({
   setNavigationState,
   destination,
   setDestination,
-  transportMode,
-  setTransportMode,
+  travelMode,
+  setTravelMode,
   setSnappedPoint,
   clippedPolyline,
   setClippedPolyline,
@@ -63,7 +59,7 @@ export const Navigation: React.FC<NavigationProps> = ({
         const data = await getGoogleMapsRoute(
           location,
           destination,
-          transportMode
+          travelMode
         );
         setRouteData(data);
         {
@@ -82,7 +78,7 @@ export const Navigation: React.FC<NavigationProps> = ({
         console.error('Failed to fetch route data:', error);
       }
     })();
-  }, [destination, transportMode]);
+  }, [destination, travelMode]);
 
   useEffect(() => {
     if (location && routeData) {
@@ -112,7 +108,7 @@ export const Navigation: React.FC<NavigationProps> = ({
         const instruction = determineNextInstruction(
           routeData.steps,
           snappedLoc,
-          transportMode
+          travelMode
         );
         setNextInstruction(instruction);
 
@@ -123,7 +119,7 @@ export const Navigation: React.FC<NavigationProps> = ({
         setClippedPolyline(clipped);
       }
     }
-  }, [location, routeData, transportMode]);
+  }, [location, routeData, travelMode]);
 
   useEffect(() => {
     if (
@@ -162,18 +158,10 @@ export const Navigation: React.FC<NavigationProps> = ({
           onPress={() => {
             bottomSheetRef.current?.close();
             setNavigationState('planning');
-            // setDestination({
-            //             //   latitude: 45.50748945490343,
-            //             //   longitude: -73.5621201938624,
-            //             // });
             setDestination({
-              latitude: 37.39223512591287,
-              longitude: -122.16990035825833,
+              latitude: 45.4808743,
+              longitude: -73.6199895,
             });
-            // setDestination({
-            //   latitude: 45.4808743,
-            //   longitude: -73.6199895,
-            // });
           }}
         >
           <Text style={styles.text}>Navigation Demo</Text>
@@ -181,9 +169,9 @@ export const Navigation: React.FC<NavigationProps> = ({
       )}
 
       {navigationState === 'planning' && (
-        <TransportMode
-          selectedMode={transportMode}
-          onModeSelect={setTransportMode}
+        <TravelModeToggle
+          selectedMode={travelMode}
+          onModeSelect={setTravelMode}
         />
       )}
 
@@ -199,7 +187,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               distance={remainingDistance}
               isNavigating={navigationState === 'navigating'}
               is3d={is3d}
-              transportMode={transportMode}
+              travelMode={travelMode}
               destination={destination}
               updateIs3d={setIs3d}
               onCancel={() => {

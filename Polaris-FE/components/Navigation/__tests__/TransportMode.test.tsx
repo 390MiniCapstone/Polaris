@@ -22,7 +22,7 @@ jest.mock('expo-font', () => ({
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { StyleSheet } from 'react-native';
-import { TransportMode } from '@/components/Navigation/TransportMode';
+import { TravelModeToggle } from '@/components/Navigation/TravelModeToggle';
 
 const modes: Array<'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE'> = [
   'DRIVE',
@@ -31,10 +31,10 @@ const modes: Array<'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE'> = [
   'BICYCLE',
 ];
 
-describe('TransportMode Component', () => {
+describe('TravelModeToggle Component', () => {
   it('renders correctly (snapshot)', () => {
     const { toJSON } = render(
-      <TransportMode selectedMode="DRIVE" onModeSelect={jest.fn()} />
+      <TravelModeToggle selectedMode="DRIVE" onModeSelect={jest.fn()} />
     );
     expect(toJSON()).toMatchSnapshot();
   });
@@ -42,7 +42,7 @@ describe('TransportMode Component', () => {
   it('calls onModeSelect with the correct mode when each button is pressed', () => {
     const onModeSelectMock = jest.fn();
     const { getByTestId } = render(
-      <TransportMode selectedMode="DRIVE" onModeSelect={onModeSelectMock} />
+      <TravelModeToggle selectedMode="DRIVE" onModeSelect={onModeSelectMock} />
     );
 
     modes.forEach(mode => {
@@ -55,7 +55,7 @@ describe('TransportMode Component', () => {
 
   it('applies the selected style to the button corresponding to the selected mode', () => {
     const { getByTestId } = render(
-      <TransportMode selectedMode="TRANSIT" onModeSelect={jest.fn()} />
+      <TravelModeToggle selectedMode="TRANSIT" onModeSelect={jest.fn()} />
     );
 
     const transitButton = getByTestId('transport-mode-button-TRANSIT');

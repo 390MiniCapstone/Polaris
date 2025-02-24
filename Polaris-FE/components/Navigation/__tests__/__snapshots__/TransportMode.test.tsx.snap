@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TransportMode Component renders correctly (snapshot) 1`] = `
+exports[`TravelModeToggle Component renders correctly (snapshot) 1`] = `
 <View
   style={
     {

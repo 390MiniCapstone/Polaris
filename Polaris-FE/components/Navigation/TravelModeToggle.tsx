@@ -1,15 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
+import { TravelMode } from '@/constants/types';
 
-type TransportMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE';
-
-interface TransportModeProps {
-  selectedMode: TransportMode;
-  onModeSelect: (mode: TransportMode) => void;
+interface TravelModeToggleProps {
+  selectedMode: TravelMode;
+  onModeSelect: (mode: TravelMode) => void;
 }
 
-export const TransportMode: React.FC<TransportModeProps> = ({
+export const TravelModeToggle: React.FC<TravelModeToggleProps> = ({
   selectedMode,
   onModeSelect,
 }) => {

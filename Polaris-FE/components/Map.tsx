@@ -5,12 +5,10 @@ import { downtownBuildings, loyolaBuildings } from '@/constants/buildings';
 import { Buildings } from './Buildings/Buildings';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { mapRef } from '@/utils/refs';
-import { LatLng } from '@/services/googleMapsRoutes';
+import { LatLng } from 'react-native-maps';
 import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
 import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
-
-type NavigationState = 'default' | 'planning' | 'navigating';
-type TransportMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE';
+import { NavigationState, TravelMode } from '@/constants/types';
 
 interface MapComponentProps {
   region: Region | undefined;
@@ -23,7 +21,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const [navigationState, setNavigationState] =
     useState<NavigationState>('default');
-  const [transportMode, setTransportMode] = useState<TransportMode>('DRIVE');
+  const [travelMode, setTravelMode] = useState<TravelMode>('DRIVE');
   const [destination, setDestination] = useState({
     latitude: 0,
     longitude: 0,
@@ -59,7 +57,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         <NavigationPolyline
           navigationState={navigationState}
           destination={destination}
-          transportMode={transportMode}
+          travelMode={travelMode}
           clippedPolyline={clippedPolyline}
           snappedPoint={snappedPoint}
         />
@@ -91,8 +89,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         setNavigationState={setNavigationState}
         destination={destination}
         setDestination={setDestination}
-        transportMode={transportMode}
-        setTransportMode={setTransportMode}
+        travelMode={travelMode}
+        setTravelMode={setTravelMode}
         setSnappedPoint={setSnappedPoint}
         clippedPolyline={clippedPolyline}
         setClippedPolyline={setClippedPolyline}

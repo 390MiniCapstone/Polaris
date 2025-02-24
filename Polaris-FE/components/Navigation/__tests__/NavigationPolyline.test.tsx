@@ -32,7 +32,7 @@ describe('NavigationPolyline Component', () => {
       <NavigationPolyline
         navigationState="idle"
         destination={destination}
-        transportMode="WALK"
+        travelMode="WALK"
         clippedPolyline={samplePolyline}
         snappedPoint={snappedPoint}
       />
@@ -45,7 +45,7 @@ describe('NavigationPolyline Component', () => {
       <NavigationPolyline
         navigationState="planning"
         destination={destination}
-        transportMode="WALK"
+        travelMode="WALK"
         clippedPolyline={null}
         snappedPoint={snappedPoint}
       />
@@ -58,7 +58,7 @@ describe('NavigationPolyline Component', () => {
       <NavigationPolyline
         navigationState="planning"
         destination={destination}
-        transportMode="WALK"
+        travelMode="WALK"
         clippedPolyline={samplePolyline}
         snappedPoint={null}
       />
@@ -71,7 +71,7 @@ describe('NavigationPolyline Component', () => {
       <NavigationPolyline
         navigationState="planning"
         destination={destination}
-        transportMode="WALK"
+        travelMode="WALK"
         clippedPolyline={samplePolyline}
         snappedPoint={snappedPoint}
       />
@@ -98,7 +98,7 @@ describe('NavigationPolyline Component', () => {
       <NavigationPolyline
         navigationState="navigating"
         destination={destination}
-        transportMode="DRIVE"
+        travelMode="DRIVE"
         clippedPolyline={samplePolyline}
         snappedPoint={snappedPoint}
       />
