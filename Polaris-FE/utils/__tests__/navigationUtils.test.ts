@@ -9,6 +9,7 @@ import {
   clipPolylineFromSnappedPoint,
   openTransitInMaps,
   startNavigation,
+  determineCurrentStep,
 } from '@/utils/navigationUtils';
 import { Linking, Platform } from 'react-native';
 import MapView from 'react-native-maps';
@@ -124,7 +125,7 @@ describe('navigationUtils', () => {
         instruction: 'turn left',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const step1 = {
         polyline: [
@@ -136,7 +137,7 @@ describe('navigationUtils', () => {
         instruction: 'turn right',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const steps = [step0, step1];
 
@@ -156,7 +157,7 @@ describe('navigationUtils', () => {
         instruction: 'turn left',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const step1 = {
         polyline: [
@@ -168,7 +169,7 @@ describe('navigationUtils', () => {
         instruction: 'turn right',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const steps = [step0, step1];
       const snapped = { latitude: 0, longitude: 0.005 };
@@ -189,7 +190,7 @@ describe('navigationUtils', () => {
         instruction: 'step1',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const step1 = {
         polyline: [
@@ -201,7 +202,7 @@ describe('navigationUtils', () => {
         instruction: 'step2',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const steps = [step0, step1];
       const snapped = { latitude: 0, longitude: 0.005 };
@@ -220,7 +221,7 @@ describe('navigationUtils', () => {
         instruction: 'step',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const steps = [step];
       const snapped = { latitude: 0, longitude: 0.005 };
@@ -241,7 +242,7 @@ describe('navigationUtils', () => {
         instruction: 'first instruction',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const step1 = {
         polyline: [
@@ -253,7 +254,7 @@ describe('navigationUtils', () => {
         instruction: 'next instruction',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const steps = [step0, step1];
       const snapped = { latitude: 0, longitude: 0.0095 };
@@ -272,7 +273,7 @@ describe('navigationUtils', () => {
         instruction: 'first instruction',
         startLocation: { latitude: 0, longitude: 0.005 },
         endLocation: { latitude: 0, longitude: 0.01 },
-        cumulativeDistance: 556 + 556,
+        cumulativeDistance: 1112,
       };
       const steps = [step0];
       const snapped = { latitude: 0, longitude: 0.005 };
@@ -367,17 +368,26 @@ describe('navigationUtils', () => {
 
     it('should animate the camera with correct parameters', () => {
       const location = { latitude: 0, longitude: 0 };
-      const clippedPolyline = [
-        { latitude: 0, longitude: 0 },
-        { latitude: 0, longitude: 0.001 },
-        { latitude: 0, longitude: 0.002 },
-      ];
+      const currentStep = {
+        startLocation: { latitude: 0, longitude: 0 },
+        endLocation: { latitude: 0, longitude: 0.002 },
+        distance: 200,
+        duration: 60,
+        instruction: 'instruction',
+        polyline: [
+          { latitude: 0, longitude: 0 },
+          { latitude: 0, longitude: 0.001 },
+          { latitude: 0, longitude: 0.002 },
+        ],
+        cumulativeDistance: 200,
+      };
       const animateCameraMock = jest.fn();
       const mapRef = { current: { animateCamera: animateCameraMock } };
 
       startNavigation(
         location,
-        clippedPolyline,
+        currentStep.polyline,
+        currentStep,
         mapRef as unknown as React.MutableRefObject<MapView | null>
       );
 
@@ -398,15 +408,99 @@ describe('navigationUtils', () => {
       expect(callArgs.altitude).toBe(400);
     });
 
-    it('should not animate the camera if location or polyline is missing', () => {
+    it('should not animate the camera if location is missing or step polyline is empty', () => {
       const animateCameraMock = jest.fn();
       const mapRef = { current: { animateCamera: animateCameraMock } };
       startNavigation(
         null as unknown as GeoPoint,
-        [],
+        [] as any,
+        { polyline: [] } as any,
         mapRef as unknown as React.MutableRefObject<MapView | null>
       );
       expect(animateCameraMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('determineCurrentStep', () => {
+    it('should return the first step with a valid fraction', () => {
+      const step1 = {
+        polyline: [
+          { latitude: 0, longitude: 0 },
+          { latitude: 0, longitude: 0.01 },
+        ],
+        duration: 60,
+        distance: 100,
+        instruction: 'step1',
+        startLocation: { latitude: 0, longitude: 0 },
+        endLocation: { latitude: 0, longitude: 0.01 },
+        cumulativeDistance: 100,
+      };
+      const step2 = {
+        polyline: [
+          { latitude: 0, longitude: 0.01 },
+          { latitude: 0, longitude: 0.02 },
+        ],
+        duration: 60,
+        distance: 100,
+        instruction: 'step2',
+        startLocation: { latitude: 0, longitude: 0.01 },
+        endLocation: { latitude: 0, longitude: 0.02 },
+        cumulativeDistance: 200,
+      };
+      const steps = [step1, step2];
+      const snapped = { latitude: 0, longitude: 0.005 };
+      const currentStep = determineCurrentStep(steps, snapped);
+      expect(currentStep).toEqual(step1);
+    });
+
+    it('should return the next step if the snapped point is near the end of the current step', () => {
+      const step1 = {
+        polyline: [
+          { latitude: 0, longitude: 0 },
+          { latitude: 0, longitude: 0.01 },
+        ],
+        duration: 60,
+        distance: 100,
+        instruction: 'step1',
+        startLocation: { latitude: 0, longitude: 0 },
+        endLocation: { latitude: 0, longitude: 0.01 },
+        cumulativeDistance: 100,
+      };
+      const step2 = {
+        polyline: [
+          { latitude: 0, longitude: 0.01 },
+          { latitude: 0, longitude: 0.02 },
+        ],
+        duration: 60,
+        distance: 100,
+        instruction: 'step2',
+        startLocation: { latitude: 0, longitude: 0.01 },
+        endLocation: { latitude: 0, longitude: 0.02 },
+        cumulativeDistance: 200,
+      };
+      const steps = [step1, step2];
+      const snapped = { latitude: 0, longitude: 0.0098 };
+      const currentStep = determineCurrentStep(steps, snapped);
+      expect(currentStep).toEqual(step2);
+    });
+
+    it('should return undefined if no step contains the snapped point', () => {
+      const step = {
+        polyline: [
+          { latitude: 0, longitude: 0 },
+          { latitude: 0, longitude: 0.01 },
+        ],
+        duration: 60,
+        distance: 100,
+        instruction: 'step',
+        startLocation: { latitude: 0, longitude: 0 },
+        endLocation: { latitude: 0, longitude: 0.01 },
+        cumulativeDistance: 100,
+      };
+      const steps = [step];
+      const snapped = { latitude: 10, longitude: 10 };
+      const currentStep = determineCurrentStep(steps, snapped);
+      expect(currentStep).toBeUndefined();
     });
   });
 });

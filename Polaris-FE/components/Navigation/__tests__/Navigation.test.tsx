@@ -105,6 +105,7 @@ const defaultProps: NavigationProps = {
   setDestination: jest.fn(),
   travelMode: 'DRIVE',
   setTravelMode: jest.fn(),
+  snappedPoint: null,
   setSnappedPoint: jest.fn(),
   clippedPolyline: null,
   setClippedPolyline: jest.fn(),
