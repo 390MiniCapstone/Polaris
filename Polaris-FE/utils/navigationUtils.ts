@@ -1,4 +1,4 @@
-import { Step } from '@/services/googleMapsRoutes';
+import { Step } from '@/constants/types';
 import MapView, { LatLng } from 'react-native-maps';
 import { Linking, Platform } from 'react-native';
 import { MutableRefObject } from 'react';
@@ -145,6 +145,33 @@ export const computeRemainingDistance = (
   return remainingDistance > 0 ? remainingDistance : 0;
 };
 
+export const determineCurrentStep = (
+  steps: Step[],
+  snapped: LatLng
+): Step | undefined => {
+  let currentStepIndex = -1;
+  let currentFraction: number | undefined;
+
+  for (let i = 0; i < steps.length; i++) {
+    const fraction = computeStepFraction(steps[i].polyline, snapped);
+    if (fraction !== undefined) {
+      currentStepIndex = i;
+      currentFraction = fraction;
+      break;
+    }
+  }
+
+  if (currentStepIndex === -1 || currentFraction === undefined) {
+    return undefined;
+  }
+
+  if (currentFraction > 0.95 && currentStepIndex < steps.length - 1) {
+    return steps[currentStepIndex + 1];
+  }
+
+  return steps[currentStepIndex];
+};
+
 export const determineNextInstruction = (
   steps: Step[],
   snapped: LatLng,
@@ -165,7 +192,7 @@ export const determineNextInstruction = (
   const currentStep = steps[currentStepIndex];
   const remainingDistanceInStep = currentStep.distance * (1 - currentFraction);
 
-  let baseThreshold = 1000; // default for driving
+  let baseThreshold = 1000;
   if (transportMode === 'WALK') {
     baseThreshold = 200;
   } else if (transportMode === 'BICYCLE') {
@@ -242,6 +269,7 @@ export const openTransitInMaps = (
 export const startNavigation = (
   location: LatLng,
   clippedPolyline: LatLng[],
+  currentStep: Step,
   mapRef: MutableRefObject<MapView | null>
 ): void => {
   if (!location || !clippedPolyline.length) return;
@@ -251,7 +279,12 @@ export const startNavigation = (
     longitude: location.longitude,
   };
 
-  const lookAheadDistance = 180; // meters
+  const fraction =
+    computeStepFraction(currentStep.polyline, currentPosition) ?? 0;
+  const remainingDistanceInStep = currentStep.distance * (1 - fraction);
+  const lookAheadDistance =
+    remainingDistanceInStep < 180 ? remainingDistanceInStep : 180;
+
   let cumulativeDistance = 0;
   let centerPoint: LatLng = currentPosition;
 

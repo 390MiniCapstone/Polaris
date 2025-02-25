@@ -16,6 +16,7 @@ import {
   clipPolylineFromSnappedPoint,
   computeRemainingDistance,
   computeRemainingTime,
+  determineCurrentStep,
   determineNextInstruction,
   startNavigation,
 } from '@/utils/navigationUtils';
@@ -27,6 +28,7 @@ export interface NavigationProps {
   setDestination: React.Dispatch<SetStateAction<LatLng>>;
   travelMode: TravelMode;
   setTravelMode: React.Dispatch<SetStateAction<TravelMode>>;
+  snappedPoint: LatLng | null;
   setSnappedPoint: React.Dispatch<SetStateAction<LatLng | null>>;
   clippedPolyline: LatLng[] | null;
   setClippedPolyline: React.Dispatch<SetStateAction<LatLng[] | null>>;
@@ -39,6 +41,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   setDestination,
   travelMode,
   setTravelMode,
+  snappedPoint,
   setSnappedPoint,
   clippedPolyline,
   setClippedPolyline,
@@ -126,14 +129,18 @@ export const Navigation: React.FC<NavigationProps> = ({
       navigationState === 'navigating' &&
       is3d &&
       location &&
-      clippedPolyline
+      clippedPolyline &&
+      routeData &&
+      snappedPoint
     ) {
-      startNavigation(location, clippedPolyline, mapRef);
+      const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
+      if (currentStep)
+        startNavigation(location, clippedPolyline, currentStep, mapRef);
     }
   }, [location, navigationState]);
 
   useEffect(() => {
-    const arrivalThreshold = 10; // meters
+    const arrivalThreshold = 10;
     if (
       navigationState === 'navigating' &&
       remainingDistance <= arrivalThreshold
@@ -145,9 +152,11 @@ export const Navigation: React.FC<NavigationProps> = ({
   }, [remainingDistance, navigationState]);
 
   const handleStartNavigation = () => {
-    if (!location || !clippedPolyline) return;
+    if (!location || !clippedPolyline || !routeData || !snappedPoint) return;
     setNavigationState('navigating');
-    startNavigation(location, clippedPolyline, mapRef);
+    const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
+    if (currentStep)
+      startNavigation(location, clippedPolyline, currentStep, mapRef);
   };
 
   return (

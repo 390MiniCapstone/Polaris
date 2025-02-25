@@ -91,6 +91,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         setDestination={setDestination}
         travelMode={travelMode}
         setTravelMode={setTravelMode}
+        snappedPoint={snappedPoint}
         setSnappedPoint={setSnappedPoint}
         clippedPolyline={clippedPolyline}
         setClippedPolyline={setClippedPolyline}
