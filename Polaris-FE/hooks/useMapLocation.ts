@@ -43,22 +43,6 @@ export const useMapLocation = () => {
             });
           }
         );
-
-        // Periodically fetch location every second
-        // intervalId = setInterval(async () => {
-        //   const newLocation = await Location.getCurrentPositionAsync({
-        //     accuracy: Location.Accuracy.High,
-        //   });
-        //   const { latitude, longitude } = newLocation.coords;
-        //   setLocation({ latitude, longitude });
-        //
-        //   setRegion({
-        //     latitude,
-        //     longitude,
-        //     latitudeDelta: 0.02,
-        //     longitudeDelta: 0.02,
-        //   });
-        // }, 1000);
       } catch (error) {
         setPermissionStatus('error');
       }
