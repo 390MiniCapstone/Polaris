@@ -1,27 +1,60 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import BottomSheetComponent from '@/components/BottomSheetComponent';
-import BottomSheet from '@gorhom/bottom-sheet';
 import { SharedValue } from 'react-native-reanimated';
+
+jest.mock('@/utils/refs', () => ({
+  bottomSheetRef: {
+    current: {
+      snapToIndex: jest.fn(),
+    },
+  },
+}));
 
 jest.mock('@/components/GooglePlacesInput', () => {
   return {
     __esModule: true,
-    default: ({ setSearchResults }: { setSearchResults: Function }) => {
+    default: ({
+      setSearchResults,
+      onFocus,
+    }: {
+      setSearchResults: Function;
+      onFocus: Function;
+    }) => {
       const { Text, TouchableOpacity } = require('react-native');
       return (
         <TouchableOpacity
-          onPress={() =>
+          testID="mock-google-places-input"
+          onPress={() => {
+            if (onFocus) {
+              onFocus();
+            }
             setSearchResults([
               { place_id: '1', description: 'Place 1' },
               { place_id: '2', description: 'Place 2' },
-            ])
-          }
+            ]);
+          }}
         >
           <Text>Search</Text>
         </TouchableOpacity>
       );
     },
+  };
+});
+
+jest.mock('@gorhom/bottom-sheet', () => {
+  const React = require('react');
+  const { View, TextInput } = require('react-native');
+  const BottomSheet = (props: any) => (
+    <View testID="bottom-sheet">{props.children}</View>
+  );
+  const BottomSheetTextInput = (props: any) => <TextInput {...props} />;
+  const BottomSheetView = (props: any) => <View {...props} />;
+  return {
+    __esModule: true,
+    default: BottomSheet,
+    BottomSheetTextInput,
+    BottomSheetView,
   };
 });
 
@@ -53,12 +86,26 @@ global.fetch = jest.fn(() =>
   })
 ) as jest.Mock;
 
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation(message => {
+    if (
+      typeof message === 'string' &&
+      message.includes('Function components cannot be given refs')
+    ) {
+      return;
+    }
+    console.error(message);
+  });
+});
+
+afterAll(() => {
+  (console.error as jest.Mock).mockRestore();
+});
+
 describe('BottomSheetComponent', () => {
   it('shows search results when Search is clicked', async () => {
-    const bottomSheetRef = {
-      current: { snapToIndex: jest.fn() },
-    } as unknown as React.RefObject<BottomSheet>;
-
+    const onSearchClick = jest.fn();
+    const onFocus = jest.fn();
     const animatedPosition: SharedValue<number> = {
       value: 0,
       get: jest.fn(),
@@ -70,9 +117,8 @@ describe('BottomSheetComponent', () => {
 
     const { getByText, findByText } = render(
       <BottomSheetComponent
-        onSearchClick={jest.fn()}
-        bottomSheetRef={bottomSheetRef}
-        onFocus={jest.fn()}
+        onSearchClick={onSearchClick}
+        onFocus={onFocus}
         animatedPosition={animatedPosition}
       />
     );
@@ -86,11 +132,11 @@ describe('BottomSheetComponent', () => {
     expect(place2).toBeTruthy();
   });
 
-  it('calls onSearchClick with correct coordinates when a place is selected', async () => {
+  it('calls onSearchClick with correct coordinates and snaps bottom sheet when a place is selected', async () => {
     const onSearchClick = jest.fn();
-    const bottomSheetRef = {
-      current: { snapToIndex: jest.fn() },
-    } as unknown as React.RefObject<BottomSheet>;
+    const onFocus = jest.fn();
+    const { bottomSheetRef } = require('@/utils/refs');
+    bottomSheetRef.current.snapToIndex.mockClear();
 
     const animatedPosition: SharedValue<number> = {
       value: 0,
@@ -104,8 +150,7 @@ describe('BottomSheetComponent', () => {
     const { getByText, findByText } = render(
       <BottomSheetComponent
         onSearchClick={onSearchClick}
-        bottomSheetRef={bottomSheetRef}
-        onFocus={jest.fn()}
+        onFocus={onFocus}
         animatedPosition={animatedPosition}
       />
     );
@@ -122,6 +167,7 @@ describe('BottomSheetComponent', () => {
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
       });
+      expect(bottomSheetRef.current.snapToIndex).toHaveBeenCalledWith(1);
     });
   });
 });

@@ -6,10 +6,10 @@ import GooglePlacesInput from '@/components/GooglePlacesInput';
 import { Region } from 'react-native-maps';
 import Constants from 'expo-constants';
 import { Keyboard } from 'react-native';
+import { bottomSheetRef } from '@/utils/refs';
 
 interface BottomSheetComponentProps {
   onSearchClick: (region: Region) => void;
-  bottomSheetRef: React.RefObject<BottomSheet>;
   onFocus: () => void;
   animatedPosition: Animated.SharedValue<number>;
 }
@@ -24,7 +24,6 @@ const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
 export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
   onSearchClick,
   onFocus,
-  bottomSheetRef,
   animatedPosition,
 }) => {
   const snapPoints = useMemo(() => ['15%', '50%', '93%'], []);
@@ -44,7 +43,6 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
             longitude: data.result.geometry.location.lng.toString(),
           };
 
-          // Update map region
           const region: Region = {
             latitude: parseFloat(location.latitude),
             longitude: parseFloat(location.longitude),
@@ -71,13 +69,11 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
       animatedPosition={animatedPosition}
     >
       <BottomSheetView style={styles.content}>
-        {/* Google Places Input */}
         <GooglePlacesInput
           setSearchResults={setSearchResults}
           onFocus={onFocus}
         />
 
-        {/* Search Results */}
         <View style={styles.resultsContainer}>
           {searchResults.map((result, index) => (
             <View key={result.place_id}>
@@ -92,7 +88,6 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
                 </Text>
               </TouchableOpacity>
 
-              {/* Separator Line */}
               {index < searchResults.length - 1 && (
                 <View style={styles.separator} />
               )}
