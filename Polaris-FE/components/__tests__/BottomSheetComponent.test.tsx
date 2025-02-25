@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { BottomSheetComponent } from '@/components/BottomSheetComponent';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import BottomSheetComponent from '@/components/BottomSheetComponent';
 import { SharedValue } from 'react-native-reanimated';
 
 jest.mock('@/utils/refs', () => ({
@@ -10,6 +10,37 @@ jest.mock('@/utils/refs', () => ({
     },
   },
 }));
+
+jest.mock('@/components/GooglePlacesInput', () => {
+  return {
+    __esModule: true,
+    default: ({
+      setSearchResults,
+      onFocus,
+    }: {
+      setSearchResults: Function;
+      onFocus: Function;
+    }) => {
+      const { Text, TouchableOpacity } = require('react-native');
+      return (
+        <TouchableOpacity
+          testID="mock-google-places-input"
+          onPress={() => {
+            if (onFocus) {
+              onFocus();
+            }
+            setSearchResults([
+              { place_id: '1', description: 'Place 1' },
+              { place_id: '2', description: 'Place 2' },
+            ]);
+          }}
+        >
+          <Text>Search</Text>
+        </TouchableOpacity>
+      );
+    },
+  };
+});
 
 jest.mock('@gorhom/bottom-sheet', () => {
   const React = require('react');
@@ -29,8 +60,31 @@ jest.mock('@gorhom/bottom-sheet', () => {
 
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
-  return Reanimated;
+  return {
+    ...Reanimated,
+    SharedValue: jest.fn(() => ({
+      value: 0,
+      get: jest.fn(),
+      set: jest.fn(),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      modify: jest.fn(),
+    })),
+  };
 });
+
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () =>
+      Promise.resolve({
+        result: {
+          geometry: {
+            location: { lat: 45.5017, lng: -73.5673 },
+          },
+        },
+      }),
+  })
+) as jest.Mock;
 
 beforeAll(() => {
   jest.spyOn(console, 'error').mockImplementation(message => {
@@ -49,28 +103,71 @@ afterAll(() => {
 });
 
 describe('BottomSheetComponent', () => {
-  it('renders correctly and triggers snapToIndex on input focus', () => {
+  it('shows search results when Search is clicked', async () => {
+    const onSearchClick = jest.fn();
+    const onFocus = jest.fn();
     const animatedPosition: SharedValue<number> = {
       value: 0,
-      get: () => 0,
-      set: (newValue: number) => {
-        animatedPosition.value = newValue;
-      },
+      get: jest.fn(),
+      set: jest.fn(),
       addListener: jest.fn(),
       removeListener: jest.fn(),
       modify: jest.fn(),
     };
 
-    const { getByTestId } = render(
-      <BottomSheetComponent animatedPosition={animatedPosition} />
+    const { getByText, findByText } = render(
+      <BottomSheetComponent
+        onSearchClick={onSearchClick}
+        onFocus={onFocus}
+        animatedPosition={animatedPosition}
+      />
     );
 
-    const input = getByTestId('container-bottom-sheet-text-input');
+    fireEvent.press(getByText('Search'));
 
-    fireEvent(input, 'focus');
+    const place1 = await findByText('Place 1');
+    const place2 = await findByText('Place 2');
 
+    expect(place1).toBeTruthy();
+    expect(place2).toBeTruthy();
+  });
+
+  it('calls onSearchClick with correct coordinates and snaps bottom sheet when a place is selected', async () => {
+    const onSearchClick = jest.fn();
+    const onFocus = jest.fn();
     const { bottomSheetRef } = require('@/utils/refs');
+    bottomSheetRef.current.snapToIndex.mockClear();
 
-    expect(bottomSheetRef.current.snapToIndex).toHaveBeenCalledWith(3);
+    const animatedPosition: SharedValue<number> = {
+      value: 0,
+      get: jest.fn(),
+      set: jest.fn(),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      modify: jest.fn(),
+    };
+
+    const { getByText, findByText } = render(
+      <BottomSheetComponent
+        onSearchClick={onSearchClick}
+        onFocus={onFocus}
+        animatedPosition={animatedPosition}
+      />
+    );
+
+    fireEvent.press(getByText('Search'));
+
+    const place1 = await findByText('Place 1');
+    fireEvent.press(place1);
+
+    await waitFor(() => {
+      expect(onSearchClick).toHaveBeenCalledWith({
+        latitude: 45.5017,
+        longitude: -73.5673,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001,
+      });
+      expect(bottomSheetRef.current.snapToIndex).toHaveBeenCalledWith(1);
+    });
   });
 });

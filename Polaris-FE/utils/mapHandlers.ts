@@ -2,6 +2,7 @@ import { Region } from 'react-native-maps';
 import { SharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { MutableRefObject } from 'react';
 import MapView from 'react-native-maps';
+import { mapRef } from '@/utils/refs';
 
 export const handleCurrentLocation = (
   mapRef: MutableRefObject<MapView | null>,
@@ -17,6 +18,16 @@ export const handleCurrentLocation = (
     },
     1000
   );
+};
+
+export const handleLocation = (
+  region: Region,
+  toggleAnimation: SharedValue<number>,
+  optionsAnimation: SharedValue<number>
+) => {
+  mapRef.current?.animateToRegion(region, 1000);
+  toggleAnimation.value = withSpring(0);
+  optionsAnimation.value = withTiming(0, { duration: 300 });
 };
 
 export const handleCampusSelect = (
@@ -83,4 +94,16 @@ export const calculateBearing = (
   const θ = Math.atan2(y, x);
 
   return ((θ * 180) / Math.PI + 360) % 360;
+};
+export const handleSearchSelect = (
+  location: { latitude: number; longitude: number } | null,
+  setRegion: (region: Region) => void
+) => {
+  if (!location) return;
+  setRegion({
+    latitude: location.latitude,
+    longitude: location.longitude,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
 };

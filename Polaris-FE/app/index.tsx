@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
-import { mapRef } from '@/utils/refs';
+import { mapRef, bottomSheetRef } from '@/utils/refs';
 import { MapComponent } from '@/components/Map';
 import { BottomSheetComponent } from '@/components/BottomSheetComponent';
 import { MapButtons } from '@/components/MapButtons';
@@ -13,6 +13,7 @@ import {
   handleCurrentLocation,
   handleCampusSelect,
   handleCampusToggle,
+  handleLocation,
 } from '@/utils/mapHandlers';
 
 export default function HomeScreen() {
@@ -27,7 +28,13 @@ export default function HomeScreen() {
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <MapComponent region={region} setRegion={setRegion} />
-        <BottomSheetComponent animatedPosition={animatedPosition} />
+        <BottomSheetComponent
+          onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
+          animatedPosition={animatedPosition}
+          onSearchClick={(selectedRegion: Region) =>
+            handleLocation(selectedRegion, toggleAnimation, optionsAnimation)
+          }
+        />
         <MapButtons
           onCampusToggle={() =>
             handleCampusToggle(
