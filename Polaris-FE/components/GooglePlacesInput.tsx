@@ -58,6 +58,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         onChangeText={setQuery}
         placeholder="Search Polaris"
         placeholderTextColor="gray"
+        selectionColor="#9A2D3F"
         style={styles.input}
         onFocus={onFocus}
       />
@@ -87,9 +88,9 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     borderRadius: 10,
     fontSize: 16,
-    lineHeight: 20,
     paddingVertical: 10,
-    paddingHorizontal: 14,
+    paddingRight: 42,
+    paddingLeft: 14,
     backgroundColor: 'rgba(151, 151, 151, 0.25)',
     color: 'white',
   },
