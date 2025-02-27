@@ -26,7 +26,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   const { location } = useMapLocation();
 
   useEffect(() => {
-    if (location) {
+    if (location && query.length > 0) {
       const params = new URLSearchParams({
         input: query,
         key: GOOGLE_MAPS_API_KEY,
@@ -47,7 +47,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
     } else {
       setSearchResults([]);
     }
-  }, [query, location]);
+  }, [query]);
 
   return (
     <View style={styles.container}>
