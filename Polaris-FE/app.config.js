@@ -16,14 +16,14 @@ export default {
       },
       "config": {},
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.PolarisFE"
+      "bundleIdentifier": "com.concordia.polaris"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.PolarisFE"
+      "package": "com.concordia.polaris"
     },
     "web": {
       "bundler": "metro",

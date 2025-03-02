@@ -4,8 +4,10 @@ export interface GoogleEvent {
   location?: string;
   start?: {
     dateTime?: string;
+    date?: Date;
   };
   end?: {
     dateTime?: string;
+    date?: Date;
   };
 }
