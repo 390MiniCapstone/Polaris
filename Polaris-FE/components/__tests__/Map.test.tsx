@@ -37,7 +37,11 @@ jest.mock('@/components/Navigation/NavigationPolyline', () => ({
 jest.mock('react-native-maps', () => {
   const React = require('react');
   const { View } = require('react-native');
-  const MockMapView = (props: any) => <View {...props} />;
+  const MockMapView = React.forwardRef((props: any, ref: any) => (
+    <View {...props} ref={ref} testID="map-view">
+      {props.children}
+    </View>
+  ));
   const MockGeojson = (props: any) => <View {...props} />;
   return {
     __esModule: true,
