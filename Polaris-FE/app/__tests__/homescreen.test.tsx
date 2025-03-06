@@ -1,35 +1,53 @@
 import React from 'react';
-import { render, waitFor, screen } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 import HomeScreen from '@/app/index';
 
-jest.mock('@expo/vector-icons', () => {
+jest.mock('react-native-reanimated', () => ({
+  useSharedValue: jest
+    .fn()
+    .mockImplementation(initialValue => ({ value: initialValue })),
+}));
+
+jest.mock('@/hooks/useMapLocation', () => ({
+  useMapLocation: () => ({
+    region: {
+      latitude: 0,
+      longitude: 0,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.1,
+    },
+    setRegion: jest.fn(),
+  }),
+}));
+
+jest.mock('@/components/Map', () => {
   const React = require('react');
   const { View } = require('react-native');
-  const MockIcon = (props: any) => <View {...props} />;
   return {
-    __esModule: true,
-    Ionicons: MockIcon,
-    FontAwesome5: MockIcon,
-    MaterialIcons: MockIcon,
-    MaterialCommunityIcons: MockIcon,
+    MapComponent: () => <View testID="map-component" />,
+  };
+});
+jest.mock('@/components/BottomSheetComponent', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    BottomSheetComponent: () => <View testID="bottom-sheet" />,
+  };
+});
+jest.mock('@/components/MapButtons', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    MapButtons: () => <View testID="map-buttons" />,
   };
 });
 
-jest.mock('expo-font', () => ({
-  loadAsync: jest.fn(),
-  isLoaded: jest.fn(() => true),
-}));
+describe('HomeScreen', () => {
+  it('renders all child components', () => {
+    const { getByTestId } = render(<HomeScreen />);
 
-jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
-  return Reanimated;
-});
-
-describe('HomeScreen Minimal Test', () => {
-  it('renders without crashing and displays "Campus"', async () => {
-    render(<HomeScreen />);
-    await waitFor(() => {
-      expect(screen.getByText('Campus')).toBeTruthy();
-    });
+    expect(getByTestId('map-component')).toBeTruthy();
+    expect(getByTestId('bottom-sheet')).toBeTruthy();
+    expect(getByTestId('map-buttons')).toBeTruthy();
   });
 });

@@ -1,95 +1,137 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
+import { useMapLocation } from '@/hooks/useMapLocation';
 
 jest.mock('@/hooks/useMapLocation', () => ({
-  useMapLocation: () => ({
-    location: { latitude: 37.7749, longitude: -122.4194 },
-  }),
+  useMapLocation: jest.fn(),
 }));
 
 describe('GooglePlacesInput', () => {
-  const mockSetSearchResults = jest.fn();
-  const mockOnFocus = jest.fn();
+  const setSearchResultsMock = jest.fn();
+  const onFocusMock = jest.fn();
+  const setQueryMock = jest.fn();
+
+  const fakeLocation = { latitude: 10, longitude: 20 };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        status: 200,
-        json: () =>
-          Promise.resolve({
-            predictions: [{ description: 'New York, USA', place_id: '123' }],
-          }),
-      } as Response)
-    );
+    (useMapLocation as jest.Mock).mockReturnValue({ location: fakeLocation });
   });
 
-  it('renders correctly', () => {
-    const { getByTestId } = render(
+  test('renders correctly without clear button when query is empty', () => {
+    const { queryByTestId, queryByText } = render(
       <GooglePlacesInput
-        setSearchResults={mockSetSearchResults}
-        onFocus={mockOnFocus}
+        setSearchResults={setSearchResultsMock}
+        onFocus={onFocusMock}
+        query=""
+        setQuery={setQueryMock}
       />
     );
 
-    expect(getByTestId('places-input')).toBeTruthy();
+    const input = queryByTestId('places-input');
+    expect(input).toBeTruthy();
+
+    const clearButton = queryByText('✕');
+    expect(clearButton).toBeNull();
   });
 
-  it('updates query state on text input', async () => {
+  test('calls onFocus when the input is focused', () => {
     const { getByTestId } = render(
       <GooglePlacesInput
-        setSearchResults={mockSetSearchResults}
-        onFocus={mockOnFocus}
+        setSearchResults={setSearchResultsMock}
+        onFocus={onFocusMock}
+        query=""
+        setQuery={setQueryMock}
       />
     );
 
     const input = getByTestId('places-input');
-    fireEvent.changeText(input, 'New York');
-
-    await waitFor(() => {
-      expect(input.props.value).toBe('New York');
-    });
+    fireEvent(input, 'focus');
+    expect(onFocusMock).toHaveBeenCalled();
   });
 
-  it('clears the query when clear button is pressed', async () => {
-    const { getByTestId, findByText } = render(
+  test('displays clear button when query is non-empty and clears query when pressed', () => {
+    const { getByText } = render(
       <GooglePlacesInput
-        setSearchResults={mockSetSearchResults}
-        onFocus={mockOnFocus}
+        setSearchResults={setSearchResultsMock}
+        onFocus={onFocusMock}
+        query="test"
+        setQuery={setQueryMock}
       />
     );
 
-    const input = getByTestId('places-input');
-    fireEvent.changeText(input, 'New York');
+    const clearButton = getByText('✕');
+    expect(clearButton).toBeTruthy();
 
-    expect(input.props.value).toBe('New York');
-
-    const clearButton = await findByText('✕');
     fireEvent.press(clearButton);
-
-    await waitFor(() => {
-      expect(input.props.value).toBe('');
-    });
+    expect(setQueryMock).toHaveBeenCalledWith('');
   });
 
-  it('fetches search results when query length is greater than 2', async () => {
-    const { getByTestId } = render(
+  test('calls fetch and updates search results when query is provided and location exists', async () => {
+    const fakePredictions = [{ place_id: '1', description: 'Test Place' }];
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ predictions: fakePredictions }),
+    });
+
+    const { rerender } = render(
       <GooglePlacesInput
-        setSearchResults={mockSetSearchResults}
-        onFocus={mockOnFocus}
+        setSearchResults={setSearchResultsMock}
+        onFocus={onFocusMock}
+        query=""
+        setQuery={setQueryMock}
       />
     );
 
-    const input = getByTestId('places-input');
-    fireEvent.changeText(input, 'New York');
+    rerender(
+      <GooglePlacesInput
+        setSearchResults={setSearchResultsMock}
+        onFocus={onFocusMock}
+        query="New Query"
+        setQuery={setQueryMock}
+      />
+    );
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalled();
-      expect(mockSetSearchResults).toHaveBeenCalledWith([
-        { description: 'New York, USA', place_id: '123' },
-      ]);
+      expect(setSearchResultsMock).toHaveBeenCalledWith(fakePredictions);
+    });
+  });
+
+  test('does not call fetch and sets search results to empty array when query is empty', async () => {
+    global.fetch = jest.fn();
+
+    render(
+      <GooglePlacesInput
+        setSearchResults={setSearchResultsMock}
+        onFocus={onFocusMock}
+        query=""
+        setQuery={setQueryMock}
+      />
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(setSearchResultsMock).toHaveBeenCalledWith([]);
+    });
+  });
+
+  test('does not call fetch when location is undefined', async () => {
+    (useMapLocation as jest.Mock).mockReturnValue({ location: null });
+    global.fetch = jest.fn();
+
+    render(
+      <GooglePlacesInput
+        setSearchResults={setSearchResultsMock}
+        onFocus={onFocusMock}
+        query="Some Query"
+        setQuery={setQueryMock}
+      />
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(setSearchResultsMock).toHaveBeenCalledWith([]);
     });
   });
 });

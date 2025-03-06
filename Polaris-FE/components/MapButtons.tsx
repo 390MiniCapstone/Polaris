@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { Region } from 'react-native-maps';
 import { Downtown, Loyola } from '@/constants/mapConstants';
@@ -8,6 +8,13 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import {
+  handleCampusSelect,
+  handleCampusToggle,
+  handleCurrentLocation,
+} from '@/utils/mapHandlers';
+import { mapRef } from '@/utils/refs';
+import { useMapLocation } from '@/hooks/useMapLocation';
 
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
@@ -15,20 +22,19 @@ const AnimatedTouchableOpacity =
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 interface NavigationButtonsProps {
-  onCampusToggle: () => void;
-  onCampusSelect: (region: Region) => void;
-  onCurrentLocationPress: () => void;
   optionsAnimation: SharedValue<number>;
   animatedPosition: SharedValue<number>;
+  toggleAnimation: SharedValue<number>;
 }
 
 export const MapButtons: React.FC<NavigationButtonsProps> = ({
-  onCampusToggle,
-  onCampusSelect,
-  onCurrentLocationPress,
   optionsAnimation,
   animatedPosition,
+  toggleAnimation,
 }) => {
+  const { location } = useMapLocation();
+  const [showCampusOptions, setShowCampusOptions] = useState(false);
+
   const buttonsStyle = useAnimatedStyle(() => {
     const startFadeHeight = 200;
     const endFadeHeight = 100;
@@ -50,7 +56,6 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
     );
 
     const opacity = Math.min(upperFade, lowerFade);
-
     return {
       transform: [
         {
@@ -70,6 +75,25 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
       ],
     };
   });
+
+  const onCampusToggle = () =>
+    handleCampusToggle(
+      showCampusOptions,
+      setShowCampusOptions,
+      toggleAnimation,
+      optionsAnimation
+    );
+
+  const onCampusSelect = (selectedRegion: Region) =>
+    handleCampusSelect(
+      selectedRegion,
+      mapRef,
+      setShowCampusOptions,
+      toggleAnimation,
+      optionsAnimation
+    );
+
+  const onCurrentLocationPress = () => handleCurrentLocation(mapRef, location);
 
   return (
     <AnimatedView

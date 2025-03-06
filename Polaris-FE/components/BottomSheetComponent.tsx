@@ -3,14 +3,13 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
-import { Region } from 'react-native-maps';
 import Constants from 'expo-constants';
 import { Keyboard } from 'react-native';
 import { bottomSheetRef } from '@/utils/refs';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
+import { inputRef } from '@/utils/refs';
 
 interface BottomSheetComponentProps {
-  onSearchClick: (region: Region) => void;
-  onFocus: () => void;
   animatedPosition: Animated.SharedValue<number>;
 }
 
@@ -22,12 +21,12 @@ const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
   ?.googleMapsApiKey as string;
 
 export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
-  onSearchClick,
-  onFocus,
   animatedPosition,
 }) => {
   const snapPoints = useMemo(() => ['15%', '50%', '93%'], []);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [query, setQuery] = useState('');
+  const { startNavigationToDestination } = useNavigation();
 
   const handleLocationSelect = (placeId: string, description: string) => {
     Keyboard.dismiss();
@@ -38,22 +37,14 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
       .then(data => {
         if (data.result) {
           const location = {
-            name: description,
-            latitude: data.result.geometry.location.lat.toString(),
-            longitude: data.result.geometry.location.lng.toString(),
-          };
-
-          const region: Region = {
-            latitude: parseFloat(location.latitude),
-            longitude: parseFloat(location.longitude),
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001,
+            latitude: data.result.geometry.location.lat,
+            longitude: data.result.geometry.location.lng,
           };
 
           setSearchResults([]);
-          onSearchClick(region);
-
-          bottomSheetRef.current?.snapToIndex(1);
+          inputRef.current?.blur();
+          setQuery('');
+          startNavigationToDestination(location);
         }
       })
       .catch(error => console.error(error));
@@ -71,9 +62,10 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
       <BottomSheetView style={styles.content}>
         <GooglePlacesInput
           setSearchResults={setSearchResults}
-          onFocus={onFocus}
+          onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
+          query={query}
+          setQuery={setQuery}
         />
-
         <View style={styles.resultsContainer}>
           {searchResults.map((result, index) => (
             <View key={result.place_id}>
