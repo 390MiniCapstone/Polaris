@@ -1,21 +1,15 @@
 import React from 'react';
-import { LatLng, Marker, Polyline } from 'react-native-maps';
+import { Marker, Polyline } from 'react-native-maps';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
-interface NavigationPolylineProps {
-  navigationState: string;
-  destination: { latitude: number; longitude: number };
-  travelMode: string;
-  clippedPolyline: LatLng[] | null;
-  snappedPoint: LatLng | null;
-}
-
-export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
-  navigationState,
-  destination,
-  travelMode,
-  clippedPolyline,
-  snappedPoint,
-}) => {
+export const NavigationPolyline: React.FC = () => {
+  const {
+    travelMode,
+    destination,
+    snappedPoint,
+    clippedPolyline,
+    navigationState,
+  } = useNavigation();
   return (
     <>
       {(navigationState === 'planning' || navigationState === 'navigating') &&

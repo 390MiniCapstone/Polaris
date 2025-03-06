@@ -1,22 +1,15 @@
-import React, { useRef, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Keyboard,
-} from 'react-native';
-import { BottomSheetComponent } from '@/components/BottomSheetComponent/BottomSheetComponent';
-import { Region } from 'react-native-maps';
-import Constants from 'expo-constants';
-import GooglePlacesInput from '@/components/GooglePlacesInput';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
 import Animated from 'react-native-reanimated';
-import NextClassCard from '../NextClassComponent/NextClassCard';
+import GooglePlacesInput from '@/components/GooglePlacesInput';
+import Constants from 'expo-constants';
 import { bottomSheetRef } from '@/utils/refs';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
+import { inputRef } from '@/utils/refs';
+import { BottomSheetComponent } from "@/components/BottomSheetComponent/BottomSheetComponent";
+import NextClassCard from "@/components/NextClassComponent/NextClassCard";
 
 interface OutdoorBottomSheetProps {
-  onSearchClick: (region: Region) => void;
-  onFocus: () => void;
   animatedPosition: Animated.SharedValue<number>;
 }
 
@@ -29,11 +22,11 @@ const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
   ?.googleMapsApiKey as string;
 
 export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
-  onSearchClick,
-  onFocus,
   animatedPosition,
 }) => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [query, setQuery] = useState('');
+  const { startNavigationToDestination } = useNavigation();
 
   const handleLocationSelect = (placeId: string, description: string) => {
     Keyboard.dismiss();
@@ -43,15 +36,15 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
       .then(res => res.json())
       .then(data => {
         if (data.result) {
-          const region: Region = {
+          const location = {
             latitude: data.result.geometry.location.lat,
             longitude: data.result.geometry.location.lng,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001,
           };
+
           setSearchResults([]);
-          onSearchClick(region);
-          bottomSheetRef.current?.snapToIndex(1);
+          inputRef.current?.blur();
+          setQuery('');
+          startNavigationToDestination(location);
         }
       })
       .catch(error => console.error(error));
@@ -65,8 +58,11 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
       <View style={styles.container}>
         <GooglePlacesInput
           setSearchResults={setSearchResults}
-          onFocus={onFocus}
+          onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
+          query={query}
+          setQuery={setQuery}
         />
+
         <View style={styles.resultsContainer}>
           {searchResults.map((result, index) => (
             <View key={result.place_id}>
@@ -80,6 +76,7 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
                   {result.description}
                 </Text>
               </TouchableOpacity>
+
               {index < searchResults.length - 1 && (
                 <View style={styles.separator} />
               )}
@@ -117,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OutdoorBottomSheetComponent;
+export default BottomSheetComponent;

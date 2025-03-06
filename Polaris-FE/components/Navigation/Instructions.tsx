@@ -1,14 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
-interface InstructionsProps {
-  instruction: string;
-}
-
-export const Instructions: React.FC<InstructionsProps> = ({ instruction }) => {
+export const Instructions: React.FC = () => {
+  const { nextInstruction } = useNavigation();
   return (
     <View style={styles.container}>
-      <Text style={styles.instruction}>{instruction}</Text>
+      <Text style={styles.instruction}>{nextInstruction}</Text>
     </View>
   );
 };
