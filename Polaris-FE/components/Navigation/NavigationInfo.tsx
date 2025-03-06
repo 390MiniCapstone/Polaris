@@ -5,47 +5,36 @@ import { handleCurrentLocation } from '@/utils/mapHandlers';
 import { openTransitInMaps } from '@/utils/navigationUtils';
 import { mapRef } from '@/utils/refs';
 import { useMapLocation } from '@/hooks/useMapLocation';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
-interface NavigationInfoProps {
-  duration: number;
-  distance: number;
-  isNavigating: boolean;
-  is3d: boolean;
-  travelMode: string;
-  destination: { latitude: number; longitude: number };
-  onCancel: () => void;
-  onStartNavigation: () => void;
-  onCurrentLocation?: () => void;
-  updateIs3d?: (value: ((prevState: boolean) => boolean) | boolean) => void;
-}
-
-export const NavigationInfo: React.FC<NavigationInfoProps> = ({
-  duration,
-  distance,
-  isNavigating,
-  onCancel,
-  onStartNavigation,
-  is3d,
-  travelMode,
-  updateIs3d,
-  destination,
-}) => {
+export const NavigationInfo: React.FC = () => {
   const { location } = useMapLocation();
+  const {
+    travelMode,
+    is3d,
+    setIs3d,
+    remainingTime,
+    remainingDistance,
+    destination,
+    cancelNavigation,
+    handleStartNavigation,
+    navigationState,
+  } = useNavigation();
 
   const handlePress = () => {
-    if (isNavigating) {
+    if (navigationState === 'navigating') {
       if (is3d) {
         handleCurrentLocation(mapRef, location);
-        updateIs3d && updateIs3d(false);
+        setIs3d(false);
       } else {
-        onStartNavigation();
-        updateIs3d && updateIs3d(true);
+        handleStartNavigation();
+        setIs3d(true);
       }
     } else {
       if (travelMode === 'TRANSIT' && location) {
         openTransitInMaps(location, destination);
       } else {
-        onStartNavigation();
+        handleStartNavigation();
       }
     }
   };
@@ -55,25 +44,31 @@ export const NavigationInfo: React.FC<NavigationInfoProps> = ({
       <TouchableOpacity
         testID="cancel-button"
         style={styles.cancelButton}
-        onPress={onCancel}
+        onPress={cancelNavigation}
       >
         <FontAwesome5 name="times" size={20} color="white" />
       </TouchableOpacity>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.timeText}>{Math.ceil(duration / 60)} Minutes</Text>
+        <Text style={styles.timeText}>
+          {Math.ceil(remainingTime / 60)} Minutes
+        </Text>
         <Text style={styles.timeText}>·</Text>
         <Text style={styles.distanceText}>
-          {(distance / 1000).toFixed(1)} km
+          {(remainingDistance / 1000).toFixed(1)} km
         </Text>
       </View>
 
       <TouchableOpacity
         testID="action-button"
-        style={isNavigating ? styles.currentButton : styles.goButton}
+        style={
+          navigationState === 'navigating'
+            ? styles.currentButton
+            : styles.goButton
+        }
         onPress={handlePress}
       >
-        {isNavigating ? (
+        {navigationState === 'navigating' ? (
           <FontAwesome5 name="location-arrow" size={16} color="white" />
         ) : (
           <Text style={styles.goButtonText}>GO</Text>

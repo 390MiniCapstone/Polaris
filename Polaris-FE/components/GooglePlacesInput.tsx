@@ -1,8 +1,9 @@
 import Constants from 'expo-constants';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useMapLocation } from '@/hooks/useMapLocation';
+import { inputRef } from '@/utils/refs';
 
 interface Prediction {
   place_id: string;
@@ -12,6 +13,8 @@ interface Prediction {
 interface GooglePlacesInputProps {
   setSearchResults: (results: Prediction[]) => void;
   onFocus: () => void;
+  query: string;
+  setQuery: (query: string) => void;
 }
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
@@ -20,9 +23,9 @@ const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setSearchResults,
   onFocus,
+  query,
+  setQuery,
 }) => {
-  const [query, setQuery] = useState('');
-  const inputRef = useRef<React.ElementRef<typeof BottomSheetTextInput>>(null);
   const { location } = useMapLocation();
 
   useEffect(() => {

@@ -1,173 +1,128 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import {
+  render,
+  fireEvent,
+  waitFor,
+  RenderAPI,
+} from '@testing-library/react-native';
 import BottomSheetComponent from '@/components/BottomSheetComponent';
-import { SharedValue } from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
 
-jest.mock('@/utils/refs', () => ({
-  bottomSheetRef: {
-    current: {
-      snapToIndex: jest.fn(),
-    },
-  },
-}));
+const animatedPosition: SharedValue<number> = {
+  value: 0,
+  get: jest.fn(),
+  set: jest.fn(),
+  addListener: jest.fn(),
+  removeListener: jest.fn(),
+  modify: jest.fn(),
+};
+
+const mockStartNavigationToDestination = jest.fn();
 
 jest.mock('@/components/GooglePlacesInput', () => {
-  return {
-    __esModule: true,
-    default: ({
-      setSearchResults,
-      onFocus,
-    }: {
-      setSearchResults: Function;
-      onFocus: Function;
-    }) => {
-      const { Text, TouchableOpacity } = require('react-native');
-      return (
-        <TouchableOpacity
-          testID="mock-google-places-input"
-          onPress={() => {
-            if (onFocus) {
-              onFocus();
-            }
-            setSearchResults([
-              { place_id: '1', description: 'Place 1' },
-              { place_id: '2', description: 'Place 2' },
-            ]);
-          }}
-        >
-          <Text>Search</Text>
-        </TouchableOpacity>
-      );
-    },
+  const React = require('react');
+  const { useEffect } = React;
+  const { View } = require('react-native');
+
+  const GooglePlacesInput = (props: {
+    setSearchResults: (
+      results: Array<{ place_id: string; description: string }>
+    ) => void;
+    onFocus?: () => void;
+    query?: string;
+    setQuery?: (q: string) => void;
+  }) => {
+    useEffect(() => {
+      props.setSearchResults([
+        { place_id: '123', description: 'Test Location' },
+      ]);
+    }, [props.setSearchResults]);
+    return <View testID="GooglePlacesInput" />;
   };
+
+  return GooglePlacesInput;
 });
 
 jest.mock('@gorhom/bottom-sheet', () => {
   const React = require('react');
-  const { View, TextInput } = require('react-native');
-  const BottomSheet = (props: any) => (
-    <View testID="bottom-sheet">{props.children}</View>
-  );
-  const BottomSheetTextInput = (props: any) => <TextInput {...props} />;
-  const BottomSheetView = (props: any) => <View {...props} />;
+  const { View } = require('react-native');
   return {
     __esModule: true,
-    default: BottomSheet,
-    BottomSheetTextInput,
-    BottomSheetView,
+    default: React.forwardRef((props: any, ref: React.Ref<any>) => {
+      return <View {...props} ref={ref} />;
+    }),
+    BottomSheetView: View,
   };
 });
+
+jest.mock('@/utils/refs', () => ({
+  bottomSheetRef: {
+    current: { snapToIndex: jest.fn() },
+  },
+  inputRef: {
+    current: { blur: jest.fn() },
+  },
+}));
+
+jest.mock('@/contexts/NavigationContext/NavigationContext', () => ({
+  useNavigation: () => ({
+    startNavigationToDestination: mockStartNavigationToDestination,
+  }),
+}));
 
 jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
   return {
-    ...Reanimated,
-    SharedValue: jest.fn(() => ({
-      value: 0,
-      get: jest.fn(),
-      set: jest.fn(),
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      modify: jest.fn(),
-    })),
+    __esModule: true,
+    default: {},
   };
-});
-
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () =>
-      Promise.resolve({
-        result: {
-          geometry: {
-            location: { lat: 45.5017, lng: -73.5673 },
-          },
-        },
-      }),
-  })
-) as jest.Mock;
-
-beforeAll(() => {
-  jest.spyOn(console, 'error').mockImplementation(message => {
-    if (
-      typeof message === 'string' &&
-      message.includes('Function components cannot be given refs')
-    ) {
-      return;
-    }
-    console.error(message);
-  });
-});
-
-afterAll(() => {
-  (console.error as jest.Mock).mockRestore();
 });
 
 describe('BottomSheetComponent', () => {
-  it('shows search results when Search is clicked', async () => {
-    const onSearchClick = jest.fn();
-    const onFocus = jest.fn();
-    const animatedPosition: SharedValue<number> = {
-      value: 0,
-      get: jest.fn(),
-      set: jest.fn(),
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      modify: jest.fn(),
-    };
-
-    const { getByText, findByText } = render(
-      <BottomSheetComponent
-        onSearchClick={onSearchClick}
-        onFocus={onFocus}
-        animatedPosition={animatedPosition}
-      />
-    );
-
-    fireEvent.press(getByText('Search'));
-
-    const place1 = await findByText('Place 1');
-    const place2 = await findByText('Place 2');
-
-    expect(place1).toBeTruthy();
-    expect(place2).toBeTruthy();
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('calls onSearchClick with correct coordinates and snaps bottom sheet when a place is selected', async () => {
-    const onSearchClick = jest.fn();
-    const onFocus = jest.fn();
-    const { bottomSheetRef } = require('@/utils/refs');
-    bottomSheetRef.current.snapToIndex.mockClear();
+  it('renders search results provided by the GooglePlacesInput mock', async () => {
+    const rendered: RenderAPI = render(
+      <BottomSheetComponent animatedPosition={animatedPosition} />
+    );
+    const searchResult = await waitFor(() =>
+      rendered.getByText('Test Location')
+    );
+    expect(searchResult).toBeTruthy();
+  });
 
-    const animatedPosition: SharedValue<number> = {
-      value: 0,
-      get: jest.fn(),
-      set: jest.fn(),
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      modify: jest.fn(),
-    };
+  it('handles location selection and navigates to destination', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: () =>
+        Promise.resolve({
+          result: {
+            geometry: { location: { lat: 10, lng: 20 } },
+          },
+        }),
+    }) as jest.Mock;
 
-    const { getByText, findByText } = render(
-      <BottomSheetComponent
-        onSearchClick={onSearchClick}
-        onFocus={onFocus}
-        animatedPosition={animatedPosition}
-      />
+    const rendered: RenderAPI = render(
+      <BottomSheetComponent animatedPosition={animatedPosition} />
     );
 
-    fireEvent.press(getByText('Search'));
+    const searchResult = await waitFor(() =>
+      rendered.getByText('Test Location')
+    );
 
-    const place1 = await findByText('Place 1');
-    fireEvent.press(place1);
+    fireEvent.press(searchResult);
 
     await waitFor(() => {
-      expect(onSearchClick).toHaveBeenCalledWith({
-        latitude: 45.5017,
-        longitude: -73.5673,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('place_id=123')
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockStartNavigationToDestination).toHaveBeenCalledWith({
+        latitude: 10,
+        longitude: 20,
       });
-      expect(bottomSheetRef.current.snapToIndex).toHaveBeenCalledWith(1);
     });
   });
 });
