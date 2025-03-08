@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, waitFor, screen } from '@testing-library/react-native';
 import HomeScreen from '@/app/index';
+import { BuildingProvider } from '../BuildingContext';
 
 jest.mock('@expo/vector-icons', () => {
   const React = require('react');
@@ -27,7 +28,12 @@ jest.mock('react-native-reanimated', () => {
 
 describe('HomeScreen Minimal Test', () => {
   it('renders without crashing and displays "Campus"', async () => {
-    render(<HomeScreen />);
+    render(
+      <BuildingProvider>
+        <HomeScreen />
+      </BuildingProvider>
+    );
+
     await waitFor(() => {
       expect(screen.getByText('Campus')).toBeTruthy();
     });
