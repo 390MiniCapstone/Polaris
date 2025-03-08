@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { View, Button, StyleSheet, SafeAreaView } from 'react-native';
+import { useState } from 'react';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 
 import PinchPanContainer from '@/components/PinchPanContainer/PinchPanContainer';
 import { FLOOR_PLANS } from '@/constants/floorPlans';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { IndoorBottomSheetComponent } from '@/components/BottomSheetComponent/IndoorBottomSheetComponent';
+import { useBuildingContext } from './BuildingContext';
 
 const Indoor = () => {
-  const DEFAULT_FLOOR = FLOOR_PLANS.H8_FLOOR_PLAN;
+  const { indoorBuilding } = useBuildingContext();
+  const DEFAULT_FLOOR = indoorBuilding
+    ? FLOOR_PLANS[indoorBuilding]?.[0]
+    : null;
   const [floorPlan, setFloorPlan] = useState(DEFAULT_FLOOR);
-
+  console.log('testing', indoorBuilding);
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
@@ -19,6 +23,7 @@ const Indoor = () => {
         <IndoorBottomSheetComponent
           floorPlan={floorPlan}
           selectFloor={setFloorPlan}
+          indoorBuilding={indoorBuilding}
         />
       </SafeAreaView>
     </GestureHandlerRootView>

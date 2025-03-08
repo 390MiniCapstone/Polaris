@@ -10,11 +10,13 @@ import { FloorSelector } from '@/components/FloorSelector/FloorSelector';
 type FloorSelectorProps = {
   floorPlan: FloorPlanObject;
   selectFloor: (floorPlan: FloorPlanObject) => void;
+  indoorBuilding: string;
 };
 
 export const IndoorBottomSheetComponent: React.FC<FloorSelectorProps> = ({
   floorPlan,
   selectFloor,
+  indoorBuilding,
 }) => {
   const bottomSheetRef = useRef<any>(null);
   const router = useRouter();
@@ -26,7 +28,11 @@ export const IndoorBottomSheetComponent: React.FC<FloorSelectorProps> = ({
       animatedPosition={animatedPosition}
     >
       <View style={styles.container}>
-        <FloorSelector floorPlan={floorPlan} selectFloor={selectFloor} />
+        <FloorSelector
+          floorPlan={floorPlan}
+          selectFloor={selectFloor}
+          indoorBuilding={indoorBuilding}
+        />
         <Pressable style={styles.icon} onPress={() => router.back()}>
           <Ionicons name="school-sharp" size={24} color="white" />
         </Pressable>

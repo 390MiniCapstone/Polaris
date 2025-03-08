@@ -3,7 +3,7 @@ import { Gesture } from 'react-native-gesture-handler';
 
 export const useZoomAndPan = (
   minZoom = 1,
-  maxZoom = 1,
+  maxZoom = 3,
   panSpeedMultiplier = 0.5
 ) => {
   const zoomLevel = useSharedValue(minZoom);

@@ -1,32 +1,24 @@
-import React, { useRef, useState } from 'react';
-import MapView, { Region } from 'react-native-maps';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
-import React, { useState } from 'react';
-import { Region } from 'react-native-maps';
+import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
 import { mapRef, bottomSheetRef } from '@/utils/refs';
 import { MapComponent } from '@/components/Map';
-import { BottomSheetComponent } from '@/components/BottomSheetComponent/BottomSheetComponent';
-import { NavigationButtons } from '@/components/NavigationButtons';
-import { BottomSheetComponent } from '@/components/BottomSheetComponent';
+import { OutdoorBottomSheetComponent } from '@/components/BottomSheetComponent/OutdoorBottomSheetComponent';
 import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Region } from 'react-native-maps';
 import {
   handleCurrentLocation,
   handleCampusSelect,
   handleCampusToggle,
   handleLocation,
 } from '@/utils/mapHandlers';
-import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const { location, region, setRegion } = useMapLocation();
   const [showCampusOptions, setShowCampusOptions] = useState(false);
-  const router = useRouter();
 
   const toggleAnimation = useSharedValue(0);
   const optionsAnimation = useSharedValue(0);
@@ -36,7 +28,7 @@ export default function HomeScreen() {
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <MapComponent region={region} setRegion={setRegion} />
-        <BottomSheetComponent
+        <OutdoorBottomSheetComponent
           onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
           animatedPosition={animatedPosition}
           onSearchClick={(selectedRegion: Region) =>
