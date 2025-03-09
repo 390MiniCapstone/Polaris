@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import MapView, {Geojson, Region} from 'react-native-maps';
-import {Button, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {downtownBuildings, loyolaBuildings} from '@/constants/buildings';
 import {Buildings} from './Buildings/Buildings';
 import {colorBlindMapStyle} from '@/constants/colorBlindMapStyle';
@@ -9,15 +9,15 @@ interface MapComponentProps {
     mapRef: React.RefObject<MapView>;
     region: Region | undefined;
     setRegion: (region: Region) => void;
+    colorblindTheme: string;
 }
 
 export const MapComponent: React.FC<MapComponentProps> = ({
                                                               mapRef,
                                                               region,
                                                               setRegion,
+                                                              colorblindTheme,
                                                           }) => {
-    const [colorBlindMode, setColorBlindMode] = useState(false);
-
     return (
         <View style={styles.container}>
             <MapView
@@ -28,7 +28,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 onRegionChangeComplete={setRegion}
                 showsUserLocation
                 showsCompass
-                customMapStyle={colorBlindMode ? colorBlindMapStyle.deuteranopia : []}
+                customMapStyle={colorblindTheme && colorBlindMapStyle[colorblindTheme] ? colorBlindMapStyle[colorblindTheme] : []}
                 tintColor="#A83B4A"
             >
                 <Geojson
@@ -41,17 +41,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 />
                 <Buildings/>
             </MapView>
-
-            <View style={styles.buttonContainer}>
-                <Button
-                    title={
-                        colorBlindMode
-                            ? 'Disable Colorblind Mode'
-                            : 'Enable Colorblind Mode'
-                    }
-                    onPress={() => setColorBlindMode(!colorBlindMode)}
-                />
-            </View>
         </View>
     );
 };
