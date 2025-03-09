@@ -7,6 +7,7 @@ import { Region } from 'react-native-maps';
 import Constants from 'expo-constants';
 import { Keyboard } from 'react-native';
 import { bottomSheetRef } from '@/utils/refs';
+import NextClassCard from './NextClassComponent/NextClassCard';
 
 interface BottomSheetComponentProps {
   onSearchClick: (region: Region) => void;
@@ -94,6 +95,7 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
             </View>
           ))}
         </View>
+        <NextClassCard />
       </BottomSheetView>
     </BottomSheet>
   );

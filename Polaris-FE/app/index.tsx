@@ -15,6 +15,7 @@ import {
   handleCampusToggle,
   handleLocation,
 } from '@/utils/mapHandlers';
+import useClarity from '@/hooks/useClarity';
 
 export default function HomeScreen() {
   const { location, region, setRegion } = useMapLocation();
@@ -23,7 +24,7 @@ export default function HomeScreen() {
   const toggleAnimation = useSharedValue(0);
   const optionsAnimation = useSharedValue(0);
   const animatedPosition = useSharedValue(0);
-
+  useClarity();
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>

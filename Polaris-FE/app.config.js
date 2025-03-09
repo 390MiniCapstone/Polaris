@@ -16,14 +16,14 @@ export default {
       },
       "config": {},
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.PolarisFE"
+      "bundleIdentifier": "com.concordia.polaris"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.PolarisFE"
+      "package": "com.concordia.polaris"
     },
     "web": {
       "bundler": "metro",
@@ -55,7 +55,9 @@ export default {
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID,
       iosClientId: process.env.IOS_CLIENT_ID,
       androidClientId: process.env.ANDROID_CLIENT_ID,
-      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+      testEnv: process.env.TEST_ENV,
+      msClarityApiKey: process.env.MS_CLARITY_API_KEY
     }
   }
 }
