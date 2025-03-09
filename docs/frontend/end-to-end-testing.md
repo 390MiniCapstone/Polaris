@@ -1,7 +1,7 @@
 # End-to-End Testing Polaris App with Maestro
-
-
-
+## 1. Global Requirements
+- Java.
+- Node.js version 22.14 or more.
 ## 1. Android Configuration
 
 ### 1. Requirements
@@ -9,65 +9,34 @@
 - Java
 - Android Studio
 
-Configuring the `ANDROID_HOME`
-### 1.1 Windows
-
-
-
-### 1.2 Linux & MacOS
-
-
+(more to come later)
 
 ## 2. IOS Configuration
 
+- XCode 14 or higher
+- Mac Operating System
 
-## 2. Setting up Maestro
-
-### 2.1 Installation
-
-For MacOS & Linux Operating Systems that already have installed SDKMAN library for managing Java versions, you can install it using the followign command:
-
+### 2.1 Install Maestro
+Using the `brew` package library, you can use the following command:
 ```bash
-sdk install maestro
+brew install maestro
 ```
 
-Maestro requires that a `JAVA_HOME` environment variable is setup.
+### 2.2 Running Maestro on IOS Simulator
+Open one terminal running the native build code:
 
-### 
-Make sure that `ANDROID_HOME` is set to the right path. Make sure to have the platform-tools path in the `PATH` environment variable.
+```bash
+cd Polaris-FE/
+npm run ios 
+```
 
-### 2.1.1 Setting up Required Environment Variables in Linux & MacOS
-
-
-
-### 2.1.2 Setting up Required Environment Variables in Windows
-
-
-
-### 2.2 Running Maestro
-
-For this step, the application needs to be running in emulator mode. Using your phone for android may be possible but was not tested yet (please edit the docs if you have found that it works too).
-
-The application needs to be physically installed on the phone, therefore running the following will get the server started properly:
+Open a second terminal to run the maestro test:
 
 ```bash
 cd Polaris-FE
-npm run android
+maestro test maestro/93-enable-easy-campus-switching.yml
 ```
 
-Or if you are testing on an IOS emulator/device:
-
-```bash
-cd Polaris-FE
-npm run ios
-```
-
-**<ins>Note</ins>**: The first time running this command will take a long time. Every subsequent times will be much faster.
 
 
-Open a new terminal, and run the maestro test using the following command:
-
-```
-maestro test ./maestro/maestro.yaml
-```
 
