@@ -56,7 +56,7 @@ export default {
       iosClientId: process.env.IOS_CLIENT_ID,
       androidClientId: process.env.ANDROID_CLIENT_ID,
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-      maestroTest: process.env.MAESTRO_TEST,
+      testEnv: process.env.TEST_ENV,
       msClarityApiKey: process.env.MS_CLARITY_API_KEY
     }
   }

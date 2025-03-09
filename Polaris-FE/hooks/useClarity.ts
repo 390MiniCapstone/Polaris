@@ -11,8 +11,8 @@ const useClarity = () => {
   useEffect(() => {
     const execEnv = Constants.executionEnvironment;
     const msClarityApiKey = Constants.expoConfig?.extra?.msClarityApiKey;
-    const maestroTest = Constants.expoConfig?.extra?.maestroTest;
-    if (execEnv == 'bare' && !maestroTest) {
+    const testEnv = Constants.expoConfig?.extra?.testEnv;
+    if (execEnv == 'bare' && !testEnv) {
       const Clarity = require('@microsoft/react-native-clarity') as {
         initialize: (key: string) => void;
       };
