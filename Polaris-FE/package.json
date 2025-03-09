@@ -24,11 +24,6 @@
       "<rootDir>/jest-setup.ts"
     ],
     "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/**/*.test.{js,jsx,ts,tsx}",
-      "!src/**/__tests__/**"
-    ],
     "coverageReporters": [
       "json",
       "lcov",
