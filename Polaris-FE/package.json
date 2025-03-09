@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "expo start",
+    "start:tunnel": "expo start --tunnel",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -21,12 +22,20 @@
     "preset": "jest-expo",
     "setupFilesAfterEnv": [
       "<rootDir>/jest-setup.ts"
-    ]
+    ],
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text"
+    ],
+    "coverageDirectory": "coverage"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@gorhom/bottom-sheet": "^5.0.6",
     "@mapbox/polyline": "^1.2.1",
+    "@microsoft/react-native-clarity": "^4.1.8",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-community/geolocation": "^3.4.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
