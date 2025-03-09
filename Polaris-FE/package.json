@@ -10,19 +10,30 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "test:coverage":"jest --coverage",
+    "test:coverage": "jest --coverage",
     "test:ci": "jest",
     "lint": "eslint . --config eslint.config.js",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
-    "prepare": "cd .. && husky",
-    "test:coverage": "jest --coverage"
+    "prepare": "cd .. && husky"
   },
   "jest": {
     "preset": "jest-expo",
     "setupFilesAfterEnv": [
       "<rootDir>/jest-setup.ts"
-    ]
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.test.{js,jsx,ts,tsx}",
+      "!src/**/__tests__/**"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text"
+    ],
+    "coverageDirectory": "coverage"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
