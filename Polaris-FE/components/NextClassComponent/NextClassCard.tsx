@@ -136,6 +136,8 @@ const NextClassCard = () => {
           style={styles.signInButton}
           labelStyle={styles.signInText}
           onPress={() => promptAsync()}
+          testID="google-sign-in"
+          accessibilityLabel="google-sign-in"
         >
           <FontAwesome
             name="google"

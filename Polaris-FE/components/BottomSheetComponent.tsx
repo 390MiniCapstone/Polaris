@@ -68,6 +68,7 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
       backgroundStyle={styles.bottomSheet}
       handleIndicatorStyle={styles.handleIndicator}
       animatedPosition={animatedPosition}
+      accessibilityLabel="bottom-sheet"
     >
       <BottomSheetView style={styles.content}>
         <GooglePlacesInput

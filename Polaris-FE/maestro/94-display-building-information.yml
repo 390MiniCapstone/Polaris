@@ -1,0 +1,32 @@
+appId: com.concordia.polaris
+
+---
+
+- launchApp
+- assertVisible: "Campus"
+- tapOn: "Campus"
+- assertVisible: "Loyola"
+- assertVisible: "Downtown"
+- tapOn: "Loyola"
+- assertVisible: "GE Building, Centre for Structural and Functional Genomics - 7141 Sherbrooke\
+    \ W"
+- tapOn: "GE Building, Centre for Structural and Functional Genomics - 7141 Sherbrooke\
+    \ W"
+- assertVisible: "GE Building"
+- assertVisible: "Centre for Structural and Functional Genomics - 7141 Sherbrooke\
+    \ W"
+- assertVisible: "TB Building, TB Annex - 7075 Terrebonne"
+- tapOn: "TB Building, TB Annex - 7075 Terrebonne"
+- assertVisible: "TA Building"
+- tapOn: "Terrebonne Building - 7079 Terrebonne"
+- tapOn: "Campus"
+- tapOn: "Downtown"
+- assertVisible: "LC Building, LC Building - 1426 Bishop Street"
+- tapOn: "LC Building, LC Building - 1426 Bishop Street"
+- assertVisible: "LD Building"
+- assertVisible: "LD Building - 1424 Bishop Street"
+- assertVisible: "CL Building, CL Annex - 1665 Ste-Catherine W"
+- tapOn: "CL Building, CL Annex - 1665 Ste-Catherine W"
+- assertVisible: "CL Building"
+- assertVisible: "CL Annex - 1665 Ste-Catherine W"
+

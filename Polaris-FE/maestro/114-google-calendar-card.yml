@@ -1,0 +1,56 @@
+# Requires to delete app prior to run the test!
+appId: com.concordia.polaris
+
+---
+
+- launchApp
+- assertVisible: "Campus"
+- swipe:
+    on: "bottom-sheet"
+    direction: "up"
+    duration: 600
+- tapOn:
+    point: 50%,24%
+- tapOn: Continue
+- tapOn:
+    point: 50%,43%
+- tapOn: Continue
+- tapOn: Continue
+- swipe:
+    start: 50%, 90%
+    end: 50%, 40 %
+    duration: 600
+- tapOn: Continue
+- tapOn:
+    point: 32%,29%
+- tapOn:
+    point: 36%,31%
+  
+# # Test funcitonality of the Campus button
+# - assertVisible: "Downtown"
+# - assertVisible: "Loyola"
+# - assertVisible: "Campus"
+# # Close Campus Button
+# - tapOn: "Campus"
+# - assertVisible: "Campus"
+# - assertNotVisible: "Loyola"
+# - assertNotVisible: "Downtown"
+# # Head to Downtown
+# - tapOn: "Campus"
+# - assertVisible: "Downtown"
+# - assertVisible: "Loyola"
+# - assertVisible: "Campus"
+# - tapOn: "Downtown"
+# - assertVisible: "Campus"
+# - assertNotVisible: "Loyola"
+# - assertNotVisible: "Downtown"
+
+# # Head to Loyola
+# - tapOn: "Campus"
+# - assertVisible: "Downtown"
+# - assertVisible: "Loyola"
+# - assertVisible: "Campus"
+# - tapOn: "Loyola"
+# - assertVisible: "Campus"
+# - assertNotVisible: "Loyola"
+# - assertNotVisible: "Downtown"

@@ -106,6 +106,7 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
       </View>
       <AnimatedTouchableOpacity
         testID="button-current-location"
+        accessibilityLabel="button-current-location"
         style={styles.currentButton}
         onPress={onCurrentLocationPress}
       >

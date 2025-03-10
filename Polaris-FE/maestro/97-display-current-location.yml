@@ -1,0 +1,15 @@
+# Requires location to work
+appId: com.concordia.polaris
+
+---
+
+- launchApp
+- assertVisible: "Campus"
+- assertVisible: button-current-location
+- tapOn: button-current-location
+- tapOn: "Campus"
+- tapOn: "Loyola"
+- tapOn: "button-current-location"
+- tapOn: "Campus"
+- tapOn: "Downtown"
+- tapOn: "button-current-location"
