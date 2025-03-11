@@ -74,7 +74,9 @@ jobs:
             -Dsonar.projectKey=390MiniCapstone_Polaris \
             -Dsonar.organization=390minicapstone \
             -Dsonar.sources=. \
-            -Dsonar.exclusions=node_modules/**,dist/**,build/** \
+            -Dsonar.exclusions=**/__tests__/**, **/*.test.tsx, **/*.spec.tsx, node_modules/**, dist/**, build/** \
+            -Dsonar.coverage.exclusions=**/__mocks__/**, **/scripts/**, **/jest-setup.ts, **/eslint.config.js \
+            -Dsonar.cpd.exclusions=constants/**, **/__mocks__/** \
             -Dsonar.javascript.lcov.reportPaths=../lcov.info \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN

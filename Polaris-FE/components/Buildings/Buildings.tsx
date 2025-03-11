@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Marker } from 'react-native-maps';
 import { BUILDING_INFO, Building } from '@/constants/buildingInfo';
 import { handleCalloutPress } from './utils';

@@ -12,6 +12,7 @@ import Constants from 'expo-constants';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import Animated from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
+import NextClassCard from '../NextClassComponent/NextClassCard';
 
 interface OutdoorBottomSheetProps {
   onSearchClick: (region: Region) => void;
@@ -87,6 +88,7 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
             </View>
           ))}
         </View>
+        <NextClassCard />
       </View>
     </BottomSheetComponent>
   );

@@ -1,6 +1,8 @@
 import React from 'react';
-import { render, waitFor, screen } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 import HomeScreen from '@/app/index';
+import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BuildingProvider } from '../BuildingContext';
 
 jest.mock('@expo/vector-icons', () => {
@@ -16,6 +18,15 @@ jest.mock('@expo/vector-icons', () => {
   };
 });
 
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
 jest.mock('expo-font', () => ({
   loadAsync: jest.fn(),
   isLoaded: jest.fn(() => true),
@@ -28,14 +39,17 @@ jest.mock('react-native-reanimated', () => {
 
 describe('HomeScreen Minimal Test', () => {
   it('renders without crashing and displays "Campus"', async () => {
-    render(
-      <BuildingProvider>
-        <HomeScreen />
-      </BuildingProvider>
-    );
+    const queryClient = createTestQueryClient();
 
-    await waitFor(() => {
-      expect(screen.getByText('Campus')).toBeTruthy();
-    });
+    const { getByText } = render(
+      <QueryClientProvider client={queryClient}>
+        <BuildingProvider>
+          <AuthProvider>
+            <HomeScreen />
+          </AuthProvider>
+        </BuildingProvider>
+      </QueryClientProvider>
+    );
+    expect(getByText('Campus')).toBeTruthy();
   });
 });

@@ -10,8 +10,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, createContext } from 'react';
 import 'react-native-reanimated';
 import { BuildingProvider } from '@/app/BuildingContext';
-
 import { useColorScheme } from '@/hooks/useColorScheme';
+import GlobalContextProvider from '@/contexts/ContextProvider/GlobalContextProvider';
 
 export interface BuildingContextType {
   indoorBuilding: string | null;
@@ -42,15 +42,21 @@ export default function RootLayout() {
   }
 
   return (
-    <BuildingProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="indoor" options={{ headerShown: false }} />
-          {/* <Stack.Screen name="+not-found" /> */}
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </BuildingProvider>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <GlobalContextProvider>
+        <BuildingProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="indoor" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="oauthredirect"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </BuildingProvider>
+      </GlobalContextProvider>
+    </ThemeProvider>
   );
 }

@@ -1,8 +1,10 @@
-import { GoogleCalendar } from '@/constants/GoogleCalendar';
-import { fetchCalendars } from '@/services/googleCalendarService';
 import { useQuery } from '@tanstack/react-query';
+import { fetchCalendars } from '@/services/googleCalendarService';
+import { GoogleCalendar } from '@/constants/GoogleCalendar';
+import { useGoogleAuth } from '@/contexts/AuthContext/AuthContext';
 
-export function useGoogleCalendars(accessToken: string | null) {
+export function useGoogleCalendars() {
+  const { accessToken } = useGoogleAuth();
   return useQuery<GoogleCalendar[], Error>({
     queryKey: ['googleCalendars', accessToken],
     queryFn: () => fetchCalendars(accessToken!),
