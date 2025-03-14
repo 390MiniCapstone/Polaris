@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import MapView, { Geojson, Region } from 'react-native-maps';
+import MapView, { Geojson, LatLng, Region } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import { downtownBuildings, loyolaBuildings } from '@/constants/buildings';
 import { Buildings } from './Buildings/Buildings';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { mapRef } from '@/utils/refs';
-import { LatLng } from 'react-native-maps';
 import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
 import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
 import { NavigationState, TravelMode } from '@/constants/types';

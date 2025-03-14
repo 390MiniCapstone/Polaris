@@ -1,7 +1,6 @@
-import { Region } from 'react-native-maps';
 import { SharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { MutableRefObject } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Region } from 'react-native-maps';
 import { mapRef } from '@/utils/refs';
 
 export const handleCurrentLocation = (
