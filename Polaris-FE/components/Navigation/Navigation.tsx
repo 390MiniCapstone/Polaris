@@ -8,9 +8,8 @@ import { useMapLocation } from '@/hooks/useMapLocation';
 import { lineString, point } from '@turf/helpers';
 import nearestPointOnLine from '@turf/nearest-point-on-line';
 import { handleCurrentLocation } from '@/utils/mapHandlers';
-import { NavigationState, TravelMode } from '@/constants/types';
+import { NavigationState, TravelMode, RouteData } from '@/constants/types';
 import { LatLng } from 'react-native-maps';
-import { RouteData } from '@/constants/types';
 import { getGoogleMapsRoute } from '@/services/googleMapsRoutes';
 import {
   clipPolylineFromSnappedPoint,
@@ -65,17 +64,16 @@ export const Navigation: React.FC<NavigationProps> = ({
           travelMode
         );
         setRouteData(data);
-        {
-          navigationState === 'planning' &&
-            mapRef.current?.fitToCoordinates(data.polyline, {
-              edgePadding: {
-                top: 80,
-                right: 60,
-                bottom: 80,
-                left: 60,
-              },
-              animated: true,
-            });
+        if (navigationState === 'planning') {
+          mapRef.current?.fitToCoordinates(data.polyline, {
+            edgePadding: {
+              top: 80,
+              right: 60,
+              bottom: 80,
+              left: 60,
+            },
+            animated: true,
+          });
         }
       } catch (error) {
         console.error('Failed to fetch route data:', error);
@@ -190,23 +188,21 @@ export const Navigation: React.FC<NavigationProps> = ({
 
       {(navigationState === 'planning' || navigationState === 'navigating') &&
         routeData && (
-          <>
-            <NavigationInfo
-              duration={remainingTime}
-              distance={remainingDistance}
-              isNavigating={navigationState === 'navigating'}
-              is3d={is3d}
-              travelMode={travelMode}
-              destination={destination}
-              updateIs3d={setIs3d}
-              onCancel={() => {
-                bottomSheetRef.current?.snapToIndex(1);
-                handleCurrentLocation(mapRef, location);
-                setNavigationState('default');
-              }}
-              onStartNavigation={handleStartNavigation}
-            />
-          </>
+          <NavigationInfo
+            duration={remainingTime}
+            distance={remainingDistance}
+            isNavigating={navigationState === 'navigating'}
+            is3d={is3d}
+            travelMode={travelMode}
+            destination={destination}
+            updateIs3d={setIs3d}
+            onCancel={() => {
+              bottomSheetRef.current?.snapToIndex(1);
+              handleCurrentLocation(mapRef, location);
+              setNavigationState('default');
+            }}
+            onStartNavigation={handleStartNavigation}
+          />
         )}
     </>
   );

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View } from 'react-native';
 import {
   Card,
   Text,
@@ -17,7 +17,7 @@ import { useSelectedCalendar } from '@/hooks/useSelectedCalendar';
 import { useNextClassTimer } from '@/hooks/useNextClassTimer';
 import { styles } from './NextClassCard.styles';
 
-const NextClassCard = () => {
+const NextClassCard: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const { user, accessToken, promptAsync } = useGoogleAuth();
   const { data: calendars, isLoading, error } = useGoogleCalendars();

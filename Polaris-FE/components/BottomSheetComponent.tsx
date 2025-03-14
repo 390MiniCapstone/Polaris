@@ -1,11 +1,16 @@
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import { Region } from 'react-native-maps';
 import Constants from 'expo-constants';
-import { Keyboard } from 'react-native';
 import { bottomSheetRef } from '@/utils/refs';
 import NextClassCard from './NextClassComponent/NextClassCard';
 
