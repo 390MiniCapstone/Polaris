@@ -3,7 +3,8 @@ name: User Story
 about: Create a user story issue for a specific feature or task of a project
 title: "[USER STORY]"
 labels: user story
-assignees: ""
+assignees: ''
+
 ---
 
 ### **User Story**

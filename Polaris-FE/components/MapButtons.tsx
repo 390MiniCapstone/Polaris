@@ -1,19 +1,18 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { Region } from 'react-native-maps';
+import { Downtown, Loyola } from '@/constants/mapConstants';
+import { SharedValue } from 'react-native-reanimated';
+import { FontAwesome5 } from '@expo/vector-icons';
 import Animated, {
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { SvgXml } from 'react-native-svg';
-import { Downtown, Loyola, locationIcon } from '@/constants/mapConstants';
 
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
 
 const AnimatedView = Animated.createAnimatedComponent(View);
-
-import { SharedValue } from 'react-native-reanimated';
 
 interface NavigationButtonsProps {
   onCampusToggle: () => void;
@@ -23,7 +22,7 @@ interface NavigationButtonsProps {
   animatedPosition: SharedValue<number>;
 }
 
-export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
+export const MapButtons: React.FC<NavigationButtonsProps> = ({
   onCampusToggle,
   onCampusSelect,
   onCurrentLocationPress,
@@ -31,15 +30,26 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   animatedPosition,
 }) => {
   const buttonsStyle = useAnimatedStyle(() => {
-    const startFadeHeight = 300;
-    const endFadeHeight = 200;
+    const startFadeHeight = 200;
+    const endFadeHeight = 100;
+    const closeStartFade = 800;
+    const closeEndFade = 850;
 
-    const opacity = interpolate(
+    const upperFade = interpolate(
       animatedPosition.value,
       [startFadeHeight, endFadeHeight],
       [1, 0],
       'clamp'
     );
+
+    const lowerFade = interpolate(
+      animatedPosition.value,
+      [closeStartFade, closeEndFade],
+      [1, 0],
+      'clamp'
+    );
+
+    const opacity = Math.min(upperFade, lowerFade);
 
     return {
       transform: [
@@ -69,7 +79,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
       <View>
         <AnimatedView style={[styles.downtownOption, optionsStyle]}>
           <TouchableOpacity
-            style={[styles.campusOption, styles.downtownButton]}
+            style={styles.campusOption}
             onPress={() => onCampusSelect(Downtown)}
           >
             <Text style={styles.campusButtonText}>Downtown</Text>
@@ -96,10 +106,11 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
       </View>
       <AnimatedTouchableOpacity
         testID="button-current-location"
-        style={styles.toggleButton}
+        accessibilityLabel="button-current-location"
+        style={styles.currentButton}
         onPress={onCurrentLocationPress}
       >
-        <SvgXml xml={locationIcon} width={16} height={16} />
+        <FontAwesome5 name="location-arrow" size={16} color="white" />
       </AnimatedTouchableOpacity>
     </AnimatedView>
   );
@@ -119,9 +130,16 @@ const styles = StyleSheet.create({
   toggleButton: {
     backgroundColor: 'rgba(34, 34, 34, 0.992)',
     paddingHorizontal: 16,
-    paddingVertical: 8,
     borderRadius: 12,
-    height: 35,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  currentButton: {
+    backgroundColor: 'rgba(34, 34, 34, 0.992)',
+    borderRadius: 12,
+    height: 36,
+    width: 52,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -133,19 +151,18 @@ const styles = StyleSheet.create({
   campusOption: {
     backgroundColor: 'rgba(34, 34, 34, 0.992)',
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 12,
-    alignSelf: 'flex-start',
   },
   campusButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
   },
-  downtownButton: {
-    minWidth: 113,
-  },
   downtownOption: {
+    minWidth: 113,
     position: 'absolute',
     left: 0,
     bottom: 90,

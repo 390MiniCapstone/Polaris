@@ -113,3 +113,73 @@ jest.mock('react-native-reanimated', () => {
     useReducedMotion: jest.fn(() => false),
   };
 });
+
+jest.mock('firebase/app', () => ({
+  getApps: jest.fn(() => []),
+  initializeApp: jest.fn(() => ({ name: 'mockApp' })),
+}));
+
+jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn(() => ({
+    collection: jest.fn(),
+  })),
+}));
+
+jest.mock('firebase/auth', () => ({
+  GoogleAuthProvider: {
+    credential: jest.fn(() => ({
+      accessToken: 'mock-access-token',
+      idToken: 'mock-id-token',
+    })),
+  },
+  signInWithCredential: jest.fn(() =>
+    Promise.resolve({ user: { uid: 'mockUserId', email: 'mock@example.com' } })
+  ),
+  getAuth: jest.fn(() => ({
+    currentUser: { uid: 'mockUserId', email: 'mock@example.com' },
+    signOut: jest.fn(),
+  })),
+  initializeAuth: jest.fn(() => ({
+    currentUser: null,
+  })),
+  getReactNativePersistence: jest.fn(),
+}));
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  setItem: jest.fn(() => Promise.resolve(null)),
+  getItem: jest.fn(() => Promise.resolve(null)),
+  removeItem: jest.fn(() => Promise.resolve(null)),
+  clear: jest.fn(() => Promise.resolve(null)),
+}));
+
+jest.mock('expo-constants', () => ({
+  __esModule: true,
+  default: {
+    expoConfig: {
+      extra: {
+        iosClientId: 'mock-ios-client-id',
+        androidClientId: 'mock-android-client-id',
+      },
+    },
+  },
+}));
+
+jest.mock('expo-auth-session/providers/google', () => ({
+  useAuthRequest: jest.fn(() => [
+    null,
+    {
+      type: 'success',
+      params: { id_token: 'mock-id-token', access_token: 'mock-access-token' },
+    },
+    jest.fn(),
+  ]),
+}));
+
+jest.mock('expo-font', () => ({
+  loadAsync: jest.fn(),
+  isLoaded: jest.fn(() => true),
+}));
+
+jest.mock('@expo/vector-icons', () => ({
+  Ionicons: jest.fn(),
+}));
