@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import MapView from 'react-native-maps';
 import { MapComponent } from '@/components/Map';
 
@@ -20,7 +20,6 @@ describe('MapComponent', () => {
         mapRef={mockMapRef}
         region={mockRegion}
         setRegion={mockSetRegion}
-        colorblindTheme={''}
       />
     );
     expect(getByTestId('map-view')).toBeTruthy();
@@ -32,7 +31,6 @@ describe('MapComponent', () => {
         mapRef={mockMapRef}
         region={mockRegion}
         setRegion={mockSetRegion}
-        colorblindTheme={''}
       />
     );
 
@@ -46,24 +44,8 @@ describe('MapComponent', () => {
         mapRef={mockMapRef}
         region={mockRegion}
         setRegion={mockSetRegion}
-        colorblindTheme={''}
       />
     );
     expect(mockMapRef.current).toBeInstanceOf(MapView);
-  });
-
-  it('applies the correct colorblind map style', () => {
-    const { getByTestId } = render(
-      <MapComponent
-        mapRef={mockMapRef}
-        region={mockRegion}
-        setRegion={mockSetRegion}
-        colorblindTheme="deuteranopia"
-      />
-    );
-
-    const mapView = getByTestId('map-view');
-
-    expect(mapView.props.customMapStyle).toBeDefined();
   });
 });
