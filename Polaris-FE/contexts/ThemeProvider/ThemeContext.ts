@@ -1,10 +1,9 @@
-import { createContext, useContext } from 'react';
-import { themes } from '@/utils/themeOptions';
-import { Theme } from '@react-navigation/native';
+import { createContext } from 'react';
+import { CustomTheme, themes } from '@/utils/themeOptions';
 
 interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: CustomTheme;
+  setTheme: (theme: CustomTheme) => void;
 }
 
 export const ThemeContext = createContext<ThemeContextType>({
@@ -13,5 +12,3 @@ export const ThemeContext = createContext<ThemeContextType>({
     throw new Error('setTheme must be used within a ThemeProvider');
   },
 });
-
-export const useTheme = () => useContext(ThemeContext);

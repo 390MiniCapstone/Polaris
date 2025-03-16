@@ -1,42 +1,65 @@
 import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 import { fonts } from '@react-navigation/native/src/theming/fonts';
 
-export const themes: { [key: string]: Theme } = {
-  default: DefaultTheme,
-  dark: DarkTheme,
+export interface CustomTheme extends Theme {
+  colors: Theme['colors'] & {
+    secondary: string;
+  };
+}
+
+export const themes: { [key: string]: CustomTheme } = {
+  default: {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'rgba(143, 34, 54, 1)',
+      secondary: 'rgba(143, 34, 54, 0.5)',
+    },
+  },
+  dark: {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      primary: 'rgba(143, 34, 54, 1)',
+      secondary: 'rgba(143, 34, 54, 0.5)',
+    },
+  },
   protanopia: {
     dark: false,
     colors: {
-      primary: 'rgba(0, 128, 128, 1)', // Teal
+      primary: 'rgba(0, 128, 128, 1)',
+      secondary: 'rgba(255, 165, 0, 1)',
       background: 'white',
       card: 'white',
       text: 'black',
-      border: 'rgba(169, 169, 169, 1)', // Light gray
-      notification: 'rgba(255, 165, 0, 1)', // Orange
+      border: 'rgba(169, 169, 169, 1)',
+      notification: 'rgba(255, 0, 0, 1)',
     },
     fonts,
   },
   deuteranopia: {
     dark: false,
     colors: {
-      primary: 'rgba(128, 0, 128, 1)', // Purple
+      primary: 'rgba(128, 0, 128, 1)',
+      secondary: 'rgba(0, 191, 255, 1)',
       background: 'white',
       card: 'white',
       text: 'black',
-      border: 'rgba(169, 169, 169, 1)', // Light gray
-      notification: 'rgba(0, 191, 255, 1)', // Sky blue
+      border: 'rgba(169, 169, 169, 1)',
+      notification: 'rgba(255, 0, 255, 1)',
     },
     fonts,
   },
   tritanopia: {
     dark: false,
     colors: {
-      primary: 'rgba(255, 69, 0, 1)', // Orange-red
+      primary: 'rgba(255, 69, 0, 1)',
+      secondary: 'rgba(128, 0, 128, 1)',
       background: 'white',
       card: 'white',
       text: 'black',
-      border: 'rgba(169, 169, 169, 1)', // Light gray
-      notification: 'rgba(50, 205, 50, 1)', // Lime green
+      border: 'rgba(169, 169, 169, 1)',
+      notification: 'rgba(255, 0, 0, 1)',
     },
     fonts,
   },
