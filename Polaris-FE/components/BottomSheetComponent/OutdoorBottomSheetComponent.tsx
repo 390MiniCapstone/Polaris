@@ -11,8 +11,8 @@ import { Region } from 'react-native-maps';
 import Constants from 'expo-constants';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import Animated from 'react-native-reanimated';
-import { useRouter } from 'expo-router';
 import NextClassCard from '../NextClassComponent/NextClassCard';
+import { bottomSheetRef } from '@/utils/refs';
 
 interface OutdoorBottomSheetProps {
   onSearchClick: (region: Region) => void;
@@ -33,8 +33,6 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
   onFocus,
   animatedPosition,
 }) => {
-  const router = useRouter();
-  const bottomSheetRef = useRef<any>(null);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   const handleLocationSelect = (placeId: string, description: string) => {
@@ -98,7 +96,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 10,
   },
   resultsContainer: {
     width: '100%',

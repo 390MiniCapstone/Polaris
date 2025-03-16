@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { Buildings } from '../Buildings';
 import { Building } from '@/constants/buildingInfo';
-import { BuildingProvider } from '../../../app/BuildingContext';
+import { BuildingProvider } from '../../../contexts/BuildingContext/BuildingContext';
 
 jest.mock('@/constants/buildingInfo', () => ({
   BUILDING_INFO: [

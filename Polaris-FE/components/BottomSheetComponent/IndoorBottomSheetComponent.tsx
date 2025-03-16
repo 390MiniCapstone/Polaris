@@ -6,6 +6,7 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { FloorPlanObject } from '@/constants/floorPlans';
 import { FloorSelector } from '@/components/FloorSelector/FloorSelector';
+import { bottomSheetRef } from '@/utils/refs';
 
 type FloorSelectorProps = {
   floorPlan: FloorPlanObject;
@@ -18,7 +19,6 @@ export const IndoorBottomSheetComponent: React.FC<FloorSelectorProps> = ({
   selectFloor,
   indoorBuilding,
 }) => {
-  const bottomSheetRef = useRef<any>(null);
   const router = useRouter();
   const animatedPosition = useSharedValue(0);
 

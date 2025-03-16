@@ -3,11 +3,12 @@ import { FloorPlanObject } from '@/constants/floorPlans';
 import { FLOOR_PLANS } from '@/constants/floorPlans';
 import { Picker } from '@react-native-picker/picker';
 import { StyleSheet, View } from 'react-native';
+import { handleFloorChange } from './utills';
 
 type FloorSelectorProps = {
   floorPlan: FloorPlanObject;
   selectFloor: (floorPlan: FloorPlanObject) => void;
-  indoorBuilding: string | null;
+  indoorBuilding: string;
 };
 
 export const FloorSelector: React.FC<FloorSelectorProps> = ({
@@ -20,20 +21,9 @@ export const FloorSelector: React.FC<FloorSelectorProps> = ({
     <View style={styles.pickerContainer} testID="picker-container">
       <Picker
         selectedValue={floorPlan.name}
-        onValueChange={(itemValue: string) => {
-          let selected: FloorPlanObject | undefined;
-
-          for (const [building, floors] of Object.entries(FLOOR_PLANS)) {
-            if (building === indoorBuilding) {
-              selected = floors.find(
-                (floor: FloorPlanObject) => floor.name === itemValue
-              );
-              break;
-            }
-          }
-
-          if (selected) selectFloor(selected);
-        }}
+        onValueChange={(itemValue: string) =>
+          handleFloorChange(itemValue, indoorBuilding, selectFloor)
+        }
         style={styles.picker}
       >
         {availableFloors.map((floor: FloorPlanObject) => (

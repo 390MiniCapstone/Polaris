@@ -1,13 +1,18 @@
 import { createContext, useContext, useState } from 'react';
 
+const EMPTY_STRING: string = '';
+
 export interface BuildingContextType {
-  indoorBuilding: string | null;
-  setIndoorBuilding: React.Dispatch<React.SetStateAction<string | null>>;
+  indoorBuilding: string;
+  setIndoorBuilding: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const BuildingContext = createContext<BuildingContextType | undefined>(
-  undefined
-);
+export const BuildingContext = createContext<BuildingContextType>({
+  indoorBuilding: EMPTY_STRING,
+  setIndoorBuilding: () => {
+    throw new Error('setIndoorBuilding was called outside of BuildingProvider');
+  },
+});
 
 export const useBuildingContext = () => {
   const context = useContext(BuildingContext);
@@ -22,7 +27,7 @@ export const useBuildingContext = () => {
 export const BuildingProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [indoorBuilding, setIndoorBuilding] = useState<string | null>(null);
+  const [indoorBuilding, setIndoorBuilding] = useState<string>(EMPTY_STRING);
 
   return (
     <BuildingContext.Provider value={{ indoorBuilding, setIndoorBuilding }}>

@@ -4,7 +4,7 @@ import { Router } from 'expo-router';
 export const handleCalloutPress = (
   buildingName: string,
   router: Router,
-  setIndoorBuilding: React.Dispatch<React.SetStateAction<string | null>>
+  setIndoorBuilding: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const pressable = ['Hall', 'MB', 'VE', 'CC'].filter((el: string) =>
     buildingName.includes(el)
@@ -28,7 +28,7 @@ export const handleCalloutPress = (
 const handleEnterBuilding = (
   buildingName: string,
   router: Router,
-  setIndoorBuilding: React.Dispatch<React.SetStateAction<string | null>>
+  setIndoorBuilding: React.Dispatch<React.SetStateAction<string>>
 ) => {
   setIndoorBuilding(buildingName);
   router.push('/indoor');

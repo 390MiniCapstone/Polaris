@@ -3,7 +3,7 @@ import { Marker } from 'react-native-maps';
 import { BUILDING_INFO, Building } from '@/constants/buildingInfo';
 import { handleCalloutPress } from './utils';
 import { useRouter } from 'expo-router';
-import { useBuildingContext } from '@/app/BuildingContext';
+import { useBuildingContext } from '@/contexts/BuildingContext/BuildingContext';
 
 export const Buildings: React.FC = () => {
   const { setIndoorBuilding } = useBuildingContext();
@@ -27,7 +27,7 @@ export const Buildings: React.FC = () => {
               router,
               setIndoorBuilding
             )
-          } // To Do: only make the enter available for the buldings witht he floor plans
+          }
         />
       ))}
     </>

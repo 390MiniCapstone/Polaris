@@ -9,7 +9,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, createContext } from 'react';
 import 'react-native-reanimated';
-import { BuildingProvider } from '@/app/BuildingContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import GlobalContextProvider from '@/contexts/ContextProvider/GlobalContextProvider';
 
@@ -44,18 +43,13 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <GlobalContextProvider>
-        <BuildingProvider>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="indoor" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="oauthredirect"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-        </BuildingProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="indoor" options={{ headerShown: false }} />
+          <Stack.Screen name="oauthredirect" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
       </GlobalContextProvider>
     </ThemeProvider>
   );

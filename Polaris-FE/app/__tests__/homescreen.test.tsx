@@ -1,14 +1,12 @@
-import React from 'react';
 import { render } from '@testing-library/react-native';
 import HomeScreen from '@/app/index';
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BuildingProvider } from '../BuildingContext';
+import { BuildingProvider } from '@/contexts/BuildingContext/BuildingContext';
 
 jest.mock('@expo/vector-icons', () => {
-  const React = require('react');
   const { View } = require('react-native');
-  const MockIcon = (props: any) => <View {...props} />;
+  const MockIcon = () => <View />;
   return {
     __esModule: true,
     Ionicons: MockIcon,

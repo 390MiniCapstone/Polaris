@@ -11,7 +11,7 @@ import VL2 from '../assets/images/VL2.svg';
 import CC1 from '../assets/images/CC1.svg';
 
 export type FloorPlanBuilding = {
-  building: FloorPlanObject;
+  building: FloorPlanObject[];
 };
 
 export type FloorPlanObject = {
@@ -21,7 +21,7 @@ export type FloorPlanObject = {
   height: string;
 };
 
-export const FLOOR_PLANS = {
+export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
   'Hall Building': [
     {
       SvgComponent: H1,
