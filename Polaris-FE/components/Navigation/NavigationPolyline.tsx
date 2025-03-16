@@ -1,5 +1,6 @@
 import React from 'react';
 import { LatLng, Marker, Polyline } from 'react-native-maps';
+import useTheme from '@/hooks/useTheme';
 
 interface NavigationPolylineProps {
   navigationState: string;
@@ -16,18 +17,23 @@ export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
   clippedPolyline,
   snappedPoint,
 }) => {
+  const { theme } = useTheme();
   return (
     <>
       {(navigationState === 'planning' || navigationState === 'navigating') &&
         clippedPolyline &&
         snappedPoint && (
           <>
-            <Marker coordinate={destination} pinColor="#9C2F40" />
+            <Marker
+              key={theme.colors.primary}
+              coordinate={destination}
+              pinColor={theme.colors.primary}
+            />
             {travelMode === 'WALK' ? (
               <Polyline
                 coordinates={clippedPolyline}
                 strokeWidth={4}
-                strokeColor="#9A2D3F"
+                strokeColor={theme.colors.secondary}
                 lineDashPattern={[5, 10]}
               />
             ) : (
@@ -35,12 +41,12 @@ export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
                 <Polyline
                   coordinates={clippedPolyline}
                   strokeWidth={9}
-                  strokeColor="#BE505B"
+                  strokeColor={theme.colors.primary}
                 />
                 <Polyline
                   coordinates={clippedPolyline}
                   strokeWidth={6}
-                  strokeColor="#9A2D3F"
+                  strokeColor={theme.colors.secondary}
                 />
               </>
             )}

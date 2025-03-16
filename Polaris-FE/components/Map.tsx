@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import MapView, { Geojson, Region } from 'react-native-maps';
+import MapView, { Geojson, LatLng, Region } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import { downtownBuildings, loyolaBuildings } from '@/constants/buildings';
 import { Buildings } from './Buildings/Buildings';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { mapRef } from '@/utils/refs';
-import { LatLng } from 'react-native-maps';
 import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
 import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
 import { NavigationState, TravelMode } from '@/constants/types';
+import useTheme from '@/hooks/useTheme';
 
 interface MapComponentProps {
   region: Region | undefined;
@@ -30,7 +30,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const [clippedPolyline, setClippedPolyline] = useState<LatLng[] | null>(null);
 
   const currentBuilding = useCurrentBuilding();
-
+  const { theme } = useTheme();
+  const fillColor = theme.colors.primary;
   return (
     <View style={styles.container}>
       <MapView
@@ -48,11 +49,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       >
         <Geojson
           geojson={downtownBuildings as GeoJSON.FeatureCollection}
-          fillColor="rgba(143, 34, 54, 0.8)"
+          fillColor={fillColor}
         />
         <Geojson
           geojson={loyolaBuildings as GeoJSON.FeatureCollection}
-          fillColor="rgba(143, 34, 54, 0.8)"
+          fillColor={fillColor}
         />
         <NavigationPolyline
           navigationState={navigationState}
