@@ -1,18 +1,44 @@
 import React, { useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import useTheme from '@/hooks/useTheme';
-import { themes } from '@/utils/themeOptions';
+import { CustomTheme, themes } from '@/utils/themeOptions';
+import { Theme } from '@react-navigation/native';
 
-/**
- * A self-contained button that opens a modal to select colorblind modes.
- */
+interface ThemeOptionProps {
+  themeKey: string;
+  label: string;
+  icon: string;
+  onSelect: (theme: Theme) => void;
+}
+
+const ThemeOption: React.FC<ThemeOptionProps> = ({
+  themeKey,
+  label,
+  icon,
+  onSelect,
+}) => (
+  <TouchableOpacity
+    style={styles.optionButton}
+    onPress={() => onSelect(themes[themeKey])}
+  >
+    <Text style={styles.optionText}>
+      {icon} {label}
+    </Text>
+  </TouchableOpacity>
+);
+
 export function ColorblindButton() {
   const [modalVisible, setModalVisible] = useState(false);
   const { setTheme } = useTheme();
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
+  const toggleModal = () => setModalVisible(!modalVisible);
+
+  const themeOptions = [
+    { key: 'default', label: 'Default', icon: '🟠' },
+    { key: 'deuteranopia', label: 'Deuteranopia (Red-Green)', icon: '🟢' },
+    { key: 'protanopia', label: 'Protanopia (Red-Green)', icon: '🔴' },
+    { key: 'tritanopia', label: 'Tritanopia (Blue-Yellow)', icon: '🔵' },
+  ];
 
   return (
     <View>
@@ -29,54 +55,23 @@ export function ColorblindButton() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select a Colorblind Mode</Text>
-
+            {themeOptions.map(({ key, label, icon }) => (
+              <ThemeOption
+                key={key}
+                themeKey={key}
+                label={label}
+                icon={icon}
+                onSelect={(theme: CustomTheme) => {
+                  setTheme(theme);
+                  toggleModal();
+                }}
+              />
+            ))}
             <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                setTheme(themes.default);
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🟠Default</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                setTheme(themes.deuteranopia);
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🟢 Deuteranopia (Red-Green)</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                setTheme(themes.protanopia);
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🔴 Protanopia (Red-Green)</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                setTheme(themes.tritanopia);
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🔵 Tritanopia (Blue-Yellow)</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.optionButton, { backgroundColor: 'black' }]}
+              style={[styles.optionButton, styles.cancelButton]}
               onPress={toggleModal}
             >
-              <Text style={[styles.optionText, { color: 'white' }]}>
-                Cancel
-              </Text>
+              <Text style={[styles.optionText, styles.cancelText]}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -124,6 +119,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionText: {
+    color: 'white',
+  },
+  cancelButton: {
+    backgroundColor: 'black',
+  },
+  cancelText: {
     color: 'white',
   },
 });
