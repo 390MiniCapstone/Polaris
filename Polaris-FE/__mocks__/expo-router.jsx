@@ -13,4 +13,5 @@ export const useNavigation = jest.fn(() => ({
 export const useSegments = jest.fn(() => []);
 
 export const Stack = ({ children }) => <>{children}</>;
+
 Stack.Screen = ({ children }) => children;
