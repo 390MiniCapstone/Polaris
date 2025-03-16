@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { Region } from 'react-native-maps';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
-import { mapRef, bottomSheetRef } from '@/utils/refs';
+import { bottomSheetRef, mapRef } from '@/utils/refs';
 import { MapComponent } from '@/components/Map';
 import { BottomSheetComponent } from '@/components/BottomSheetComponent';
 import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import {
-  handleCurrentLocation,
   handleCampusSelect,
   handleCampusToggle,
+  handleCurrentLocation,
   handleLocation,
 } from '@/utils/mapHandlers';
 import useClarity from '@/hooks/useClarity';
+import { ColorblindButton } from '@/components/ColorblindButton';
 
 export default function HomeScreen() {
   const { location, region, setRegion } = useMapLocation();
@@ -29,6 +30,9 @@ export default function HomeScreen() {
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <MapComponent region={region} setRegion={setRegion} />
+        <View style={styles.buttonContainer}>
+          <ColorblindButton />
+        </View>
         <BottomSheetComponent
           onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
           animatedPosition={animatedPosition}
@@ -66,5 +70,11 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    top: 60,
+    right: 10,
+    zIndex: 1,
   },
 });

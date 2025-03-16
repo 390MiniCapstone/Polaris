@@ -2,8 +2,8 @@ import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 import { fonts } from '@react-navigation/native/src/theming/fonts';
 
 export const themes: { [key: string]: Theme } = {
-  DefaultTheme,
-  DarkTheme,
+  default: DefaultTheme,
+  dark: DarkTheme,
   protanopia: {
     dark: false,
     colors: {

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import useTheme from '@/hooks/useTheme';
+import { themes } from '@/utils/themeOptions';
 
 /**
  * A self-contained button that opens a modal to select colorblind modes.
- * All logic & state are inside this component.
  */
 export function ColorblindButton() {
   const [modalVisible, setModalVisible] = useState(false);
+  const { setTheme } = useTheme();
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -31,7 +33,17 @@ export function ColorblindButton() {
             <TouchableOpacity
               style={styles.optionButton}
               onPress={() => {
-                console.log('Deuteranopia selected');
+                setTheme(themes.default);
+                toggleModal();
+              }}
+            >
+              <Text style={styles.optionText}>🟠Default</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => {
+                setTheme(themes.deuteranopia);
                 toggleModal();
               }}
             >
@@ -41,7 +53,7 @@ export function ColorblindButton() {
             <TouchableOpacity
               style={styles.optionButton}
               onPress={() => {
-                console.log('Protanopia selected');
+                setTheme(themes.protanopia);
                 toggleModal();
               }}
             >
@@ -51,7 +63,7 @@ export function ColorblindButton() {
             <TouchableOpacity
               style={styles.optionButton}
               onPress={() => {
-                console.log('Tritanopia selected');
+                setTheme(themes.tritanopia);
                 toggleModal();
               }}
             >
