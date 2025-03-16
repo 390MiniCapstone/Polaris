@@ -1,13 +1,12 @@
-import React from 'react';
-import { render, waitFor, screen } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 import HomeScreen from '@/app/index';
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BuildingProvider } from '@/contexts/BuildingContext/BuildingContext';
 
 jest.mock('@expo/vector-icons', () => {
-  const React = require('react');
   const { View } = require('react-native');
-  const MockIcon = (props: any) => <View {...props} />;
+  const MockIcon = () => <View />;
   return {
     __esModule: true,
     Ionicons: MockIcon,
@@ -42,9 +41,11 @@ describe('HomeScreen Minimal Test', () => {
 
     const { getByText } = render(
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <HomeScreen />
-        </AuthProvider>
+        <BuildingProvider>
+          <AuthProvider>
+            <HomeScreen />
+          </AuthProvider>
+        </BuildingProvider>
       </QueryClientProvider>
     );
     expect(getByText('Campus')).toBeTruthy();

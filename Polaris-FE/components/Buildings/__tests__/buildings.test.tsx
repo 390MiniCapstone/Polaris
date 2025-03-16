@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { Buildings } from '../Buildings';
 import { Building } from '@/constants/buildingInfo';
+import { BuildingProvider } from '../../../contexts/BuildingContext/BuildingContext';
 
 jest.mock('@/constants/buildingInfo', () => ({
   BUILDING_INFO: [
@@ -34,7 +35,11 @@ jest.mock('@/constants/buildingInfo', () => ({
 
 describe('Testing the buildings Component', () => {
   it('Three building markers should render on screen', () => {
-    render(<Buildings />);
+    render(
+      <BuildingProvider>
+        <Buildings />
+      </BuildingProvider>
+    );
 
     const markers = screen.queryAllByTestId('concordia-building');
     expect(markers.length).toBe(3);
