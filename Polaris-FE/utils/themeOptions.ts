@@ -1,11 +1,12 @@
 import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
-import { fonts } from '@react-navigation/native/src/theming/fonts';
 
 export interface CustomTheme extends Theme {
   colors: Theme['colors'] & {
     secondary: string;
   };
 }
+
+const fonts = { ...DefaultTheme.fonts };
 
 export const themes: { [key: string]: CustomTheme } = {
   default: {
@@ -23,6 +24,7 @@ export const themes: { [key: string]: CustomTheme } = {
       primary: 'rgba(143, 34, 54, 1)',
       secondary: 'rgba(143, 34, 54, 0.5)',
     },
+    fonts: fonts,
   },
   protanopia: {
     dark: false,
@@ -35,7 +37,7 @@ export const themes: { [key: string]: CustomTheme } = {
       border: 'rgba(169, 169, 169, 1)',
       notification: 'rgba(255, 0, 0, 1)',
     },
-    fonts,
+    fonts: fonts,
   },
   deuteranopia: {
     dark: false,
@@ -48,7 +50,7 @@ export const themes: { [key: string]: CustomTheme } = {
       border: 'rgba(169, 169, 169, 1)',
       notification: 'rgba(255, 0, 255, 1)',
     },
-    fonts,
+    fonts: fonts,
   },
   tritanopia: {
     dark: false,
@@ -61,6 +63,6 @@ export const themes: { [key: string]: CustomTheme } = {
       border: 'rgba(169, 169, 169, 1)',
       notification: 'rgba(255, 0, 0, 1)',
     },
-    fonts,
+    fonts: fonts,
   },
 };
