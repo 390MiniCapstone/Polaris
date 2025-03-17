@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG Mouse Coordinates</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #coordinates {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- PUT SVG BELOW HERE -->
+     
+    <!-- PUT SVG ABOVE HERE -->
+    <p id="coordinates">Mouse Position: (0, 0)</p>
+
+    <script>
+      const svg = document.querySelector('svg');
+      const coordsText = document.getElementById('coordinates');
+
+      function getSVGCoords(event) {
+        let pt = svg.createSVGPoint();
+        pt.x = event.clientX;
+        pt.y = event.clientY;
+        let svgCoords = pt.matrixTransform(svg.getScreenCTM().inverse());
+        const width = svg.getAttribute('width');
+        const height = svg.getAttribute('height');
+        svgCoords.x /= width;
+        svgCoords.y /= height;
+        return svgCoords;
+      }
+
+      svg.addEventListener('click', event => {
+        let coords = getSVGCoords(event);
+        coordsText.textContent = `Mouse Position: (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)})`;
+        console.log(coords);
+      });
+    </script>
+  </body>
+</html>
