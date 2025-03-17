@@ -14,6 +14,21 @@ jest.mock('react-native-maps', () => {
   };
 });
 
+const mockTheme = {
+  colors: {
+    primary: '#000000',
+    secondary: '#FFFFFF',
+  },
+};
+
+jest.mock('@/hooks/useTheme', () => ({
+  __esModule: true,
+  default: () => ({
+    theme: mockTheme,
+    setTheme: jest.fn(),
+  }),
+}));
+
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Marker, Polyline } from 'react-native-maps';
@@ -81,7 +96,7 @@ describe('NavigationPolyline Component', () => {
     expect(markers).toHaveLength(1);
     const marker = markers[0];
     expect(marker.props.coordinate).toEqual(destination);
-    expect(marker.props.pinColor).toBe('#9C2F40');
+    expect(marker.props.pinColor).toBe(mockTheme.colors.primary);
 
     const polylines = UNSAFE_getAllByType(Polyline);
     expect(polylines).toHaveLength(1);
@@ -89,7 +104,7 @@ describe('NavigationPolyline Component', () => {
     const polyline = polylines[0];
     expect(polyline.props.coordinates).toEqual(samplePolyline);
     expect(polyline.props.strokeWidth).toBe(4);
-    expect(polyline.props.strokeColor).toBe('#9A2D3F');
+    expect(polyline.props.strokeColor).toBe(mockTheme.colors.secondary);
     expect(polyline.props.lineDashPattern).toEqual([5, 10]);
   });
 
@@ -108,7 +123,7 @@ describe('NavigationPolyline Component', () => {
     expect(markers).toHaveLength(1);
     const marker = markers[0];
     expect(marker.props.coordinate).toEqual(destination);
-    expect(marker.props.pinColor).toBe('#9C2F40');
+    expect(marker.props.pinColor).toBe(mockTheme.colors.primary);
 
     const polylines = UNSAFE_getAllByType(Polyline);
     expect(polylines).toHaveLength(2);
@@ -116,11 +131,11 @@ describe('NavigationPolyline Component', () => {
     const firstPolyline = polylines[0];
     expect(firstPolyline.props.coordinates).toEqual(samplePolyline);
     expect(firstPolyline.props.strokeWidth).toBe(9);
-    expect(firstPolyline.props.strokeColor).toBe('#BE505B');
+    expect(firstPolyline.props.strokeColor).toBe(mockTheme.colors.primary);
 
     const secondPolyline = polylines[1];
     expect(secondPolyline.props.coordinates).toEqual(samplePolyline);
     expect(secondPolyline.props.strokeWidth).toBe(6);
-    expect(secondPolyline.props.strokeColor).toBe('#9A2D3F');
+    expect(secondPolyline.props.strokeColor).toBe(mockTheme.colors.secondary);
   });
 });
