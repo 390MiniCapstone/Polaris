@@ -8,46 +8,51 @@ interface TravelModeToggleProps {
   onModeSelect: (mode: TravelMode) => void;
 }
 
+const ModeButton: React.FC<{
+  mode: TravelMode;
+  selectedMode: TravelMode;
+  onModeSelect: (mode: TravelMode) => void;
+  icon: React.ReactNode;
+}> = ({ mode, selectedMode, onModeSelect, icon }) => (
+  <TouchableOpacity
+    style={[styles.modeButton, selectedMode === mode && styles.selected]}
+    onPress={() => onModeSelect(mode)}
+    testID={`transport-mode-button-${mode}`}
+  >
+    {icon}
+  </TouchableOpacity>
+);
+
 export const TravelModeToggle: React.FC<TravelModeToggleProps> = ({
   selectedMode,
   onModeSelect,
 }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.modeButton, selectedMode === 'DRIVE' && styles.selected]}
-        onPress={() => onModeSelect('DRIVE')}
-        testID="transport-mode-button-DRIVE"
-      >
-        <FontAwesome6 name="car" size={22} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.modeButton, selectedMode === 'WALK' && styles.selected]}
-        onPress={() => onModeSelect('WALK')}
-        testID="transport-mode-button-WALK"
-      >
-        <FontAwesome5 name="walking" size={22} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.modeButton,
-          selectedMode === 'TRANSIT' && styles.selected,
-        ]}
-        onPress={() => onModeSelect('TRANSIT')}
-        testID="transport-mode-button-TRANSIT"
-      >
-        <FontAwesome6 name="bus-simple" size={22} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.modeButton,
-          selectedMode === 'BICYCLE' && styles.selected,
-        ]}
-        onPress={() => onModeSelect('BICYCLE')}
-        testID="transport-mode-button-BICYCLE"
-      >
-        <FontAwesome name="bicycle" size={22} color="white" />
-      </TouchableOpacity>
+      <ModeButton
+        mode="DRIVE"
+        selectedMode={selectedMode}
+        onModeSelect={onModeSelect}
+        icon={<FontAwesome6 name="car" size={22} color="white" />}
+      />
+      <ModeButton
+        mode="WALK"
+        selectedMode={selectedMode}
+        onModeSelect={onModeSelect}
+        icon={<FontAwesome5 name="walking" size={22} color="white" />}
+      />
+      <ModeButton
+        mode="TRANSIT"
+        selectedMode={selectedMode}
+        onModeSelect={onModeSelect}
+        icon={<FontAwesome6 name="bus-simple" size={22} color="white" />}
+      />
+      <ModeButton
+        mode="BICYCLE"
+        selectedMode={selectedMode}
+        onModeSelect={onModeSelect}
+        icon={<FontAwesome name="bicycle" size={22} color="white" />}
+      />
     </View>
   );
 };
