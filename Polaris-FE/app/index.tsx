@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Region } from 'react-native-maps';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
 import { bottomSheetRef, mapRef } from '@/utils/refs';
 import { MapComponent } from '@/components/Map';
-import { BottomSheetComponent } from '@/components/BottomSheetComponent';
+import { OutdoorBottomSheetComponent } from '@/components/BottomSheetComponent/OutdoorBottomSheetComponent';
 import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
+import { Region } from 'react-native-maps';
 import {
   handleCampusSelect,
   handleCampusToggle,
@@ -33,7 +33,7 @@ export default function HomeScreen() {
         <View style={styles.buttonContainer}>
           <ColorblindButton />
         </View>
-        <BottomSheetComponent
+        <OutdoorBottomSheetComponent
           onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
           animatedPosition={animatedPosition}
           onSearchClick={(selectedRegion: Region) =>
