@@ -20,8 +20,15 @@
 
 ### 📸 **Screenshots/Logs**
 <!-- Attach any relevant screenshots or logs for verification. -->
-- [Attach screenshots or logs here]
+[Attach screenshots or logs here]
 
+### 🔍 **Checkout**
+<!-- Attach any relevant checkouts to complete in order for the PR to be merged. -->
+
+- [ ] SonarQube Pass
+- [ ] CodeCov Pass
+
+---
 
 ### 📎 **Additional Notes (Optional)**
 <!-- Any extra information, references, or considerations for this PR. -->

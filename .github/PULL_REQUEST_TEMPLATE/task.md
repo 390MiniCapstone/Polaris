@@ -27,6 +27,14 @@
 
 ---
 
+### 🔍 **Checkout**
+<!-- Attach any relevant checkouts to complete in order for the PR to be merged. -->
+
+- [ ] SonarQube Pass
+- [ ] CodeCov Pass
+
+---
+
 ### 📝 **Additional Notes (Optional)**
 <!-- Any extra information or future considerations for this task. -->
 - [Add notes here]

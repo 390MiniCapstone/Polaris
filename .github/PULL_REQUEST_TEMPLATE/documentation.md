@@ -9,7 +9,6 @@
 - [ ] Added [New documentation details]
 - [ ] Fixed [Typos, formatting issues, etc.]
 
-
 ---
 
 ### 🚀 **Purpose of This Update**
@@ -18,6 +17,16 @@
 - [ ] Fixes outdated information
 - [ ] Adds missing details
 - [ ] Enhances formatting/readability
+
+---
+
+### 🔍 **Checkout**
+<!-- Attach any relevant checkouts to complete in order for the PR to be merged. -->
+
+- [ ] SonarQube Pass
+- [ ] CodeCov Pass
+
+---
 
 ---
 
