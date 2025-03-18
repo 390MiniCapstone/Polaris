@@ -113,7 +113,7 @@
     "typescript": "^5.3.3"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,json,css,md}": [
+    "**/*.{js,jsx,ts,tsx,json,css,md,html}": [
       "npm run format:fix"
     ]
   },
