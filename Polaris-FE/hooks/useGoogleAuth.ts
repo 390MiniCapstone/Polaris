@@ -16,7 +16,7 @@ export function useGoogleAuth() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserCredential | null>(null);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const [response, promptAsync] = Google.useAuthRequest({
     iosClientId: Constants.expoConfig?.extra?.iosClientId,
     androidClientId: Constants.expoConfig?.extra?.androidClientId,
     scopes: [
