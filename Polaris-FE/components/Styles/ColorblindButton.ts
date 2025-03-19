@@ -40,5 +40,11 @@ const styles = StyleSheet.create({
   optionText: {
     color: 'white',
   },
+  cancelButton: {
+    backgroundColor: 'black',
+  },
+  cancelText: {
+    color: 'white',
+  },
 });
 export default styles;
