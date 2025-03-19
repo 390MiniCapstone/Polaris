@@ -3,7 +3,8 @@ name: Internal Task
 about: Create an atomic task that can not be broken down into smaller issues
 title: "[TASK]"
 labels: task
-assignees: ""
+assignees: ''
+
 ---
 
 ### **Description**

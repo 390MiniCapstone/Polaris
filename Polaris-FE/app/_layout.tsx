@@ -1,23 +1,25 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { useEffect, createContext } from 'react';
 import 'react-native-reanimated';
+import GlobalContextProvider from '@/contexts/ContextProvider/GlobalContextProvider';
+import ThemeProvider from '@/contexts/ThemeProvider/ThemeContextProvider';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+export interface BuildingContextType {
+  indoorBuilding: string | null;
+  setIndoorBuilding: React.Dispatch<React.SetStateAction<string | undefined>>;
+}
+
+export const BuildingContext = createContext<BuildingContextType | undefined>(
+  undefined
+);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -33,12 +35,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+    <ThemeProvider>
+      <GlobalContextProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="indoor" options={{ headerShown: false }} />
+          <Stack.Screen name="oauthredirect" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </GlobalContextProvider>
     </ThemeProvider>
   );
 }

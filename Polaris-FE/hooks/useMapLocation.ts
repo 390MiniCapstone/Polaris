@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import { Region } from 'react-native-maps';
-
-export type LocationPermissionStatus =
-  | 'granted'
-  | 'denied'
-  | 'requesting'
-  | 'error';
+import { LocationPermissionStatus } from '@/constants/types';
 
 export const useMapLocation = () => {
   const [location, setLocation] = useState<{
@@ -19,6 +14,7 @@ export const useMapLocation = () => {
 
   useEffect(() => {
     let subscriber: Location.LocationSubscription | null = null;
+    let intervalId: NodeJS.Timeout | null = null;
 
     (async () => {
       try {
@@ -31,7 +27,7 @@ export const useMapLocation = () => {
         setPermissionStatus('granted');
         subscriber = await Location.watchPositionAsync(
           {
-            accuracy: Location.Accuracy.High,
+            accuracy: Location.Accuracy.BestForNavigation,
             timeInterval: 0,
             distanceInterval: 0,
           },
@@ -55,6 +51,9 @@ export const useMapLocation = () => {
     return () => {
       if (subscriber) {
         subscriber.remove();
+      }
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
   }, []);

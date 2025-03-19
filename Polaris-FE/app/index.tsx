@@ -1,52 +1,46 @@
-import React, { useRef, useState } from 'react';
-import MapView, { Region } from 'react-native-maps';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
-
+import { bottomSheetRef, mapRef } from '@/utils/refs';
 import { MapComponent } from '@/components/Map';
-import { BottomSheetComponent } from '@/components/BottomSheetComponent';
-import { NavigationButtons } from '@/components/NavigationButtons';
+import { OutdoorBottomSheetComponent } from '@/components/BottomSheetComponent/OutdoorBottomSheetComponent';
+import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
+import { Region } from 'react-native-maps';
 import {
   handleCampusSelect,
   handleCampusToggle,
   handleCurrentLocation,
+  handleLocation,
 } from '@/utils/mapHandlers';
+import useClarity from '@/hooks/useClarity';
 import { ColorblindButton } from '@/components/ColorblindButton';
 
 export default function HomeScreen() {
   const { location, region, setRegion } = useMapLocation();
   const [showCampusOptions, setShowCampusOptions] = useState(false);
-  const mapRef = useRef<MapView | null>(null);
-  const bottomSheetRef = useRef<any>(null);
 
-  const [colorblindTheme, setColorblindTheme] = useState<string>('');
   const toggleAnimation = useSharedValue(0);
   const optionsAnimation = useSharedValue(0);
   const animatedPosition = useSharedValue(0);
-
+  useClarity();
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <MapComponent
-          mapRef={mapRef}
-          region={region}
-          setRegion={setRegion}
-          colorblindTheme={colorblindTheme}
-        />
-
+        <MapComponent region={region} setRegion={setRegion} />
         <View style={styles.buttonContainer}>
-          <ColorblindButton setColorblindTheme={setColorblindTheme} />
+          <ColorblindButton />
         </View>
-
-        <BottomSheetComponent
-          bottomSheetRef={bottomSheetRef}
+        <OutdoorBottomSheetComponent
           onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
           animatedPosition={animatedPosition}
+          onSearchClick={(selectedRegion: Region) =>
+            handleLocation(selectedRegion, toggleAnimation, optionsAnimation)
+          }
         />
-        <NavigationButtons
+        <MapButtons
           onCampusToggle={() =>
             handleCampusToggle(
               showCampusOptions,

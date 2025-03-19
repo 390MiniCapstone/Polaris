@@ -264,7 +264,7 @@ export const BUILDING_INFO: Building[] = [
   {
     Campus: 'SGW',
     Building: 'H',
-    Building_Name: 'H Building',
+    Building_Name: 'Hall Building',
     Building_Long_Name: 'Henry F. Hall Building',
     Address: '1455 DeMaisonneuve W',
     Latitude: '45.497092',

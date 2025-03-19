@@ -1,17 +1,47 @@
 import React, { useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import useTheme from '@/hooks/useTheme';
+import { CustomTheme, themes } from '@/utils/themeOptions';
 
-interface ColorblindButtonProps {
-  setColorblindTheme: (value: string) => void;
+interface ThemeOptionProps {
+  themeKey: string;
+  label: string;
+  icon: string;
+  onSelect: (theme: CustomTheme) => void;
 }
 
-export function ColorblindButton({
-  setColorblindTheme,
-}: ColorblindButtonProps) {
+const ThemeOption: React.FC<ThemeOptionProps> = ({
+  themeKey,
+  label,
+  icon,
+  onSelect,
+}) => (
+  <TouchableOpacity
+    style={styles.optionButton}
+    onPress={() => onSelect(themes[themeKey])}
+  >
+    <Text style={styles.optionText}>
+      {icon} {label}
+    </Text>
+  </TouchableOpacity>
+);
+
+export function ColorblindButton() {
   const [modalVisible, setModalVisible] = useState(false);
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
+  const { setTheme } = useTheme();
+
+  const toggleModal = () => setModalVisible(!modalVisible);
+
+  const themeOptions = [
+    { key: 'default', label: 'Default', icon: '🔵' },
+    { key: 'deuteranopia', label: 'Deuteranopia (Green Weakness)', icon: '🟠' },
+    { key: 'protanopia', label: 'Protanopia (Red Weakness)', icon: '🟢' },
+    {
+      key: 'tritanopia',
+      label: 'Tritanopia (Blue-Yellow Deficiency)',
+      icon: '🔴',
+    },
+  ];
 
   return (
     <View>
@@ -28,58 +58,23 @@ export function ColorblindButton({
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select a Colorblind Mode</Text>
-
+            {themeOptions.map(({ key, label, icon }) => (
+              <ThemeOption
+                key={key}
+                themeKey={key}
+                label={label}
+                icon={icon}
+                onSelect={(theme: CustomTheme) => {
+                  setTheme(theme);
+                  toggleModal();
+                }}
+              />
+            ))}
             <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                console.log('Default selected');
-                setColorblindTheme('');
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🟠 Default </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                console.log('Deuteranopia selected');
-                setColorblindTheme('deuteranopia');
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🟢 Deuteranopia (Red-Green)</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                console.log('Protanopia selected');
-                setColorblindTheme('protanopia');
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🔴 Protanopia (Red-Green)</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => {
-                console.log('Tritanopia selected');
-                setColorblindTheme('tritanopia');
-                toggleModal();
-              }}
-            >
-              <Text style={styles.optionText}>🔵 Tritanopia (Blue-Yellow)</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.optionButton, { backgroundColor: 'black' }]}
+              style={[styles.optionButton, styles.cancelButton]}
               onPress={toggleModal}
             >
-              <Text style={[styles.optionText, { color: 'white' }]}>
-                Cancel
-              </Text>
+              <Text style={[styles.optionText, styles.cancelText]}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -127,6 +122,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionText: {
+    color: 'white',
+  },
+  cancelButton: {
+    backgroundColor: 'black',
+  },
+  cancelText: {
     color: 'white',
   },
 });
