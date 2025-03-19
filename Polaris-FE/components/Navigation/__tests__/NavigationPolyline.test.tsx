@@ -1,5 +1,4 @@
 jest.mock('react-native-maps', () => {
-  const React = require('react');
   const { View } = require('react-native');
 
   const MockMapView = (props: any) => <View {...props} />;
@@ -29,10 +28,9 @@ jest.mock('@/hooks/useTheme', () => ({
   }),
 }));
 
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { Marker, Polyline } from 'react-native-maps';
-import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
+import {render} from '@testing-library/react-native';
+import {Marker, Polyline} from 'react-native-maps';
+import {NavigationPolyline} from '@/components/Navigation/NavigationPolyline';
 
 describe('NavigationPolyline Component', () => {
   const destination = { latitude: 10, longitude: 20 };
