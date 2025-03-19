@@ -1,4 +1,6 @@
-export class NodeNav {
+import { Hashable } from './Graph';
+
+export class NodeNav implements Hashable {
   id: string;
   xRatio: number;
   yRatio: number;
@@ -28,6 +30,12 @@ export class NodeNav {
     this.xRatio = xRatio;
     this.yRatio = yRatio;
     this.type = type;
+  }
+  hash(): string {
+    return this.id;
+  }
+  equals(other: NodeNav): boolean {
+    return this.id === other.id;
   }
 
   getAbsoluteX(svgWidth: number): number {
