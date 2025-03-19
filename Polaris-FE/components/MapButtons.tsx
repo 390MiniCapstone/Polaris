@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { Region } from 'react-native-maps';
 import { Downtown, Loyola } from '@/constants/mapConstants';
-import { SharedValue } from 'react-native-reanimated';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Animated, {
   interpolate,
+  SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
