@@ -84,7 +84,7 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
               </TouchableOpacity>
 
               {index < searchResults.length - 1 && (
-                <View style={styles.separator} />
+                <View style={styles.separator} testID="separator" />
               )}
             </View>
           ))}
