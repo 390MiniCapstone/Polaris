@@ -8,12 +8,30 @@ jest.mock('@/contexts/NavigationContext/NavigationContext', () => ({
 }));
 
 jest.mock('react-native-maps', () => {
-  const React = require('react');
   const { View } = require('react-native');
   return {
     Marker: (props: any) => <View testID="marker" {...props} />,
     Polyline: (props: any) => <View testID="polyline" {...props} />,
   };
+});
+
+const mockTheme = {
+  colors: {
+    primary: '#000000',
+    secondary: '#FFFFFF',
+  },
+};
+
+jest.mock('@/hooks/useTheme', () => ({
+  __esModule: true,
+  default: () => ({
+    theme: mockTheme,
+    setTheme: jest.fn(),
+  }),
+}));
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
 describe('NavigationPolyline Component', () => {
@@ -23,10 +41,6 @@ describe('NavigationPolyline Component', () => {
     { latitude: 10, longitude: 20 },
     { latitude: 30, longitude: 40 },
   ];
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
 
   it('should not render anything if navigationState is not "planning" or "navigating"', () => {
     (useNavigation as jest.Mock).mockReturnValue({
@@ -82,7 +96,9 @@ describe('NavigationPolyline Component', () => {
     const polylineElements = getAllByTestId('polyline');
     expect(polylineElements).toHaveLength(1);
     expect(polylineElements[0].props.strokeWidth).toBe(4);
-    expect(polylineElements[0].props.strokeColor).toBe('#9A2D3F');
+    expect(polylineElements[0].props.strokeColor).toBe(
+      mockTheme.colors.secondary
+    );
     expect(polylineElements[0].props.lineDashPattern).toEqual([5, 10]);
   });
 
@@ -102,9 +118,13 @@ describe('NavigationPolyline Component', () => {
     expect(polylineElements).toHaveLength(2);
 
     expect(polylineElements[0].props.strokeWidth).toBe(9);
-    expect(polylineElements[0].props.strokeColor).toBe('#BE505B');
+    expect(polylineElements[0].props.strokeColor).toBe(
+      mockTheme.colors.primary
+    );
 
     expect(polylineElements[1].props.strokeWidth).toBe(6);
-    expect(polylineElements[1].props.strokeColor).toBe('#9A2D3F');
+    expect(polylineElements[1].props.strokeColor).toBe(
+      mockTheme.colors.secondary
+    );
   });
 });

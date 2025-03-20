@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
@@ -8,6 +8,7 @@ import { OutdoorBottomSheetComponent } from '@/components/BottomSheetComponent/O
 import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import useClarity from '@/hooks/useClarity';
+import { ColorblindButton } from '@/components/ColorblindButton';
 
 export default function HomeScreen() {
   const { region, setRegion } = useMapLocation();
@@ -20,6 +21,9 @@ export default function HomeScreen() {
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <MapComponent region={region} setRegion={setRegion} />
+        <View style={styles.buttonContainer}>
+          <ColorblindButton />
+        </View>
         <OutdoorBottomSheetComponent animatedPosition={animatedPosition} />
         <MapButtons
           toggleAnimation={toggleAnimation}
@@ -34,5 +38,11 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    top: 60,
+    right: 10,
+    zIndex: 1,
   },
 });

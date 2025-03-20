@@ -1,6 +1,7 @@
 import React from 'react';
 import { Marker, Polyline } from 'react-native-maps';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
+import useTheme from '@/hooks/useTheme';
 
 export const NavigationPolyline: React.FC = () => {
   const {
@@ -10,35 +11,41 @@ export const NavigationPolyline: React.FC = () => {
     clippedPolyline,
     navigationState,
   } = useNavigation();
+  const { theme } = useTheme();
+
   return (
     <React.Fragment>
       {(navigationState === 'planning' || navigationState === 'navigating') &&
         clippedPolyline &&
         snappedPoint && (
-          <>
-            <Marker coordinate={destination} pinColor="#9C2F40" />
+          <React.Fragment>
+            <Marker
+              key={theme.colors.primary}
+              coordinate={destination}
+              pinColor={theme.colors.primary}
+            />
             {travelMode === 'WALK' ? (
               <Polyline
                 coordinates={clippedPolyline}
                 strokeWidth={4}
-                strokeColor="#9A2D3F"
+                strokeColor={theme.colors.secondary}
                 lineDashPattern={[5, 10]}
               />
             ) : (
-              <>
+              <React.Fragment>
                 <Polyline
                   coordinates={clippedPolyline}
                   strokeWidth={9}
-                  strokeColor="#BE505B"
+                  strokeColor={theme.colors.primary}
                 />
                 <Polyline
                   coordinates={clippedPolyline}
                   strokeWidth={6}
-                  strokeColor="#9A2D3F"
+                  strokeColor={theme.colors.secondary}
                 />
-              </>
+              </React.Fragment>
             )}
-          </>
+          </React.Fragment>
         )}
     </React.Fragment>
   );
