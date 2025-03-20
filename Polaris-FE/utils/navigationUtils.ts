@@ -362,11 +362,13 @@ export const handleTransitNavigation = ({
       handleStartNavigation();
       setIs3d(true);
     }
-  } else {
-    if (travelMode === 'TRANSIT' && location) {
-      openTransitInMaps(location, destination);
-    } else {
-      handleStartNavigation();
-    }
+    return;
   }
+
+  if (travelMode === 'TRANSIT' && location) {
+    openTransitInMaps(location, destination);
+    return;
+  }
+
+  handleStartNavigation();
 };
