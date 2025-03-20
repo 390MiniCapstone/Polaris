@@ -1,26 +1,17 @@
-import { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
-import { bottomSheetRef, mapRef } from '@/utils/refs';
 import { MapComponent } from '@/components/Map';
 import { OutdoorBottomSheetComponent } from '@/components/BottomSheetComponent/OutdoorBottomSheetComponent';
 import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
-import { Region } from 'react-native-maps';
-import {
-  handleCampusSelect,
-  handleCampusToggle,
-  handleCurrentLocation,
-  handleLocation,
-} from '@/utils/mapHandlers';
 import useClarity from '@/hooks/useClarity';
 import { ColorblindButton } from '@/components/ColorblindButton';
 
 export default function HomeScreen() {
-  const { location, region, setRegion } = useMapLocation();
-  const [showCampusOptions, setShowCampusOptions] = useState(false);
+  const { region, setRegion } = useMapLocation();
 
   const toggleAnimation = useSharedValue(0);
   const optionsAnimation = useSharedValue(0);
@@ -33,32 +24,9 @@ export default function HomeScreen() {
         <View style={styles.buttonContainer}>
           <ColorblindButton />
         </View>
-        <OutdoorBottomSheetComponent
-          onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
-          animatedPosition={animatedPosition}
-          onSearchClick={(selectedRegion: Region) =>
-            handleLocation(selectedRegion, toggleAnimation, optionsAnimation)
-          }
-        />
+        <OutdoorBottomSheetComponent animatedPosition={animatedPosition} />
         <MapButtons
-          onCampusToggle={() =>
-            handleCampusToggle(
-              showCampusOptions,
-              setShowCampusOptions,
-              toggleAnimation,
-              optionsAnimation
-            )
-          }
-          onCampusSelect={(selectedRegion: Region) =>
-            handleCampusSelect(
-              selectedRegion,
-              mapRef,
-              setShowCampusOptions,
-              toggleAnimation,
-              optionsAnimation
-            )
-          }
-          onCurrentLocationPress={() => handleCurrentLocation(mapRef, location)}
+          toggleAnimation={toggleAnimation}
           animatedPosition={animatedPosition}
           optionsAnimation={optionsAnimation}
         />

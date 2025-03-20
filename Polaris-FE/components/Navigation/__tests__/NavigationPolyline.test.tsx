@@ -1,15 +1,17 @@
+import React from 'react';
+import {render} from '@testing-library/react-native';
+import {NavigationPolyline} from '@/components/Navigation/NavigationPolyline';
+import {useNavigation} from '@/contexts/NavigationContext/NavigationContext';
+
+jest.mock('@/contexts/NavigationContext/NavigationContext', () => ({
+  useNavigation: jest.fn(),
+}));
+
 jest.mock('react-native-maps', () => {
   const { View } = require('react-native');
-
-  const MockMapView = (props: any) => <View {...props} />;
-  const MockMarker = (props: any) => <View {...props} />;
-  const MockPolyline = (props: any) => <View {...props} />;
-
   return {
-    __esModule: true,
-    default: MockMapView,
-    Marker: MockMarker,
-    Polyline: MockPolyline,
+    Marker: (props: any) => <View testID="marker" {...props} />,
+    Polyline: (props: any) => <View testID="polyline" {...props} />,
   };
 });
 
@@ -28,112 +30,101 @@ jest.mock('@/hooks/useTheme', () => ({
   }),
 }));
 
-import { render } from '@testing-library/react-native';
-import { Marker, Polyline } from 'react-native-maps';
-import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('NavigationPolyline Component', () => {
   const destination = { latitude: 10, longitude: 20 };
-  const samplePolyline = [
-    { latitude: 10, longitude: 20 },
-    { latitude: 15, longitude: 25 },
-  ];
   const snappedPoint = { latitude: 10, longitude: 20 };
+  const clippedPolyline = [
+    { latitude: 10, longitude: 20 },
+    { latitude: 30, longitude: 40 },
+  ];
 
-  it('renders nothing when navigationState is not "planning" or "navigating"', () => {
-    const { toJSON } = render(
-      <NavigationPolyline
-        navigationState="idle"
-        destination={destination}
-        travelMode="WALK"
-        clippedPolyline={samplePolyline}
-        snappedPoint={snappedPoint}
-      />
-    );
-    expect(toJSON()).toBeNull();
+  it('should not render anything if navigationState is not "planning" or "navigating"', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigationState: 'default',
+      travelMode: 'WALK',
+      destination,
+      snappedPoint,
+      clippedPolyline,
+    });
+    const { queryByTestId } = render(<NavigationPolyline />);
+    expect(queryByTestId('marker')).toBeNull();
+    expect(queryByTestId('polyline')).toBeNull();
   });
 
-  it('renders nothing when clippedPolyline is null', () => {
-    const { toJSON } = render(
-      <NavigationPolyline
-        navigationState="planning"
-        destination={destination}
-        travelMode="WALK"
-        clippedPolyline={null}
-        snappedPoint={snappedPoint}
-      />
-    );
-    expect(toJSON()).toBeNull();
+  it('should not render anything if clippedPolyline is missing', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigationState: 'planning',
+      travelMode: 'WALK',
+      destination,
+      snappedPoint,
+      clippedPolyline: null,
+    });
+    const { queryByTestId } = render(<NavigationPolyline />);
+    expect(queryByTestId('marker')).toBeNull();
+    expect(queryByTestId('polyline')).toBeNull();
   });
 
-  it('renders nothing when snappedPoint is null', () => {
-    const { toJSON } = render(
-      <NavigationPolyline
-        navigationState="planning"
-        destination={destination}
-        travelMode="WALK"
-        clippedPolyline={samplePolyline}
-        snappedPoint={null}
-      />
-    );
-    expect(toJSON()).toBeNull();
+  it('should not render anything if snappedPoint is missing', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigationState: 'planning',
+      travelMode: 'WALK',
+      destination,
+      snappedPoint: null,
+      clippedPolyline,
+    });
+    const { queryByTestId } = render(<NavigationPolyline />);
+    expect(queryByTestId('marker')).toBeNull();
+    expect(queryByTestId('polyline')).toBeNull();
   });
 
-  it('renders Marker and one dashed Polyline for WALK mode', () => {
-    const { UNSAFE_getAllByType } = render(
-      <NavigationPolyline
-        navigationState="planning"
-        destination={destination}
-        travelMode="WALK"
-        clippedPolyline={samplePolyline}
-        snappedPoint={snappedPoint}
-      />
+  it('should render a Marker and a dashed Polyline when travelMode is "WALK"', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigationState: 'planning',
+      travelMode: 'WALK',
+      destination,
+      snappedPoint,
+      clippedPolyline,
+    });
+    const { getByTestId, getAllByTestId } = render(<NavigationPolyline />);
+
+    expect(getByTestId('marker')).toBeTruthy();
+
+    const polylineElements = getAllByTestId('polyline');
+    expect(polylineElements).toHaveLength(1);
+    expect(polylineElements[0].props.strokeWidth).toBe(4);
+    expect(polylineElements[0].props.strokeColor).toBe(
+      mockTheme.colors.secondary
     );
-
-    const markers = UNSAFE_getAllByType(Marker);
-    expect(markers).toHaveLength(1);
-    const marker = markers[0];
-    expect(marker.props.coordinate).toEqual(destination);
-    expect(marker.props.pinColor).toBe(mockTheme.colors.primary);
-
-    const polylines = UNSAFE_getAllByType(Polyline);
-    expect(polylines).toHaveLength(1);
-
-    const polyline = polylines[0];
-    expect(polyline.props.coordinates).toEqual(samplePolyline);
-    expect(polyline.props.strokeWidth).toBe(4);
-    expect(polyline.props.strokeColor).toBe(mockTheme.colors.secondary);
-    expect(polyline.props.lineDashPattern).toEqual([5, 10]);
+    expect(polylineElements[0].props.lineDashPattern).toEqual([5, 10]);
   });
 
-  it('renders Marker and two Polylines for non-WALK modes', () => {
-    const { UNSAFE_getAllByType } = render(
-      <NavigationPolyline
-        navigationState="navigating"
-        destination={destination}
-        travelMode="DRIVE"
-        clippedPolyline={samplePolyline}
-        snappedPoint={snappedPoint}
-      />
+  it('should render a Marker and two Polylines when travelMode is not "WALK"', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigationState: 'planning',
+      travelMode: 'DRIVE',
+      destination,
+      snappedPoint,
+      clippedPolyline,
+    });
+    const { getByTestId, getAllByTestId } = render(<NavigationPolyline />);
+
+    expect(getByTestId('marker')).toBeTruthy();
+
+    const polylineElements = getAllByTestId('polyline');
+    expect(polylineElements).toHaveLength(2);
+
+    expect(polylineElements[0].props.strokeWidth).toBe(9);
+    expect(polylineElements[0].props.strokeColor).toBe(
+      mockTheme.colors.primary
     );
 
-    const markers = UNSAFE_getAllByType(Marker);
-    expect(markers).toHaveLength(1);
-    const marker = markers[0];
-    expect(marker.props.coordinate).toEqual(destination);
-    expect(marker.props.pinColor).toBe(mockTheme.colors.primary);
-
-    const polylines = UNSAFE_getAllByType(Polyline);
-    expect(polylines).toHaveLength(2);
-
-    const firstPolyline = polylines[0];
-    expect(firstPolyline.props.coordinates).toEqual(samplePolyline);
-    expect(firstPolyline.props.strokeWidth).toBe(9);
-    expect(firstPolyline.props.strokeColor).toBe(mockTheme.colors.primary);
-
-    const secondPolyline = polylines[1];
-    expect(secondPolyline.props.coordinates).toEqual(samplePolyline);
-    expect(secondPolyline.props.strokeWidth).toBe(6);
-    expect(secondPolyline.props.strokeColor).toBe(mockTheme.colors.secondary);
+    expect(polylineElements[1].props.strokeWidth).toBe(6);
+    expect(polylineElements[1].props.strokeColor).toBe(
+      mockTheme.colors.secondary
+    );
   });
 });

@@ -2,8 +2,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { createContext, useEffect } from 'react';
-import 'react-native-reanimated';
+import { useEffect, createContext } from 'react';
 import GlobalContextProvider from '@/contexts/ContextProvider/GlobalContextProvider';
 
 export interface BuildingContextType {
@@ -15,7 +14,6 @@ export const BuildingContext = createContext<BuildingContextType | undefined>(
   undefined
 );
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

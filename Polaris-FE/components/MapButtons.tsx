@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { Region } from 'react-native-maps';
 import { Downtown, Loyola } from '@/constants/mapConstants';
-import { SharedValue } from 'react-native-reanimated';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Animated, {
   interpolate,
+  SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import {
+  handleCampusSelect,
+  handleCampusToggle,
+  handleCurrentLocation,
+} from '@/utils/mapHandlers';
+import { mapRef } from '@/utils/refs';
+import { useMapLocation } from '@/hooks/useMapLocation';
 
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
@@ -15,20 +22,19 @@ const AnimatedTouchableOpacity =
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 interface NavigationButtonsProps {
-  onCampusToggle: () => void;
-  onCampusSelect: (region: Region) => void;
-  onCurrentLocationPress: () => void;
   optionsAnimation: SharedValue<number>;
   animatedPosition: SharedValue<number>;
+  toggleAnimation: SharedValue<number>;
 }
 
 export const MapButtons: React.FC<NavigationButtonsProps> = ({
-  onCampusToggle,
-  onCampusSelect,
-  onCurrentLocationPress,
   optionsAnimation,
   animatedPosition,
+  toggleAnimation,
 }) => {
+  const { location } = useMapLocation();
+  const [showCampusOptions, setShowCampusOptions] = useState(false);
+
   const buttonsStyle = useAnimatedStyle(() => {
     const startFadeHeight = 200;
     const endFadeHeight = 100;
@@ -71,6 +77,23 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
     };
   });
 
+  const onCampusToggle = () =>
+    handleCampusToggle(
+      showCampusOptions,
+      setShowCampusOptions,
+      toggleAnimation,
+      optionsAnimation
+    );
+
+  const onCampusSelect = (selectedRegion: Region) =>
+    handleCampusSelect(
+      selectedRegion,
+      mapRef,
+      setShowCampusOptions,
+      toggleAnimation,
+      optionsAnimation
+    );
+
   return (
     <AnimatedView
       testID="animated-container"
@@ -108,7 +131,7 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
         testID="button-current-location"
         accessibilityLabel="button-current-location"
         style={styles.currentButton}
-        onPress={onCurrentLocationPress}
+        onPress={() => handleCurrentLocation(mapRef, location)}
       >
         <FontAwesome5 name="location-arrow" size={16} color="white" />
       </AnimatedTouchableOpacity>

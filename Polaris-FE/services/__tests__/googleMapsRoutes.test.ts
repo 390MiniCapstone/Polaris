@@ -16,8 +16,15 @@ jest.mock('expo-constants', () => ({
 global.fetch = jest.fn();
 
 describe('getGoogleMapsRoute', () => {
+  let consoleErrorSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it('returns route data for a valid API response', async () => {
