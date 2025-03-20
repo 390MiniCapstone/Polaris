@@ -1,7 +1,7 @@
 import React from 'react';
-import {render} from '@testing-library/react-native';
-import {NavigationPolyline} from '@/components/Navigation/NavigationPolyline';
-import {useNavigation} from '@/contexts/NavigationContext/NavigationContext';
+import { render } from '@testing-library/react-native';
+import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
 jest.mock('@/contexts/NavigationContext/NavigationContext', () => ({
   useNavigation: jest.fn(),
