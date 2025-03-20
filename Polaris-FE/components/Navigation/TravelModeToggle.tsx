@@ -6,36 +6,47 @@ import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 export const TravelModeToggle: React.FC = () => {
   const { travelMode, setTravelMode } = useNavigation();
 
+  const ModeButton: React.FC<{
+    mode: typeof travelMode;
+    travelMode: typeof travelMode;
+    setTravelMode: (mode: typeof travelMode) => void;
+    icon: React.ReactNode;
+  }> = ({ mode, travelMode, setTravelMode, icon }) => (
+    <TouchableOpacity
+      style={[styles.modeButton, travelMode === mode && styles.selected]}
+      onPress={() => setTravelMode(mode)}
+      testID={`transport-mode-button-${mode}`}
+    >
+      {icon}
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.modeButton, travelMode === 'DRIVE' && styles.selected]}
-        onPress={() => setTravelMode('DRIVE')}
-        testID="transport-mode-button-DRIVE"
-      >
-        <FontAwesome6 name="car" size={22} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.modeButton, travelMode === 'WALK' && styles.selected]}
-        onPress={() => setTravelMode('WALK')}
-        testID="transport-mode-button-WALK"
-      >
-        <FontAwesome5 name="walking" size={22} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.modeButton, travelMode === 'TRANSIT' && styles.selected]}
-        onPress={() => setTravelMode('TRANSIT')}
-        testID="transport-mode-button-TRANSIT"
-      >
-        <FontAwesome6 name="bus-simple" size={22} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.modeButton, travelMode === 'BICYCLE' && styles.selected]}
-        onPress={() => setTravelMode('BICYCLE')}
-        testID="transport-mode-button-BICYCLE"
-      >
-        <FontAwesome name="bicycle" size={22} color="white" />
-      </TouchableOpacity>
+      <ModeButton
+        mode="DRIVE"
+        travelMode={travelMode}
+        setTravelMode={setTravelMode}
+        icon={<FontAwesome6 name="car" size={22} color="white" />}
+      />
+      <ModeButton
+        mode="WALK"
+        travelMode={travelMode}
+        setTravelMode={setTravelMode}
+        icon={<FontAwesome5 name="walking" size={22} color="white" />}
+      />
+      <ModeButton
+        mode="TRANSIT"
+        travelMode={travelMode}
+        setTravelMode={setTravelMode}
+        icon={<FontAwesome6 name="bus-simple" size={22} color="white" />}
+      />
+      <ModeButton
+        mode="BICYCLE"
+        travelMode={travelMode}
+        setTravelMode={setTravelMode}
+        icon={<FontAwesome name="bicycle" size={22} color="white" />}
+      />
     </View>
   );
 };
