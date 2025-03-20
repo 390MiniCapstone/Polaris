@@ -4,6 +4,7 @@ import { Geojson } from 'react-native-maps';
 import { MapComponent } from '@/components/Map';
 import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
+import { themes } from '@/utils/themeOptions';
 
 jest.mock('@/hooks/useCurrentBuilding', () => ({
   useCurrentBuilding: jest.fn(),
@@ -90,7 +91,7 @@ describe('MapComponent', () => {
     );
     const geojsons = UNSAFE_getAllByType(Geojson);
     const buildingGeojsons = geojsons.filter(
-      g => g.props.fillColor === 'rgba(143, 34, 54, 0.8)'
+      g => g.props.fillColor === themes.default.colors.primary //theme.colors.primary
     );
     expect(buildingGeojsons.length).toBe(2);
   });
