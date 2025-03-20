@@ -9,9 +9,8 @@ import {
 import Animated from 'react-native-reanimated';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import Constants from 'expo-constants';
-import { bottomSheetRef } from '@/utils/refs';
+import { bottomSheetRef, inputRef } from '@/utils/refs';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
-import { inputRef } from '@/utils/refs';
 import { BottomSheetComponent } from '@/components/BottomSheetComponent/BottomSheetComponent';
 import NextClassCard from '@/components/NextClassComponent/NextClassCard';
 
