@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ThemeContext } from '@/contexts/ThemeProvider/ThemeContext';
 import { themes } from '@/utils/themeOptions';
 import { fireEvent, render, screen } from '@testing-library/react-native';
@@ -41,6 +41,18 @@ describe('ThemeProvider', () => {
     expect(screen.getByTestId('theme')).toHaveTextContent(
       themes.dark.colors.primary
     );
+  });
+
+  it('throws an error when setIndoorBuilding is called outside of BuildingProvider', () => {
+    const BrokenComponent = () => {
+      const { setTheme } = useContext(ThemeContext);
+      setTheme(themes['default']);
+      return <Text>Broken</Text>;
+    };
+
+    expect(() => {
+      render(<BrokenComponent />);
+    }).toThrow('setTheme must be used within a ThemeProvider');
   });
 
   Object.entries(themes).forEach(([themeName, themeValue]) => {
