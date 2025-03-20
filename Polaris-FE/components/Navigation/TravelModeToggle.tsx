@@ -1,58 +1,41 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
-import { TravelMode } from '@/constants/types';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
-interface TravelModeToggleProps {
-  selectedMode: TravelMode;
-  onModeSelect: (mode: TravelMode) => void;
-}
+export const TravelModeToggle: React.FC = () => {
+  const { travelMode, setTravelMode } = useNavigation();
 
-const ModeButton: React.FC<{
-  mode: TravelMode;
-  selectedMode: TravelMode;
-  onModeSelect: (mode: TravelMode) => void;
-  icon: React.ReactNode;
-}> = ({ mode, selectedMode, onModeSelect, icon }) => (
-  <TouchableOpacity
-    style={[styles.modeButton, selectedMode === mode && styles.selected]}
-    onPress={() => onModeSelect(mode)}
-    testID={`transport-mode-button-${mode}`}
-  >
-    {icon}
-  </TouchableOpacity>
-);
-
-export const TravelModeToggle: React.FC<TravelModeToggleProps> = ({
-  selectedMode,
-  onModeSelect,
-}) => {
   return (
     <View style={styles.container}>
-      <ModeButton
-        mode="DRIVE"
-        selectedMode={selectedMode}
-        onModeSelect={onModeSelect}
-        icon={<FontAwesome6 name="car" size={22} color="white" />}
-      />
-      <ModeButton
-        mode="WALK"
-        selectedMode={selectedMode}
-        onModeSelect={onModeSelect}
-        icon={<FontAwesome5 name="walking" size={22} color="white" />}
-      />
-      <ModeButton
-        mode="TRANSIT"
-        selectedMode={selectedMode}
-        onModeSelect={onModeSelect}
-        icon={<FontAwesome6 name="bus-simple" size={22} color="white" />}
-      />
-      <ModeButton
-        mode="BICYCLE"
-        selectedMode={selectedMode}
-        onModeSelect={onModeSelect}
-        icon={<FontAwesome name="bicycle" size={22} color="white" />}
-      />
+      <TouchableOpacity
+        style={[styles.modeButton, travelMode === 'DRIVE' && styles.selected]}
+        onPress={() => setTravelMode('DRIVE')}
+        testID="transport-mode-button-DRIVE"
+      >
+        <FontAwesome6 name="car" size={22} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.modeButton, travelMode === 'WALK' && styles.selected]}
+        onPress={() => setTravelMode('WALK')}
+        testID="transport-mode-button-WALK"
+      >
+        <FontAwesome5 name="walking" size={22} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.modeButton, travelMode === 'TRANSIT' && styles.selected]}
+        onPress={() => setTravelMode('TRANSIT')}
+        testID="transport-mode-button-TRANSIT"
+      >
+        <FontAwesome6 name="bus-simple" size={22} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.modeButton, travelMode === 'BICYCLE' && styles.selected]}
+        onPress={() => setTravelMode('BICYCLE')}
+        testID="transport-mode-button-BICYCLE"
+      >
+        <FontAwesome name="bicycle" size={22} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };

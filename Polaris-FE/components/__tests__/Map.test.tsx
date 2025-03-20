@@ -1,23 +1,48 @@
 import React from 'react';
-import { render, act } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
+import { Geojson } from 'react-native-maps';
 import { MapComponent } from '@/components/Map';
+import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
+
+jest.mock('@/hooks/useCurrentBuilding', () => ({
+  useCurrentBuilding: jest.fn(),
+}));
+jest.mock('@/contexts/NavigationContext/NavigationContext', () => ({
+  useNavigation: jest.fn(),
+}));
+
+jest.mock('@/components/Buildings/Buildings', () => ({
+  Buildings: () => {
+    const React = require('react');
+    const { View } = require('react-native');
+    return <View testID="buildings" />;
+  },
+}));
+jest.mock('@/components/Navigation/Navigation', () => ({
+  Navigation: () => {
+    const React = require('react');
+    const { View } = require('react-native');
+    return <View testID="navigation" />;
+  },
+}));
+jest.mock('@/components/Navigation/NavigationPolyline', () => ({
+  NavigationPolyline: () => {
+    const React = require('react');
+    const { View } = require('react-native');
+    return <View testID="navigation-polyline" />;
+  },
+}));
 
 jest.mock('react-native-maps', () => {
   const React = require('react');
   const { View } = require('react-native');
-
   const MockMapView = React.forwardRef((props: any, ref: any) => (
     <View {...props} ref={ref} testID="map-view">
       {props.children}
     </View>
   ));
-
-  const MockGeojson = React.forwardRef((props: any, ref: any) => (
-    <View {...props} ref={ref} testID="geojson">
-      {props.children}
-    </View>
-  ));
-
+  const MockGeojson = (props: any) => <View {...props} />;
   return {
     __esModule: true,
     default: MockMapView,
@@ -25,76 +50,96 @@ jest.mock('react-native-maps', () => {
   };
 });
 
-jest.mock('@/components/Navigation/Navigation', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  return {
-    Navigation: () => <View testID="navigation" />,
-  };
-});
-
-jest.mock('@/components/Navigation/NavigationPolyline', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  return {
-    NavigationPolyline: () => <View testID="navigation-polyline" />,
-  };
-});
-
-jest.mock('@/components/Buildings/Buildings', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  return {
-    Buildings: () => <View testID="buildings" />,
-  };
-});
-
 describe('MapComponent', () => {
-  const initialRegion = {
-    latitude: 37.39223512591287,
-    longitude: -122.16990035825833,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
+  const setRegionMock = jest.fn();
+  const fakeRegion = {
+    latitude: 10,
+    longitude: 20,
+    latitudeDelta: 0.1,
+    longitudeDelta: 0.1,
   };
 
-  it('renders MapView and its child components', () => {
-    const setRegion = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useCurrentBuilding as jest.Mock).mockReturnValue(null);
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigationState: 'default',
+    });
+  });
 
-    const { getByTestId, getAllByTestId } = render(
-      <MapComponent region={initialRegion} setRegion={setRegion} />
+  it('renders MapView with correct props', () => {
+    const { getByTestId } = render(
+      <MapComponent region={fakeRegion} setRegion={setRegionMock} />
     );
+    const mapView = getByTestId('map-view');
 
-    expect(getByTestId('map-view')).toBeTruthy();
+    expect(mapView).toBeTruthy();
+    expect(mapView.props.initialRegion).toEqual(fakeRegion);
+    expect(mapView.props.onRegionChangeComplete).toBe(setRegionMock);
+    expect(mapView.props.showsUserLocation).toBe(true);
+    expect(mapView.props.compassOffset).toEqual({ x: -10, y: 90 });
+    expect(mapView.props.tintColor).toBe('#A83B4A');
+    expect(mapView.props.userLocationCalloutEnabled).toBe(true);
+    expect(mapView.props.showsPointsOfInterest).toBe(true);
+    expect(mapView.props.showsTraffic).toBe(false);
+  });
 
-    const geojsonElements = getAllByTestId('geojson');
-    expect(geojsonElements.length).toBeGreaterThan(0);
+  it('renders two Geojson layers for downtown and loyola buildings', () => {
+    const { UNSAFE_getAllByType } = render(
+      <MapComponent region={fakeRegion} setRegion={setRegionMock} />
+    );
+    const geojsons = UNSAFE_getAllByType(Geojson);
+    const buildingGeojsons = geojsons.filter(
+      g => g.props.fillColor === 'rgba(143, 34, 54, 0.8)'
+    );
+    expect(buildingGeojsons.length).toBe(2);
+  });
 
+  it('renders NavigationPolyline, Buildings, and Navigation components', () => {
+    const { getByTestId } = render(
+      <MapComponent region={fakeRegion} setRegion={setRegionMock} />
+    );
     expect(getByTestId('navigation-polyline')).toBeTruthy();
     expect(getByTestId('buildings')).toBeTruthy();
     expect(getByTestId('navigation')).toBeTruthy();
   });
 
-  it('calls setRegion when MapView region changes', async () => {
-    const setRegion = jest.fn();
+  it('renders current building Geojson when currentBuilding exists', () => {
+    const fakeBuilding = {
+      geometry: {
+        coordinates: [
+          [
+            [1, 2],
+            [3, 4],
+            [5, 6],
+            [1, 2],
+          ],
+        ],
+      },
+    };
+    (useCurrentBuilding as jest.Mock).mockReturnValue(fakeBuilding);
 
-    const { getByTestId } = render(
-      <MapComponent region={initialRegion} setRegion={setRegion} />
+    const { UNSAFE_getAllByType } = render(
+      <MapComponent region={fakeRegion} setRegion={setRegionMock} />
     );
+    const geojsons = UNSAFE_getAllByType(Geojson);
+    const currentBuildingGeojson = geojsons.find(
+      g =>
+        g.props.fillColor === 'rgba(0, 0, 255, 0.5)' &&
+        g.props.strokeColor === 'rgba(0, 0, 255, 1)' &&
+        g.props.strokeWidth === 3
+    );
+    expect(currentBuildingGeojson).toBeTruthy();
+  });
 
+  it('shows traffic when navigationState is "navigating"', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      navigationState: 'navigating',
+    });
+    const { getByTestId } = render(
+      <MapComponent region={fakeRegion} setRegion={setRegionMock} />
+    );
     const mapView = getByTestId('map-view');
-
-    await act(async () => {
-      mapView.props.onRegionChangeComplete({
-        ...initialRegion,
-        latitude: initialRegion.latitude + 0.01,
-        longitude: initialRegion.longitude + 0.01,
-      });
-    });
-
-    expect(setRegion).toHaveBeenCalledWith({
-      ...initialRegion,
-      latitude: initialRegion.latitude + 0.01,
-      longitude: initialRegion.longitude + 0.01,
-    });
+    expect(mapView.props.showsTraffic).toBe(true);
   });
 });
