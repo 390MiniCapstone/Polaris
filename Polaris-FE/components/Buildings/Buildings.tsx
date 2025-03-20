@@ -1,6 +1,6 @@
 import React from 'react';
 import { Marker } from 'react-native-maps';
-import { BUILDING_INFO, Building } from '@/constants/buildingInfo';
+import { Building, BUILDING_INFO } from '@/constants/buildingInfo';
 import { handleCalloutPress } from './utils';
 import { useRouter } from 'expo-router';
 import { useBuildingContext } from '@/contexts/BuildingContext/BuildingContext';
@@ -12,6 +12,7 @@ export const Buildings: React.FC = () => {
 
   const { theme } = useTheme();
   const pinTheme = theme.colors.secondary;
+
   return (
     <>
       {BUILDING_INFO.map((building: Building) => (
