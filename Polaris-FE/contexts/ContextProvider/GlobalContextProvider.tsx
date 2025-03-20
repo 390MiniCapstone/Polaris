@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavigationProvider } from '@/contexts/NavigationContext/NavigationContext';
 import { AuthProvider } from '../AuthContext/AuthContext';
 import { PaperProvider } from 'react-native-paper';
 import { BuildingProvider } from '../BuildingContext/BuildingContext';
@@ -11,7 +12,9 @@ const GlobalContextProvider = ({ children }: { children: React.ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <PaperProvider>
         <BuildingProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <NavigationProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </NavigationProvider>
         </BuildingProvider>
       </PaperProvider>
     </QueryClientProvider>

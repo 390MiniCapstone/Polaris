@@ -1,120 +1,218 @@
-jest.mock('@expo/vector-icons', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  const MockIcon = (props: any) => <View {...props} />;
-  return {
-    __esModule: true,
-    FontAwesome5: MockIcon,
-  };
-});
-
-jest.mock('expo-font', () => ({
-  loadAsync: jest.fn(),
-  isLoaded: jest.fn(() => true),
-}));
-
-jest.mock('@/hooks/useMapLocation', () => ({
-  useMapLocation: () => ({
-    location: { latitude: 30, longitude: 40 },
-  }),
-}));
-
-jest.mock('@/utils/mapHandlers', () => ({
-  handleCurrentLocation: jest.fn(),
-}));
-
-jest.mock('@/utils/navigationUtils', () => ({
-  openTransitInMaps: jest.fn(),
-}));
-
-jest.mock('@/utils/refs', () => ({
-  mapRef: {},
-}));
-
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { NavigationInfo } from '@/components/Navigation/NavigationInfo';
-import { handleCurrentLocation } from '@/utils/mapHandlers';
-import { openTransitInMaps } from '@/utils/navigationUtils';
+import { useMapLocation } from '@/hooks/useMapLocation';
+import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
+import { handleTransitNavigation } from '@/utils/navigationUtils';
+import { mapRef } from '@/utils/refs';
+import { LatLng } from 'react-native-maps';
 
-describe('NavigationInfo Component', () => {
-  const defaultProps = {
-    duration: 300,
-    distance: 1500,
-    isNavigating: false,
-    is3d: false,
-    travelMode: 'DRIVE',
-    destination: { latitude: 10, longitude: 20 },
-    onCancel: jest.fn(),
-    onStartNavigation: jest.fn(),
-    updateIs3d: jest.fn(),
-  };
+jest.mock('@/hooks/useMapLocation');
+jest.mock('@/contexts/NavigationContext/NavigationContext');
+jest.mock('@/utils/navigationUtils');
+jest.mock('@/utils/refs', () => ({
+  mapRef: {
+    current: {},
+  },
+}));
+jest.mock('@expo/vector-icons', () => ({
+  FontAwesome5: 'FontAwesome5',
+}));
+
+describe('NavigationInfo', () => {
+  const mockLocation: LatLng = { latitude: 37.7749, longitude: -122.4194 };
+  const mockDestination: LatLng = { latitude: 34.0522, longitude: -118.2437 };
+
+  const mockSetIs3d = jest.fn();
+  const mockCancelNavigation = jest.fn();
+  const mockHandleStartNavigation = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-  });
 
-  it('renders cancel button, info texts, and GO button when not navigating', () => {
-    const { getByText, getByTestId } = render(
-      <NavigationInfo {...defaultProps} />
-    );
-
-    expect(getByTestId('cancel-button')).toBeTruthy();
-    expect(getByTestId('action-button')).toBeTruthy();
-
-    expect(getByText('5 Minutes')).toBeTruthy();
-    expect(getByText('·')).toBeTruthy();
-    expect(getByText('1.5 km')).toBeTruthy();
-    expect(getByText('GO')).toBeTruthy();
-  });
-
-  it('calls onCancel when cancel button is pressed', () => {
-    const { getByTestId } = render(<NavigationInfo {...defaultProps} />);
-    fireEvent.press(getByTestId('cancel-button'));
-    expect(defaultProps.onCancel).toHaveBeenCalled();
-  });
-
-  it('calls openTransitInMaps when not navigating, travelMode is TRANSIT, and location exists', () => {
-    const props = { ...defaultProps, travelMode: 'TRANSIT' };
-    const { getByTestId } = render(<NavigationInfo {...props} />);
-    fireEvent.press(getByTestId('action-button'));
-
-    expect(openTransitInMaps).toHaveBeenCalledWith(
-      { latitude: 30, longitude: 40 },
-      props.destination
-    );
-    expect(props.onStartNavigation).not.toHaveBeenCalled();
-  });
-
-  it('calls onStartNavigation when not navigating and travelMode is not TRANSIT', () => {
-    const props = { ...defaultProps, travelMode: 'DRIVE' };
-    const { getByTestId } = render(<NavigationInfo {...props} />);
-    fireEvent.press(getByTestId('action-button'));
-
-    expect(props.onStartNavigation).toHaveBeenCalled();
-    expect(openTransitInMaps).not.toHaveBeenCalled();
-  });
-
-  it('calls handleCurrentLocation and updateIs3d(false) when navigating and is3d is true', () => {
-    const props = { ...defaultProps, isNavigating: true, is3d: true };
-    const { getByTestId } = render(<NavigationInfo {...props} />);
-    fireEvent.press(getByTestId('action-button'));
-
-    expect(handleCurrentLocation).toHaveBeenCalledWith(expect.any(Object), {
-      latitude: 30,
-      longitude: 40,
+    (useMapLocation as jest.Mock).mockReturnValue({
+      location: mockLocation,
     });
-    expect(props.updateIs3d).toHaveBeenCalledWith(false);
-    expect(props.onStartNavigation).not.toHaveBeenCalled();
+
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode: 'DRIVE',
+      is3d: true,
+      setIs3d: mockSetIs3d,
+      remainingTime: 1800,
+      remainingDistance: 15000,
+      destination: mockDestination,
+      cancelNavigation: mockCancelNavigation,
+      handleStartNavigation: mockHandleStartNavigation,
+      navigationState: 'planning',
+    });
   });
 
-  it('calls onStartNavigation and updateIs3d(true) when navigating and is3d is false', () => {
-    const props = { ...defaultProps, isNavigating: true, is3d: false };
-    const { getByTestId } = render(<NavigationInfo {...props} />);
+  test('renders correctly in planning state', () => {
+    const { getByText, getByTestId } = render(<NavigationInfo />);
+
+    expect(getByText('30 Minutes')).toBeTruthy();
+    expect(getByText('15.0 km')).toBeTruthy();
+
+    expect(getByText('GO')).toBeTruthy();
+
+    const actionButton = getByTestId('action-button');
+    expect(actionButton.props.style).toMatchObject(
+      expect.objectContaining({
+        backgroundColor: '#9A2E3F',
+      })
+    );
+  });
+
+  test('renders correctly in navigating state', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode: 'DRIVE',
+      is3d: true,
+      setIs3d: mockSetIs3d,
+      remainingTime: 1800,
+      remainingDistance: 15000,
+      destination: mockDestination,
+      cancelNavigation: mockCancelNavigation,
+      handleStartNavigation: mockHandleStartNavigation,
+      navigationState: 'navigating',
+    });
+
+    const { queryByText, getByTestId } = render(<NavigationInfo />);
+
+    expect(queryByText('GO')).toBeNull();
+
+    const actionButton = getByTestId('action-button');
+    expect(actionButton.props.style).toMatchObject(
+      expect.objectContaining({
+        backgroundColor: 'rgba(34, 34, 34, 0.992)',
+      })
+    );
+  });
+
+  test('rounds up remaining time to nearest minute', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode: 'DRIVE',
+      is3d: true,
+      setIs3d: mockSetIs3d,
+      remainingTime: 138,
+      remainingDistance: 15000,
+      destination: mockDestination,
+      cancelNavigation: mockCancelNavigation,
+      handleStartNavigation: mockHandleStartNavigation,
+      navigationState: 'planning',
+    });
+
+    const { getByText } = render(<NavigationInfo />);
+
+    expect(getByText('3 Minutes')).toBeTruthy();
+  });
+
+  test('formats distance with one decimal place', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode: 'DRIVE',
+      is3d: true,
+      setIs3d: mockSetIs3d,
+      remainingTime: 1800,
+      remainingDistance: 12340,
+      destination: mockDestination,
+      cancelNavigation: mockCancelNavigation,
+      handleStartNavigation: mockHandleStartNavigation,
+      navigationState: 'planning',
+    });
+
+    const { getByText } = render(<NavigationInfo />);
+
+    expect(getByText('12.3 km')).toBeTruthy();
+  });
+
+  test('calls cancelNavigation when cancel button is pressed', () => {
+    const { getByTestId } = render(<NavigationInfo />);
+
+    fireEvent.press(getByTestId('cancel-button'));
+
+    expect(mockCancelNavigation).toHaveBeenCalledTimes(1);
+  });
+
+  test('calls handleTransitNavigation with correct params when GO button is pressed in planning state', () => {
+    const { getByTestId } = render(<NavigationInfo />);
+
     fireEvent.press(getByTestId('action-button'));
 
-    expect(props.onStartNavigation).toHaveBeenCalled();
-    expect(props.updateIs3d).toHaveBeenCalledWith(true);
-    expect(handleCurrentLocation).not.toHaveBeenCalled();
+    expect(handleTransitNavigation).toHaveBeenCalledWith({
+      navigationState: 'planning',
+      is3d: true,
+      location: mockLocation,
+      travelMode: 'DRIVE',
+      destination: mockDestination,
+      setIs3d: mockSetIs3d,
+      handleStartNavigation: mockHandleStartNavigation,
+      mapRef,
+    });
+  });
+
+  test('calls handleTransitNavigation with correct params when action button is pressed in navigating state', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode: 'DRIVE',
+      is3d: true,
+      setIs3d: mockSetIs3d,
+      remainingTime: 1800,
+      remainingDistance: 15000,
+      destination: mockDestination,
+      cancelNavigation: mockCancelNavigation,
+      handleStartNavigation: mockHandleStartNavigation,
+      navigationState: 'navigating',
+    });
+
+    const { getByTestId } = render(<NavigationInfo />);
+
+    fireEvent.press(getByTestId('action-button'));
+
+    expect(handleTransitNavigation).toHaveBeenCalledWith({
+      navigationState: 'navigating',
+      is3d: true,
+      location: mockLocation,
+      travelMode: 'DRIVE',
+      destination: mockDestination,
+      setIs3d: mockSetIs3d,
+      handleStartNavigation: mockHandleStartNavigation,
+      mapRef,
+    });
+  });
+
+  test('handles zero remaining time and distance', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode: 'DRIVE',
+      is3d: true,
+      setIs3d: mockSetIs3d,
+      remainingTime: 0,
+      remainingDistance: 0,
+      destination: mockDestination,
+      cancelNavigation: mockCancelNavigation,
+      handleStartNavigation: mockHandleStartNavigation,
+      navigationState: 'planning',
+    });
+
+    const { getByText } = render(<NavigationInfo />);
+
+    expect(getByText('0 Minutes')).toBeTruthy();
+    expect(getByText('0.0 km')).toBeTruthy();
+  });
+
+  test('handles very small remaining time and distance', () => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode: 'DRIVE',
+      is3d: true,
+      setIs3d: mockSetIs3d,
+      remainingTime: 5,
+      remainingDistance: 10,
+      destination: mockDestination,
+      cancelNavigation: mockCancelNavigation,
+      handleStartNavigation: mockHandleStartNavigation,
+      navigationState: 'planning',
+    });
+
+    const { getByText } = render(<NavigationInfo />);
+
+    expect(getByText('1 Minutes')).toBeTruthy();
+    expect(getByText('0.0 km')).toBeTruthy();
   });
 });

@@ -3,6 +3,7 @@ import HomeScreen from '@/app/index';
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BuildingProvider } from '@/contexts/BuildingContext/BuildingContext';
+import { NavigationProvider } from '@/contexts/NavigationContext/NavigationContext';
 
 jest.mock('@expo/vector-icons', () => {
   const { View } = require('react-native');
@@ -43,7 +44,9 @@ describe('HomeScreen Minimal Test', () => {
       <QueryClientProvider client={queryClient}>
         <BuildingProvider>
           <AuthProvider>
-            <HomeScreen />
+            <NavigationProvider>
+              <HomeScreen />
+            </NavigationProvider>
           </AuthProvider>
         </BuildingProvider>
       </QueryClientProvider>

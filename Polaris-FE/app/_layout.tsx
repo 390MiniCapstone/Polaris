@@ -8,7 +8,6 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, createContext } from 'react';
-import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import GlobalContextProvider from '@/contexts/ContextProvider/GlobalContextProvider';
 
@@ -21,7 +20,6 @@ export const BuildingContext = createContext<BuildingContextType | undefined>(
   undefined
 );
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

@@ -5,6 +5,7 @@ import { MutableRefObject } from 'react';
 import {
   calculateBearing,
   getDistanceFromLatLonInMeters,
+  handleCurrentLocation,
 } from '@/utils/mapHandlers';
 
 export const getDistanceBetweenPoints = (p1: LatLng, p2: LatLng): number => {
@@ -332,4 +333,42 @@ export const startNavigation = (
     },
     { duration: 1000 }
   );
+};
+
+export const handleTransitNavigation = ({
+  navigationState,
+  is3d,
+  location,
+  travelMode,
+  destination,
+  setIs3d,
+  handleStartNavigation,
+  mapRef,
+}: {
+  navigationState: string;
+  is3d: boolean;
+  location: { latitude: number; longitude: number } | null;
+  travelMode: string;
+  destination: LatLng;
+  setIs3d: (value: boolean) => void;
+  handleStartNavigation: () => void;
+  mapRef: MutableRefObject<MapView | null>;
+}) => {
+  if (navigationState === 'navigating') {
+    if (is3d) {
+      handleCurrentLocation(mapRef, location);
+      setIs3d(false);
+    } else {
+      handleStartNavigation();
+      setIs3d(true);
+    }
+    return;
+  }
+
+  if (travelMode === 'TRANSIT' && location) {
+    openTransitInMaps(location, destination);
+    return;
+  }
+
+  handleStartNavigation();
 };
