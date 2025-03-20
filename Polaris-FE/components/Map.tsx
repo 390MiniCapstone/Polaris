@@ -24,6 +24,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const currentBuilding = useCurrentBuilding();
   const { theme } = useTheme();
   const fillColor = theme.colors.primary;
+  const currentBuildingFillColor = theme.colors.currentBuildingFillColor;
+  const currentBuildingStrokeColor = theme.colors.currentBuildingStrokeColor;
   return (
     <View style={styles.container}>
       <MapView
@@ -64,8 +66,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 },
               ],
             }}
-            fillColor="rgba(0, 0, 255, 0.5)"
-            strokeColor="rgba(0, 0, 255, 1)"
+            fillColor={currentBuildingFillColor}
+            strokeColor={currentBuildingStrokeColor}
             strokeWidth={3}
           />
         )}
