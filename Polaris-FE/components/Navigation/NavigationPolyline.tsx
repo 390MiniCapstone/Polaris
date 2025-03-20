@@ -18,12 +18,13 @@ export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
   snappedPoint,
 }) => {
   const { theme } = useTheme();
+
   return (
-    <>
+    <React.Fragment>
       {(navigationState === 'planning' || navigationState === 'navigating') &&
         clippedPolyline &&
         snappedPoint && (
-          <>
+          <React.Fragment>
             <Marker
               key={theme.colors.primary}
               coordinate={destination}
@@ -37,7 +38,7 @@ export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
                 lineDashPattern={[5, 10]}
               />
             ) : (
-              <>
+              <React.Fragment>
                 <Polyline
                   coordinates={clippedPolyline}
                   strokeWidth={9}
@@ -48,10 +49,10 @@ export const NavigationPolyline: React.FC<NavigationPolylineProps> = ({
                   strokeWidth={6}
                   strokeColor={theme.colors.secondary}
                 />
-              </>
+              </React.Fragment>
             )}
-          </>
+          </React.Fragment>
         )}
-    </>
+    </React.Fragment>
   );
 };
