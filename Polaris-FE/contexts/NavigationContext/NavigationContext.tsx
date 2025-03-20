@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useMemo,
 } from 'react';
 import { LatLng } from 'react-native-maps';
 import { NavigationState, TravelMode, RouteData } from '@/constants/types';
@@ -157,28 +158,42 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     setNavigationState('default');
   };
 
+  const contextValue = useMemo(
+    () => ({
+      navigationState,
+      setNavigationState,
+      destination,
+      setDestination,
+      travelMode,
+      setTravelMode,
+      is3d,
+      setIs3d,
+      routeData,
+      remainingDistance,
+      remainingTime,
+      nextInstruction,
+      snappedPoint,
+      clippedPolyline,
+      handleStartNavigation,
+      startNavigationToDestination,
+      cancelNavigation,
+    }),
+    [
+      navigationState,
+      destination,
+      travelMode,
+      is3d,
+      routeData,
+      remainingDistance,
+      remainingTime,
+      nextInstruction,
+      snappedPoint,
+      clippedPolyline,
+    ]
+  );
+
   return (
-    <NavigationContext.Provider
-      value={{
-        navigationState,
-        setNavigationState,
-        destination,
-        setDestination,
-        travelMode,
-        setTravelMode,
-        is3d,
-        setIs3d,
-        routeData,
-        remainingDistance,
-        remainingTime,
-        nextInstruction,
-        snappedPoint,
-        clippedPolyline,
-        handleStartNavigation,
-        startNavigationToDestination,
-        cancelNavigation,
-      }}
-    >
+    <NavigationContext.Provider value={contextValue}>
       {children}
     </NavigationContext.Provider>
   );

@@ -30,12 +30,13 @@ export const NavigationInfo: React.FC = () => {
         handleStartNavigation();
         setIs3d(true);
       }
+      return;
+    }
+
+    if (travelMode === 'TRANSIT' && location) {
+      openTransitInMaps(location, destination);
     } else {
-      if (travelMode === 'TRANSIT' && location) {
-        openTransitInMaps(location, destination);
-      } else {
-        handleStartNavigation();
-      }
+      handleStartNavigation();
     }
   };
 
