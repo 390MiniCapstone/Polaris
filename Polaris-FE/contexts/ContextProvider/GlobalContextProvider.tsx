@@ -12,11 +12,9 @@ const GlobalContextProvider = ({ children }: { children: React.ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <PaperProvider>
         <BuildingProvider>
-            <NavigationProvider>
-                <AuthProvider>
-                    {children}
-                </AuthProvider>
-            </NavigationProvider>
+          <NavigationProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </NavigationProvider>
         </BuildingProvider>
       </PaperProvider>
     </QueryClientProvider>
