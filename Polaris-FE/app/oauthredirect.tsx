@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, View, Text } from 'react-native';
-import { useSearchParams } from 'expo-router/build/hooks';
 import { useGoogleAuth } from '@/contexts/AuthContext/AuthContext';
 
 export default function OAuthRedirect() {

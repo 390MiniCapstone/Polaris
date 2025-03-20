@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 import GooglePlacesInput from '@/components/GooglePlacesInput';
 import Constants from 'expo-constants';
 import { bottomSheetRef } from '@/utils/refs';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 import { inputRef } from '@/utils/refs';
-import { BottomSheetComponent } from "@/components/BottomSheetComponent/BottomSheetComponent";
-import NextClassCard from "@/components/NextClassComponent/NextClassCard";
+import { BottomSheetComponent } from '@/components/BottomSheetComponent/BottomSheetComponent';
+import NextClassCard from '@/components/NextClassComponent/NextClassCard';
 
 interface OutdoorBottomSheetProps {
   animatedPosition: Animated.SharedValue<number>;
@@ -113,5 +119,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 });
-
-export default BottomSheetComponent;

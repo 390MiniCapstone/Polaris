@@ -2,7 +2,7 @@ import React from 'react';
 import MapView, { Geojson, Region } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import { downtownBuildings, loyolaBuildings } from '@/constants/buildings';
-import { Buildings } from './Buildings/Buildings';
+import { Buildings } from '@/components/Buildings/Buildings';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { mapRef } from '@/utils/refs';
 import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
