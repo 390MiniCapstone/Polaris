@@ -56,6 +56,7 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
     );
 
     const opacity = Math.min(upperFade, lowerFade);
+
     return {
       transform: [
         {
@@ -92,8 +93,6 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
       toggleAnimation,
       optionsAnimation
     );
-
-  const onCurrentLocationPress = () => handleCurrentLocation(mapRef, location);
 
   return (
     <AnimatedView
@@ -132,7 +131,7 @@ export const MapButtons: React.FC<NavigationButtonsProps> = ({
         testID="button-current-location"
         accessibilityLabel="button-current-location"
         style={styles.currentButton}
-        onPress={onCurrentLocationPress}
+        onPress={() => handleCurrentLocation(mapRef, location)}
       >
         <FontAwesome5 name="location-arrow" size={16} color="white" />
       </AnimatedTouchableOpacity>

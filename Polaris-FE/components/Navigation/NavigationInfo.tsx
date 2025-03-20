@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { handleCurrentLocation } from '@/utils/mapHandlers';
-import { openTransitInMaps } from '@/utils/navigationUtils';
+import { handleTransitNavigation } from '@/utils/navigationUtils';
 import { mapRef } from '@/utils/refs';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
@@ -22,21 +21,16 @@ export const NavigationInfo: React.FC = () => {
   } = useNavigation();
 
   const handlePress = () => {
-    if (navigationState === 'navigating') {
-      if (is3d) {
-        handleCurrentLocation(mapRef, location);
-        setIs3d(false);
-      } else {
-        handleStartNavigation();
-        setIs3d(true);
-      }
-    } else {
-      if (travelMode === 'TRANSIT' && location) {
-        openTransitInMaps(location, destination);
-      } else {
-        handleStartNavigation();
-      }
-    }
+    handleTransitNavigation({
+      navigationState,
+      is3d,
+      location,
+      travelMode,
+      destination,
+      setIs3d,
+      handleStartNavigation,
+      mapRef,
+    });
   };
 
   return (

@@ -11,7 +11,7 @@ export const NavigationPolyline: React.FC = () => {
     navigationState,
   } = useNavigation();
   return (
-    <>
+    <React.Fragment>
       {(navigationState === 'planning' || navigationState === 'navigating') &&
         clippedPolyline &&
         snappedPoint && (
@@ -40,6 +40,6 @@ export const NavigationPolyline: React.FC = () => {
             )}
           </>
         )}
-    </>
+    </React.Fragment>
   );
 };

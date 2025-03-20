@@ -125,7 +125,14 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
       if (currentStep)
         startNavigation(location, clippedPolyline, currentStep, mapRef);
     }
-  }, [location, navigationState]);
+  }, [
+    location,
+    navigationState,
+    is3d,
+    clippedPolyline,
+    routeData,
+    snappedPoint,
+  ]);
 
   useEffect(() => {
     const arrivalThreshold = 10;

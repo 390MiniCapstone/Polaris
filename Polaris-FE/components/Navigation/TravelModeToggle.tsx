@@ -5,6 +5,7 @@ import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
 export const TravelModeToggle: React.FC = () => {
   const { travelMode, setTravelMode } = useNavigation();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity

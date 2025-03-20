@@ -8,13 +8,13 @@ export const Navigation: React.FC = () => {
   const { navigationState, routeData } = useNavigation();
 
   return (
-    <>
+    <React.Fragment>
       {navigationState === 'planning' && <TravelModeToggle />}
 
       {navigationState === 'navigating' && <Instructions />}
 
       {(navigationState === 'planning' || navigationState === 'navigating') &&
         routeData && <NavigationInfo />}
-    </>
+    </React.Fragment>
   );
 };
