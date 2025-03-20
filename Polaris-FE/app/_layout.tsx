@@ -2,10 +2,9 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, createContext } from 'react';
+import { createContext, useEffect } from 'react';
 import 'react-native-reanimated';
 import GlobalContextProvider from '@/contexts/ContextProvider/GlobalContextProvider';
-import ThemeProvider from '@/contexts/ThemeProvider/ThemeContextProvider';
 
 export interface BuildingContextType {
   indoorBuilding: string | null;
@@ -35,16 +34,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <GlobalContextProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="indoor" options={{ headerShown: false }} />
-          <Stack.Screen name="oauthredirect" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </GlobalContextProvider>
-    </ThemeProvider>
+    <GlobalContextProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="indoor" options={{ headerShown: false }} />
+        <Stack.Screen name="oauthredirect" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </GlobalContextProvider>
   );
 }

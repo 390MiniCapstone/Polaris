@@ -1,10 +1,10 @@
 import React from 'react';
 import { ThemeContext } from '@/contexts/ThemeProvider/ThemeContext';
 import { themes } from '@/utils/themeOptions';
-import { screen, render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import ThemeProvider from '../ThemeContextProvider';
-import { Button, View, Text } from 'react-native';
+import { Button, Text, View } from 'react-native';
 
 describe('ThemeProvider', () => {
   jest.mock('@/hooks/useColorScheme');
@@ -19,7 +19,7 @@ describe('ThemeProvider', () => {
     render(
       <ThemeProvider>
         <ThemeContext.Consumer>
-          {({ theme }) => <view testID="theme">{theme.colors.primary}</view>}
+          {({ theme }) => <View testID="theme">{theme.colors.primary}</View>}
         </ThemeContext.Consumer>
       </ThemeProvider>
     );

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, Text, TouchableOpacity, View } from 'react-native';
 import useTheme from '@/hooks/useTheme';
 import { CustomTheme, themes } from '@/utils/themeOptions';
 import styles from './Styles/ColorblindButton';
+import { themeOptions } from '@/constants/themeOptions';
 
 interface ThemeOptionProps {
   themeKey: string;
@@ -32,17 +33,6 @@ export function ColorblindButton() {
   const { setTheme } = useTheme();
 
   const toggleModal = () => setModalVisible(!modalVisible);
-
-  const themeOptions = [
-    { key: 'default', label: 'Default', icon: '🔵' },
-    { key: 'deuteranopia', label: 'Deuteranopia (Green Weakness)', icon: '🟠' },
-    { key: 'protanopia', label: 'Protanopia (Red Weakness)', icon: '🟢' },
-    {
-      key: 'tritanopia',
-      label: 'Tritanopia (Blue-Yellow Deficiency)',
-      icon: '🔴',
-    },
-  ];
 
   return (
     <View>
