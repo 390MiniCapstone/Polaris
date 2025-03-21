@@ -1,7 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { handleTransitNavigation } from '@/utils/navigationUtils';
+import { handleGoButton } from '@/utils/navigationUtils';
 import { mapRef } from '@/utils/refs';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
@@ -18,10 +24,13 @@ export const NavigationInfo: React.FC = () => {
     cancelNavigation,
     handleStartNavigation,
     navigationState,
+    routeData,
+    error,
+    loading,
   } = useNavigation();
 
   const handlePress = () => {
-    handleTransitNavigation({
+    handleGoButton({
       navigationState,
       is3d,
       location,
@@ -30,6 +39,7 @@ export const NavigationInfo: React.FC = () => {
       setIs3d,
       handleStartNavigation,
       mapRef,
+      error,
     });
   };
 
@@ -43,15 +53,29 @@ export const NavigationInfo: React.FC = () => {
         <FontAwesome5 name="times" size={20} color="white" />
       </TouchableOpacity>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.timeText}>
-          {Math.ceil(remainingTime / 60)} Minutes
-        </Text>
-        <Text style={styles.timeText}>·</Text>
-        <Text style={styles.distanceText}>
-          {(remainingDistance / 1000).toFixed(1)} km
-        </Text>
-      </View>
+      {loading ? (
+        <View style={styles.infoContainer}>
+          <ActivityIndicator />
+        </View>
+      ) : error ? (
+        <View style={styles.infoContainer}>
+          <Text style={styles.greyText}>Directions Not Available</Text>
+        </View>
+      ) : routeData && remainingTime && remainingDistance ? (
+        <View style={styles.infoContainer}>
+          <Text style={styles.whiteText}>
+            {Math.ceil(remainingTime / 60)} Minutes
+          </Text>
+          <Text style={styles.whiteText}>·</Text>
+          <Text style={styles.greyText}>
+            {(remainingDistance / 1000).toFixed(1)} km
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.infoContainer}>
+          <ActivityIndicator />
+        </View>
+      )}
 
       <TouchableOpacity
         testID="action-button"
@@ -94,19 +118,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(34, 34, 34, 0.992)',
     paddingHorizontal: 20,
     borderRadius: 16,
-    minWidth: 200,
+    minWidth: 50,
     height: 46,
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 5,
     alignItems: 'center',
   },
-  timeText: {
+  whiteText: {
     fontSize: 18,
     fontWeight: '600',
     color: 'white',
   },
-  distanceText: {
+  greyText: {
     fontSize: 18,
     color: 'rgba(255, 255, 255, 0.8)',
   },

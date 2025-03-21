@@ -36,6 +36,18 @@ jest.mock('react-native-reanimated', () => {
   return Reanimated;
 });
 
+jest.mock('sonner-native', () => {
+  const React = require('react');
+  const { View, Text } = require('react-native');
+  return {
+    Toaster: () => (
+      <View testID="toaster">
+        <Text>Toaster</Text>
+      </View>
+    ),
+  };
+});
+
 describe('HomeScreen Minimal Test', () => {
   it('renders without crashing and displays "Campus"', async () => {
     const queryClient = createTestQueryClient();

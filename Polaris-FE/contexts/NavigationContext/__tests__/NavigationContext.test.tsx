@@ -14,7 +14,7 @@ import {
   computeRemainingTime,
   determineCurrentStep,
   determineNextInstruction,
-  startNavigation,
+  animateNavCamera,
 } from '@/utils/navigationUtils';
 import { LatLng } from 'react-native-maps';
 import { RouteData, Step } from '@/constants/types';
@@ -44,7 +44,7 @@ jest.mock('@/utils/navigationUtils', () => ({
   computeRemainingTime: jest.fn(),
   determineCurrentStep: jest.fn(),
   determineNextInstruction: jest.fn(),
-  startNavigation: jest.fn(),
+  animateNavCamera: jest.fn(),
 }));
 jest.mock('@turf/helpers', () => ({
   lineString: jest.fn(() => ({})),
@@ -103,6 +103,9 @@ describe('NavigationContext', () => {
 
     (useGoogleMapsRoute as jest.Mock).mockReturnValue({
       routeData: mockRouteData,
+      setRouteData: jest.fn(),
+      error: null,
+      loading: false,
     });
 
     (nearestPointOnLine as jest.Mock).mockReturnValue({
@@ -133,10 +136,19 @@ describe('NavigationContext', () => {
     const { result } = renderNavigationHook();
 
     expect(result.current.navigationState).toBe('default');
-    expect(result.current.destination).toEqual({ latitude: 0, longitude: 0 });
+
+    expect(result.current.destination).toBeNull();
     expect(result.current.travelMode).toBe('DRIVE');
     expect(result.current.is3d).toBe(true);
+
     expect(result.current.routeData).toEqual(mockRouteData);
+
+    expect(result.current.remainingDistance).toBe(500000);
+    expect(result.current.remainingTime).toBe(18000);
+    expect(result.current.nextInstruction).toBe('Head south on I-5');
+
+    expect(result.current.error).toBeNull();
+    expect(result.current.loading).toBe(false);
   });
 
   test('should update navigation state', () => {
@@ -212,7 +224,7 @@ describe('NavigationContext', () => {
     });
 
     expect(result.current.navigationState).toBe('navigating');
-    expect(startNavigation).toHaveBeenCalledWith(
+    expect(animateNavCamera).toHaveBeenCalledWith(
       mockLocation,
       mockClippedPolyline,
       mockSteps[0],
@@ -223,6 +235,9 @@ describe('NavigationContext', () => {
   test('should not start navigation when required data is missing', () => {
     (useGoogleMapsRoute as jest.Mock).mockReturnValue({
       routeData: null,
+      setRouteData: jest.fn(),
+      error: null,
+      loading: false,
     });
 
     const { result } = renderNavigationHook();
@@ -232,7 +247,7 @@ describe('NavigationContext', () => {
     });
 
     expect(result.current.navigationState).toBe('default');
-    expect(startNavigation).not.toHaveBeenCalled();
+    expect(animateNavCamera).not.toHaveBeenCalled();
   });
 
   test('should start navigation to a destination', () => {
@@ -248,6 +263,14 @@ describe('NavigationContext', () => {
   });
 
   test('should cancel navigation', () => {
+    const setRouteDataMock = jest.fn();
+    (useGoogleMapsRoute as jest.Mock).mockReturnValue({
+      routeData: mockRouteData,
+      setRouteData: setRouteDataMock,
+      error: null,
+      loading: false,
+    });
+
     const { result } = renderNavigationHook();
 
     act(() => {
@@ -261,6 +284,15 @@ describe('NavigationContext', () => {
     expect(result.current.navigationState).toBe('default');
     expect(bottomSheetRef.current?.snapToIndex).toHaveBeenCalledWith(1);
     expect(handleCurrentLocation).toHaveBeenCalledWith(mapRef, mockLocation);
+
+    expect(result.current.destination).toBeNull();
+
+    expect(setRouteDataMock).toHaveBeenCalledWith(null);
+    expect(result.current.travelMode).toBe('DRIVE');
+    expect(result.current.is3d).toBe(true);
+    expect(result.current.remainingDistance).toBeNull();
+    expect(result.current.remainingTime).toBeNull();
+    expect(result.current.nextInstruction).toBeNull();
   });
 
   test('should automatically cancel navigation when close to destination', async () => {
@@ -290,7 +322,7 @@ describe('NavigationContext', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
     });
 
-    expect(startNavigation).toHaveBeenCalledWith(
+    expect(animateNavCamera).toHaveBeenCalledWith(
       mockLocation,
       mockClippedPolyline,
       mockSteps[0],
@@ -313,12 +345,11 @@ describe('NavigationContext', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
     });
 
-    expect(startNavigation).not.toHaveBeenCalled();
+    expect(animateNavCamera).not.toHaveBeenCalled();
   });
 
   test('should throw error when useNavigation is used outside provider', () => {
     const { result } = renderHook(() => useNavigation());
-
     expect(result.error).toEqual(
       Error('useNavigation must be used within a NavigationProvider')
     );
