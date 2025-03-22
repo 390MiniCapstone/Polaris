@@ -126,8 +126,9 @@ describe('MapComponent', () => {
     const geojsons = UNSAFE_getAllByType(Geojson);
     const currentBuildingGeojson = geojsons.find(
       g =>
-        g.props.fillColor === 'rgba(0, 0, 255, 0.5)' &&
-        g.props.strokeColor === 'rgba(0, 0, 255, 1)' &&
+        g.props.fillColor === themes.default.colors.currentBuildingFillColor &&
+        g.props.strokeColor ===
+          themes.default.colors.currentBuildingStrokeColor &&
         g.props.strokeWidth === 3
     );
     expect(currentBuildingGeojson).toBeTruthy();
