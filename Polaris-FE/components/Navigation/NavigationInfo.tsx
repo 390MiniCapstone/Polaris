@@ -29,6 +29,28 @@ export const NavigationInfo: React.FC = () => {
     loading,
   } = useNavigation();
 
+  function routeEstimates() {
+    if (loading) {
+      return <ActivityIndicator />;
+    } else if (error) {
+      return <Text style={styles.greyText}>Directions Not Available</Text>;
+    } else if (routeData && remainingTime && remainingDistance) {
+      return (
+        <React.Fragment>
+          <Text style={styles.whiteText}>
+            {Math.ceil(remainingTime / 60)} Minutes
+          </Text>
+          <Text style={styles.whiteText}>·</Text>
+          <Text style={styles.greyText}>
+            {(remainingDistance / 1000).toFixed(1)} km
+          </Text>
+        </React.Fragment>
+      );
+    } else {
+      return <ActivityIndicator />;
+    }
+  }
+
   const handlePress = () => {
     handleGoButton({
       navigationState,
@@ -53,29 +75,7 @@ export const NavigationInfo: React.FC = () => {
         <FontAwesome5 name="times" size={20} color="white" />
       </TouchableOpacity>
 
-      {loading ? (
-        <View style={styles.infoContainer}>
-          <ActivityIndicator />
-        </View>
-      ) : error ? (
-        <View style={styles.infoContainer}>
-          <Text style={styles.greyText}>Directions Not Available</Text>
-        </View>
-      ) : routeData && remainingTime && remainingDistance ? (
-        <View style={styles.infoContainer}>
-          <Text style={styles.whiteText}>
-            {Math.ceil(remainingTime / 60)} Minutes
-          </Text>
-          <Text style={styles.whiteText}>·</Text>
-          <Text style={styles.greyText}>
-            {(remainingDistance / 1000).toFixed(1)} km
-          </Text>
-        </View>
-      ) : (
-        <View style={styles.infoContainer}>
-          <ActivityIndicator />
-        </View>
-      )}
+      <View style={styles.infoContainer}>{routeEstimates()}</View>
 
       <TouchableOpacity
         testID="action-button"
