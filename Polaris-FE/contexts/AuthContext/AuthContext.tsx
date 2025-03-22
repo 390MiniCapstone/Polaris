@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserCredential | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  const [response, promptAsync] = Google.useAuthRequest({
+  const [, response, promptAsync] = Google.useAuthRequest({
     iosClientId: Constants.expoConfig?.extra?.iosClientId,
     androidClientId: Constants.expoConfig?.extra?.androidClientId,
     scopes: [
