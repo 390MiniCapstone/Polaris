@@ -97,7 +97,7 @@ describe('NavigationPolyline Component', () => {
     expect(polylineElements).toHaveLength(1);
     expect(polylineElements[0].props.strokeWidth).toBe(4);
     expect(polylineElements[0].props.strokeColor).toBe(
-      mockTheme.colors.secondary
+      mockTheme.colors.primary
     );
     expect(polylineElements[0].props.lineDashPattern).toEqual([5, 10]);
   });

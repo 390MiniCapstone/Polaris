@@ -1,5 +1,6 @@
 import { getGoogleMapsRoute } from '@/services/googleMapsRoutes';
 import polyline from '@mapbox/polyline';
+import { toast } from 'sonner-native';
 
 jest.mock('@mapbox/polyline', () => ({
   decode: jest.fn(),
@@ -13,18 +14,17 @@ jest.mock('expo-constants', () => ({
   },
 }));
 
+jest.mock('sonner-native', () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}));
+
 global.fetch = jest.fn();
 
 describe('getGoogleMapsRoute', () => {
-  let consoleErrorSpy: jest.SpyInstance;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-  });
-
-  afterEach(() => {
-    consoleErrorSpy.mockRestore();
   });
 
   it('returns route data for a valid API response', async () => {
@@ -111,6 +111,11 @@ describe('getGoogleMapsRoute', () => {
         'WALK'
       )
     ).rejects.toThrow('No routes found in the response.');
+
+    expect(toast.error).toHaveBeenCalledWith('Directions Not Available', {
+      description: expect.stringContaining('No routes found in the response.'),
+      duration: 2000,
+    });
   });
 
   it('throws an error when no polyline is provided in route or leg', async () => {
@@ -148,6 +153,13 @@ describe('getGoogleMapsRoute', () => {
         'DRIVE'
       )
     ).rejects.toThrow('No polyline provided in route or leg.');
+
+    expect(toast.error).toHaveBeenCalledWith('Directions Not Available', {
+      description: expect.stringContaining(
+        'No polyline provided in route or leg.'
+      ),
+      duration: 2000,
+    });
   });
 
   it('propagates errors from the fetch call', async () => {
@@ -160,6 +172,11 @@ describe('getGoogleMapsRoute', () => {
         'BICYCLE'
       )
     ).rejects.toThrow('Network error');
+
+    expect(toast.error).toHaveBeenCalledWith('Directions Not Available', {
+      description: expect.stringContaining('Network error'),
+      duration: 2000,
+    });
   });
 
   it('includes routingPreference for DRIVE mode', async () => {

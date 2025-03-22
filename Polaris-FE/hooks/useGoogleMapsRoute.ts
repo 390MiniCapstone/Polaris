@@ -6,18 +6,25 @@ import { mapRef } from '@/utils/refs';
 
 export const useGoogleMapsRoute = (
   origin: LatLng | null,
-  destination: LatLng,
+  destination: LatLng | null,
   travelMode: TravelMode,
   navigationState: string
 ) => {
   const [routeData, setRouteData] = useState<RouteData | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      if (!origin) return;
-      if (navigationState === 'default') return;
+      if (!origin || !destination || navigationState === 'default') {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
       try {
         const data = await getGoogleMapsRoute(origin, destination, travelMode);
+        setError(null);
         setRouteData(data);
 
         if (navigationState === 'planning') {
@@ -32,10 +39,16 @@ export const useGoogleMapsRoute = (
           });
         }
       } catch (error) {
-        console.error('Failed to fetch route data:', error);
+        if (error instanceof Error) {
+          setError(error);
+        } else {
+          setError(new Error('An unknown error occurred.'));
+        }
+      } finally {
+        setLoading(false);
       }
     })();
   }, [destination, travelMode]);
 
-  return { routeData, setRouteData };
+  return { routeData, setRouteData, error, loading };
 };

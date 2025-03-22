@@ -5,7 +5,7 @@ import { NavigationInfo } from '@/components/Navigation/NavigationInfo';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
 export const Navigation: React.FC = () => {
-  const { navigationState, routeData } = useNavigation();
+  const { navigationState } = useNavigation();
 
   return (
     <React.Fragment>
@@ -13,8 +13,9 @@ export const Navigation: React.FC = () => {
 
       {navigationState === 'navigating' && <Instructions />}
 
-      {(navigationState === 'planning' || navigationState === 'navigating') &&
-        routeData && <NavigationInfo />}
+      {(navigationState === 'planning' || navigationState === 'navigating') && (
+        <NavigationInfo />
+      )}
     </React.Fragment>
   );
 };

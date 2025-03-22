@@ -8,7 +8,7 @@ import {
   determineNextInstruction,
   clipPolylineFromSnappedPoint,
   openTransitInMaps,
-  startNavigation,
+  animateNavCamera,
   determineCurrentStep,
 } from '@/utils/navigationUtils';
 import { Linking, Platform } from 'react-native';
@@ -384,7 +384,7 @@ describe('navigationUtils', () => {
       const animateCameraMock = jest.fn();
       const mapRef = { current: { animateCamera: animateCameraMock } };
 
-      startNavigation(
+      animateNavCamera(
         location,
         currentStep.polyline,
         currentStep,
@@ -411,7 +411,7 @@ describe('navigationUtils', () => {
     it('should not animate the camera if location is missing or step polyline is empty', () => {
       const animateCameraMock = jest.fn();
       const mapRef = { current: { animateCamera: animateCameraMock } };
-      startNavigation(
+      animateNavCamera(
         null as unknown as GeoPoint,
         [] as any,
         { polyline: [] } as any,

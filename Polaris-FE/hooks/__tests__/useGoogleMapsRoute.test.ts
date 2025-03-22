@@ -82,6 +82,8 @@ describe('useGoogleMapsRoute', () => {
 
     expect(getGoogleMapsRoute).not.toHaveBeenCalled();
     expect(result.current.routeData).toBeNull();
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 
   test('should not fetch route data when navigationState is default', async () => {
@@ -93,6 +95,8 @@ describe('useGoogleMapsRoute', () => {
 
     expect(getGoogleMapsRoute).not.toHaveBeenCalled();
     expect(result.current.routeData).toBeNull();
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 
   test('should fetch route data and set it when origin and destination are provided', async () => {
@@ -119,10 +123,11 @@ describe('useGoogleMapsRoute', () => {
       mockTravelMode
     );
     expect(result.current.routeData).toEqual(mockRouteData);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 
   test('should fit map to coordinates when navigationState is planning', async () => {
-    // Removed unused result constant
     renderHook(() =>
       useGoogleMapsRoute(
         mockOrigin,
@@ -168,13 +173,10 @@ describe('useGoogleMapsRoute', () => {
   });
 
   test('should handle errors when fetching route data fails', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
     const error = new Error('Network error');
     (getGoogleMapsRoute as jest.Mock).mockRejectedValue(error);
 
-    renderHook(() =>
+    const { result } = renderHook(() =>
       useGoogleMapsRoute(
         mockOrigin,
         mockDestination,
@@ -187,12 +189,9 @@ describe('useGoogleMapsRoute', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
     });
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Failed to fetch route data:',
-      error
-    );
-
-    consoleErrorSpy.mockRestore();
+    expect(result.current.error).toEqual(error);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.routeData).toBeNull();
   });
 
   test('should update route data when setRouteData is called', async () => {
@@ -252,10 +251,12 @@ describe('useGoogleMapsRoute', () => {
     });
 
     expect(result.current.routeData).toEqual(newRouteData);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 
   test('should refetch route data when travelMode changes', async () => {
-    const { rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ travelMode, destination }) =>
         useGoogleMapsRoute(
           mockOrigin,
@@ -281,6 +282,8 @@ describe('useGoogleMapsRoute', () => {
       mockDestination,
       'DRIVE'
     );
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
 
     jest.clearAllMocks();
 
@@ -302,10 +305,12 @@ describe('useGoogleMapsRoute', () => {
       }),
       'WALK'
     );
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 
   test('should refetch route data when destination changes', async () => {
-    const { rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ destination, travelMode }) =>
         useGoogleMapsRoute(
           mockOrigin,
@@ -345,5 +350,7 @@ describe('useGoogleMapsRoute', () => {
       newDestination,
       mockTravelMode
     );
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 });

@@ -9,6 +9,7 @@ import { MapButtons } from '@/components/MapButtons';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import useClarity from '@/hooks/useClarity';
 import { ColorblindButton } from '@/components/ColorblindButton';
+import { Toaster } from 'sonner-native';
 
 export default function HomeScreen() {
   const { region, setRegion } = useMapLocation();
@@ -29,6 +30,11 @@ export default function HomeScreen() {
           toggleAnimation={toggleAnimation}
           animatedPosition={animatedPosition}
           optionsAnimation={optionsAnimation}
+        />
+        <Toaster
+          toastOptions={{
+            style: { backgroundColor: '#222' },
+          }}
         />
       </SafeAreaProvider>
     </GestureHandlerRootView>
