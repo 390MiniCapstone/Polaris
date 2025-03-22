@@ -1,5 +1,5 @@
 import React from 'react';
-import MapView, { Geojson, LatLng, Region } from 'react-native-maps';
+import MapView, { Geojson, Region } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import { downtownBuildings, loyolaBuildings } from '@/constants/buildings';
 import { Buildings } from '@/components/Buildings/Buildings';
@@ -23,9 +23,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
   const currentBuilding = useCurrentBuilding();
   const { theme } = useTheme();
-  const fillColor = theme.colors.primary;
-  const currentBuildingFillColor = theme.colors.currentBuildingFillColor;
-  const currentBuildingStrokeColor = theme.colors.currentBuildingStrokeColor;
+
   return (
     <View style={styles.container}>
       <MapView
@@ -43,11 +41,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       >
         <Geojson
           geojson={downtownBuildings as GeoJSON.FeatureCollection}
-          fillColor={fillColor}
+          fillColor={theme.colors.primary}
         />
         <Geojson
           geojson={loyolaBuildings as GeoJSON.FeatureCollection}
-          fillColor={fillColor}
+          fillColor={theme.colors.primary}
         />
         <NavigationPolyline />
 
@@ -66,8 +64,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
                 },
               ],
             }}
-            fillColor={currentBuildingFillColor}
-            strokeColor={currentBuildingStrokeColor}
+            fillColor={theme.colors.currentBuildingFillColor}
+            strokeColor={theme.colors.currentBuildingStrokeColor}
             strokeWidth={3}
           />
         )}
