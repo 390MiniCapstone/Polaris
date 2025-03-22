@@ -1,37 +1,37 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SVG Mouse Coordinates</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+      body {
+        font-family: Arial, sans-serif;
+      }
 
-        #coordinates {
-            margin-top: 10px;
-        }
+      #coordinates {
+        margin-top: 10px;
+      }
     </style>
-</head>
-<body>
-<!-- PUT SVG BELOW HERE -->
+  </head>
+  <body>
+    <!-- PUT SVG BELOW HERE -->
 
-<!-- PUT SVG ABOVE HERE -->
+    <!-- PUT SVG ABOVE HERE -->
 
-<p id="coordinates">Click on the SVG to see coordinates.</p>
-<button id="downloadBtn" disabled>Download Coordinates</button>
-<button id="reverseBtn">Remove previous click</button>
+    <p id="coordinates">Click on the SVG to see coordinates.</p>
+    <button id="downloadBtn" disabled>Download Coordinates</button>
+    <button id="reverseBtn">Remove previous click</button>
 
-<script>
-    const svg = document.querySelector('svg');
-    const coordsText = document.getElementById('coordinates');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const reverseBtn = document.getElementById('reverseBtn');
-    let clickCount = 0;
-    let coordinates = [];
+    <script>
+      const svg = document.querySelector('svg');
+      const coordsText = document.getElementById('coordinates');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const reverseBtn = document.getElementById('reverseBtn');
+      let clickCount = 0;
+      let coordinates = [];
 
-    function getSVGCoords(event) {
+      function getSVGCoords(event) {
         let pt = svg.createSVGPoint();
         pt.x = event.clientX;
         pt.y = event.clientY;
@@ -41,37 +41,37 @@
         svgCoords.x /= width;
         svgCoords.y /= height;
         return svgCoords;
-    }
+      }
 
-    function download(filename, text) {
+      function download(filename, text) {
         const element = document.createElement('a');
         element.setAttribute(
-            'href',
-            'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
+          'href',
+          'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
         );
         element.setAttribute('download', filename);
         element.style.display = 'none';
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
-    }
+      }
 
-    svg.addEventListener('click', event => {
+      svg.addEventListener('click', event => {
         let coords = getSVGCoords(event);
         coordsText.textContent = `Mouse Position: (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)})`;
         coordinates.push(
-            `new NodeNav('R${clickCount++}', ${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}, 'room'),`
+          `new NodeNav('R${clickCount++}', ${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}, 'room'),`
         );
         downloadBtn.disabled = false;
-    });
+      });
 
-    downloadBtn.addEventListener('click', () => {
+      downloadBtn.addEventListener('click', () => {
         const content = coordinates.join('\n');
         download('coordinates.txt', content);
-    });
-    reverseBtn.addEventListener('click', () => {
+      });
+      reverseBtn.addEventListener('click', () => {
         coordinates.pop();
-    });
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>
