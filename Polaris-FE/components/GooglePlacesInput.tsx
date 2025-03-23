@@ -1,18 +1,9 @@
 import Constants from 'expo-constants';
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  Platform,
-} from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { inputRef } from '@/utils/refs';
-import { POIS } from '@/constants/mapConstants';
 import { SearchResult } from './BottomSheetComponent/OutdoorBottomSheetComponent';
 import { POIs } from './POIs/POIs';
 
