@@ -4,10 +4,8 @@ import {
   View,
   TouchableOpacity,
   Text,
-  StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import { SearchResult } from '../BottomSheetComponent/OutdoorBottomSheetComponent';
 import { useMapLocation } from '@/hooks/useMapLocation';
