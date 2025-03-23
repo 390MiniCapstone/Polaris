@@ -14,6 +14,7 @@ import { useMapLocation } from '@/hooks/useMapLocation';
 import { inputRef } from '@/utils/refs';
 import { POIS } from '@/constants/mapConstants';
 import { SearchResult } from './BottomSheetComponent/OutdoorBottomSheetComponent';
+import { POIs } from './POIs/POIs';
 
 interface GooglePlacesInputProps {
   setSearchResults: (results: SearchResult[]) => void;
@@ -32,31 +33,8 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
   setQuery,
 }) => {
   const { location } = useMapLocation();
-  console.log(location);
 
-  const [isCategoryLoading, setIsCategoryLoading] = useState<string | null>(
-    null
-  );
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const fetchPOIs = async (type: string) => {
-    if (!location || isCategoryLoading) return;
-    setIsCategoryLoading(type);
-    const radius = 1000;
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=${radius}&type=${type}&keyword=${type}&key=${GOOGLE_MAPS_API_KEY}`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      setSearchResults(data.results || []);
-    } catch (error) {
-      console.error('Error fetching POIs:', error);
-      setSearchResults([]);
-    } finally {
-      setIsCategoryLoading(null);
-    }
-  };
 
   useEffect(() => {
     if (!location || query.length === 0) {
@@ -85,7 +63,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
           setSearchResults(data.predictions || []);
         })
         .catch(error => console.error(error));
-    }, 500); // Debounce API requests (500ms)
+    }, 500);
   }, [query]);
 
   return (
@@ -113,29 +91,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         </TouchableOpacity>
       )}
 
-      <View style={styles.scrollWrapper}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.categoryContainer}
-        >
-          {POIS.map(category => (
-            <TouchableOpacity
-              key={category}
-              style={styles.categoryButton}
-              onPress={() => fetchPOIs(category.toLowerCase())}
-              disabled={isCategoryLoading !== null}
-            >
-              {isCategoryLoading === category.toLowerCase() ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Text style={styles.categoryButtonText}>{category}</Text>
-              )}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+      <POIs setSearchResults={setSearchResults} />
     </View>
   );
 };
@@ -156,38 +112,6 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
     backgroundColor: 'rgba(151, 151, 151, 0.25)',
     color: 'white',
-  },
-  scrollWrapper: {
-    width: '100%',
-    paddingVertical: 10,
-  },
-  categoryContainer: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexGrow: 1,
-    paddingRight: 20,
-  },
-  categoryButton: {
-    backgroundColor: 'rgba(151, 151, 151, 0.25)',
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    marginRight: 10,
-    ...Platform.select({
-      android: { elevation: 2 },
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      },
-    }),
-  },
-  categoryButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '500',
   },
   clearButton: {
     position: 'absolute',
