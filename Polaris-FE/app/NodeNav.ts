@@ -1,4 +1,4 @@
-import { Hashable } from './Graph';
+import { Hashable } from '@/utils/interfaces';
 
 export class NodeNav implements Hashable {
   id: string;
@@ -53,38 +53,5 @@ export class NodeNav implements Hashable {
     const y2 = other.getAbsoluteY(svgHeight);
 
     return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-  }
-}
-
-export type Edge = {
-  from: string;
-  to: string;
-  weight: number;
-};
-
-export class Graph {
-  nodes: Map<string, NodeNav>;
-  edges: Map<string, Edge[]>;
-
-  constructor() {
-    this.nodes = new Map();
-    this.edges = new Map();
-  }
-
-  addNode(node: NodeNav) {
-    this.nodes.set(node.id, node);
-    this.edges.set(node.id, []);
-  }
-
-  addEdge(from: string, to: string, weight: number) {
-    if (!this.nodes.has(from) || !this.nodes.has(to)) {
-      throw new Error('Both nodes must exist in the graph');
-    }
-    this.edges.get(from)?.push({ from, to, weight });
-    this.edges.get(to)?.push({ from: to, to: from, weight }); // Undirected Graph
-  }
-
-  getNeighbors(nodeId: string): Edge[] {
-    return this.edges.get(nodeId) || [];
   }
 }
