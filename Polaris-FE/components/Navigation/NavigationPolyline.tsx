@@ -17,7 +17,8 @@ export const NavigationPolyline: React.FC = () => {
     <React.Fragment>
       {(navigationState === 'planning' || navigationState === 'navigating') &&
         clippedPolyline &&
-        snappedPoint && (
+        snappedPoint &&
+        destination && (
           <React.Fragment>
             <Marker
               key={theme.colors.primary}
@@ -28,7 +29,7 @@ export const NavigationPolyline: React.FC = () => {
               <Polyline
                 coordinates={clippedPolyline}
                 strokeWidth={4}
-                strokeColor={theme.colors.secondary}
+                strokeColor={theme.colors.primary}
                 lineDashPattern={[5, 10]}
               />
             ) : (
