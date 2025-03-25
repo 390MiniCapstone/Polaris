@@ -41,8 +41,6 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
     }
 
     timeoutRef.current = setTimeout(() => {
-      if (!location) return;
-
       const params = new URLSearchParams({
         input: query,
         key: GOOGLE_MAPS_API_KEY,
@@ -60,6 +58,10 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
         })
         .catch(error => console.error(error));
     }, 500);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [query, location]);
 
   return (
