@@ -7,7 +7,7 @@ import {
   Keyboard,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
-import GooglePlacesInput from '@/components/GooglePalcesInput/GooglePlacesInput';
+import GooglePlacesInput from '@/components/GooglePlacesInput/GooglePlacesInput';
 import Constants from 'expo-constants';
 import { bottomSheetRef, inputRef } from '@/utils/refs';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';

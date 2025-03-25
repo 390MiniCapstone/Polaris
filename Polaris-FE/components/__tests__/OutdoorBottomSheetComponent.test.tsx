@@ -57,7 +57,7 @@ jest.mock('@/components/BottomSheetComponent/BottomSheetComponent', () => {
   };
 });
 
-jest.mock('@/components/GooglePlacesInput', () => {
+jest.mock('@/components/GooglePlacesInput/GooglePlacesInput', () => {
   const { View, Text, TouchableOpacity } = require('react-native');
 
   const POIS = ['Groceries', 'Library', 'Cafe'];
