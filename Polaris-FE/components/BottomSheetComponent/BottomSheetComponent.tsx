@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
 
 interface BottomSheetComponentProps {
@@ -23,7 +23,16 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
       handleIndicatorStyle={styles.handleIndicator}
       animatedPosition={animatedPosition}
     >
-      <BottomSheetView style={styles.content}>{children}</BottomSheetView>
+      <BottomSheetScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingBottom: 100,
+          paddingTop: 10,
+        }}
+      >
+        {children}
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 };
@@ -43,5 +52,3 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
 });
-
-export default BottomSheetComponent;

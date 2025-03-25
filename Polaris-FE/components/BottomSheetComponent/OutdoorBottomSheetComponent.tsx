@@ -7,7 +7,7 @@ import {
   Keyboard,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
-import GooglePlacesInput from '@/components/GooglePlacesInput';
+import GooglePlacesInput from '@/components/GooglePalcesInput/GooglePlacesInput';
 import Constants from 'expo-constants';
 import { bottomSheetRef, inputRef } from '@/utils/refs';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
@@ -67,6 +67,7 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
     >
       <View style={styles.container}>
         <GooglePlacesInput
+          searchResults={searchResults}
           setSearchResults={setSearchResults}
           onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
           query={query}

@@ -1,13 +1,15 @@
 import Constants from 'expo-constants';
 import React, { useEffect, useRef } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { inputRef } from '@/utils/refs';
-import { SearchResult } from './BottomSheetComponent/OutdoorBottomSheetComponent';
-import { POIs } from './POIs/POIs';
+import { SearchResult } from '../BottomSheetComponent/OutdoorBottomSheetComponent';
+import { POIs } from '../POIs/POIs';
+import { styles } from './GooglePlacesInput.styles';
 
 interface GooglePlacesInputProps {
+  searchResults: SearchResult[];
   setSearchResults: (results: SearchResult[]) => void;
   onFocus: () => void;
   query: string;
@@ -18,6 +20,7 @@ const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
   ?.googleMapsApiKey as string;
 
 const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
+  searchResults,
   setSearchResults,
   onFocus,
   query,
@@ -59,67 +62,34 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
 
   return (
     <View style={styles.container}>
-      <BottomSheetTextInput
-        testID="places-input"
-        ref={inputRef}
-        value={query}
-        onChangeText={setQuery}
-        placeholder="Search Polaris"
-        placeholderTextColor="gray"
-        selectionColor="#9A2D3F"
-        style={styles.input}
-        onFocus={onFocus}
-      />
-      {query.length > 0 && (
-        <TouchableOpacity
-          onPress={() => {
-            setQuery('');
-            inputRef.current?.blur();
-          }}
-          style={styles.clearButton}
-        >
-          <Text style={styles.clearButtonText}>✕</Text>
-        </TouchableOpacity>
-      )}
-
+      <View style={styles.inputWrapper}>
+        <BottomSheetTextInput
+          testID="places-input"
+          ref={inputRef}
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Search Polaris"
+          placeholderTextColor="gray"
+          selectionColor="#9A2D3F"
+          style={styles.input}
+          onFocus={onFocus}
+        />
+        {searchResults.length > 0 && (
+          <TouchableOpacity
+            onPress={() => {
+              setQuery('');
+              setSearchResults([]);
+              inputRef.current?.blur();
+            }}
+            style={styles.clearButton}
+          >
+            <Text style={styles.clearButtonText}>✕</Text>
+          </TouchableOpacity>
+        )}
+      </View>
       <POIs setSearchResults={setSearchResults} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    position: 'relative',
-  },
-  input: {
-    width: '100%',
-    marginRight: 0,
-    marginBottom: 0,
-    borderRadius: 10,
-    fontSize: 16,
-    paddingVertical: 10,
-    paddingRight: 42,
-    paddingLeft: 14,
-    backgroundColor: 'rgba(151, 151, 151, 0.25)',
-    color: 'white',
-  },
-  clearButton: {
-    position: 'absolute',
-    right: 14,
-    top: '55%',
-    transform: [{ translateY: -12 }],
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: 'rgba(151, 151, 151, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  clearButtonText: {
-    color: 'white',
-    fontSize: 12,
-  },
-});
 
 export default GooglePlacesInput;

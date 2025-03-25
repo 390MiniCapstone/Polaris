@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import GooglePlacesInput from '@/components/GooglePlacesInput';
+import GooglePlacesInput from '@/components/GooglePalcesInput/GooglePlacesInput';
 import { useMapLocation } from '@/hooks/useMapLocation';
 
 jest.mock('@/hooks/useMapLocation', () => ({
