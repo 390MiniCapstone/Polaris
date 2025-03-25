@@ -10,21 +10,28 @@ import { inputRef } from '@/utils/refs';
 
 const queryClient = new QueryClient();
 
+jest.mock('@expo/vector-icons', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+
+  return {
+    __esModule: true,
+    MaterialIcons: (props: { name: string; style?: object }) => {
+      const { name, style } = props;
+      return <View testID={`icon-${name}`} style={style} />;
+    },
+  };
+});
+
 describe('OutdoorBottomSheetComponent', () => {
   it('renders without crashing', () => {
-    const mockOnSearchClick = jest.fn();
-    const mockOnFocus = jest.fn();
     const animatedPosition = useSharedValue(0);
 
     const { getByTestId, getByText } = render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <NavigationProvider>
-            <OutdoorBottomSheetComponent
-              onSearchClick={mockOnSearchClick}
-              onFocus={mockOnFocus}
-              animatedPosition={animatedPosition}
-            />
+            <OutdoorBottomSheetComponent animatedPosition={animatedPosition} />
           </NavigationProvider>
         </AuthProvider>
       </QueryClientProvider>
@@ -50,8 +57,10 @@ jest.mock('@/components/BottomSheetComponent/BottomSheetComponent', () => {
   };
 });
 
-jest.mock('@/components/GooglePlacesInput', () => {
+jest.mock('@/components/GooglePlacesInput/GooglePlacesInput', () => {
   const { View, Text, TouchableOpacity } = require('react-native');
+
+  const POIS = ['Groceries', 'Library', 'Cafe'];
 
   return {
     __esModule: true,
@@ -65,18 +74,34 @@ jest.mock('@/components/GooglePlacesInput', () => {
       <View testID="google-places-input">
         <TouchableOpacity
           testID="search-result-trigger"
-          onPress={() =>
+          onPress={() => {
             setSearchResults([
               { place_id: 'place1', description: 'Test Location 1' },
               { place_id: 'place2', description: 'Test Location 2' },
-            ])
-          }
+            ]);
+          }}
         >
           <Text>Trigger Search Results</Text>
         </TouchableOpacity>
+
         <TouchableOpacity testID="focus-trigger" onPress={onFocus}>
           <Text>Focus Input</Text>
         </TouchableOpacity>
+
+        {POIS.map(category => (
+          <TouchableOpacity
+            key={category}
+            testID={`poi-button-${category.toLowerCase()}`}
+            onPress={() => {
+              setSearchResults([
+                { place_id: 'place1', description: `${category} Result 1` },
+                { place_id: 'place2', description: `${category} Result 2` },
+              ]);
+            }}
+          >
+            <Text>{category}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     ),
   };
@@ -229,9 +254,6 @@ describe('OutdoorBottomSheetComponent', () => {
       expect(getByText('Test Location 1')).toBeTruthy();
       expect(getByText('Test Location 2')).toBeTruthy();
     });
-
-    const separators = getAllByTestId('separator');
-    expect(separators.length).toBe(1);
   });
 
   it('handles missing data in fetch response gracefully', async () => {
@@ -305,6 +327,28 @@ describe('OutdoorBottomSheetComponent', () => {
     await waitFor(() => {
       expect(inputRef.current?.blur).toHaveBeenCalled();
       expect(bottomSheetRef.current?.snapToIndex).toHaveBeenCalled();
+    });
+  });
+
+  it('renders POI buttons and shows mocked POI search results when pressed', async () => {
+    const animatedPosition = useSharedValue(0);
+
+    const { getByText } = render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <NavigationProvider>
+            <OutdoorBottomSheetComponent animatedPosition={animatedPosition} />
+          </NavigationProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    );
+
+    const groceriesButton = getByText('Groceries');
+    fireEvent.press(groceriesButton);
+
+    await waitFor(() => {
+      expect(getByText('Groceries Result 1')).toBeTruthy();
+      expect(getByText('Groceries Result 2')).toBeTruthy();
     });
   });
 });

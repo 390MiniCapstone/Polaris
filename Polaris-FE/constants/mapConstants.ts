@@ -13,3 +13,16 @@ export const Loyola: Region = {
   latitudeDelta: 0.01,
   longitudeDelta: 0.01,
 };
+
+export const POIS = [
+  'Groceries',
+  'Restaurants',
+  'Coffee',
+  'Gas',
+  'Hotels',
+  'ATMs',
+  'Pharmacy',
+  'Parks',
+  'Banks',
+  'Hospitals',
+];

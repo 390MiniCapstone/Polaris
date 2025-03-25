@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import GooglePlacesInput from '@/components/GooglePlacesInput';
+import GooglePlacesInput from '@/components/GooglePlacesInput/GooglePlacesInput';
 import { useMapLocation } from '@/hooks/useMapLocation';
+import { SearchResult } from '../BottomSheetComponent/OutdoorBottomSheetComponent';
 
 jest.mock('@/hooks/useMapLocation', () => ({
   useMapLocation: jest.fn(),
@@ -9,6 +10,20 @@ jest.mock('@/hooks/useMapLocation', () => ({
 
 describe('GooglePlacesInput', () => {
   const setSearchResultsMock = jest.fn();
+  const searchResultsMock: SearchResult[] = [
+    {
+      place_id: 'place1',
+      description: 'Test Location 1',
+      latitude: 0,
+      longitude: 0,
+    },
+    {
+      place_id: 'place2',
+      description: 'Test Location 2',
+      latitude: 0,
+      longitude: 0,
+    },
+  ];
   const onFocusMock = jest.fn();
   const setQueryMock = jest.fn();
 
@@ -19,12 +34,13 @@ describe('GooglePlacesInput', () => {
     (useMapLocation as jest.Mock).mockReturnValue({ location: fakeLocation });
   });
 
-  test('renders correctly without clear button when query is empty', () => {
+  test('renders correctly without clear button when searchResults is empty', () => {
     const { queryByTestId, queryByText } = render(
       <GooglePlacesInput
+        searchResults={[]}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
-        query=""
+        query="anything"
         setQuery={setQueryMock}
       />
     );
@@ -39,6 +55,7 @@ describe('GooglePlacesInput', () => {
   test('calls onFocus when the input is focused', () => {
     const { getByTestId } = render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query=""
@@ -54,6 +71,7 @@ describe('GooglePlacesInput', () => {
   test('displays clear button when query is non-empty and clears query when pressed', () => {
     const { getByText } = render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query="test"
@@ -76,6 +94,7 @@ describe('GooglePlacesInput', () => {
 
     const { rerender } = render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query=""
@@ -85,6 +104,7 @@ describe('GooglePlacesInput', () => {
 
     rerender(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query="New Query"
@@ -103,6 +123,7 @@ describe('GooglePlacesInput', () => {
 
     render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query=""
@@ -122,6 +143,7 @@ describe('GooglePlacesInput', () => {
 
     render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query="Some Query"
