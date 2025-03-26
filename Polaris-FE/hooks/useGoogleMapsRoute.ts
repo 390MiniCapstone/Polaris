@@ -8,11 +8,11 @@ export const useGoogleMapsRoute = (
   origin: LatLng | null,
   destination: LatLng | null,
   travelMode: TravelMode,
-  navigationState: string
+  navigationState: string,
+  setError: (error: Error | null) => void,
+  setLoading: (loading: boolean) => void
 ) => {
   const [routeData, setRouteData] = useState<RouteData | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -27,7 +27,7 @@ export const useGoogleMapsRoute = (
         setError(null);
         setRouteData(data);
 
-        if (navigationState === 'planning') {
+        if (navigationState === 'planning' && data) {
           mapRef.current?.fitToCoordinates(data.polyline, {
             edgePadding: {
               top: 120,
@@ -50,5 +50,5 @@ export const useGoogleMapsRoute = (
     })();
   }, [destination, travelMode]);
 
-  return { routeData, setRouteData, error, loading };
+  return { routeData, setRouteData };
 };
