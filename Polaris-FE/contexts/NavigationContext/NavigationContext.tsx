@@ -64,13 +64,17 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
   const [nextInstruction, setNextInstruction] = useState<string | null>(null);
   const [snappedPoint, setSnappedPoint] = useState<LatLng | null>(null);
   const [clippedPolyline, setClippedPolyline] = useState<LatLng[] | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const { location } = useMapLocation();
-  const { routeData, setRouteData, error, loading } = useGoogleMapsRoute(
+  const { routeData, setRouteData } = useGoogleMapsRoute(
     location,
     destination,
     travelMode,
-    navigationState
+    navigationState,
+    setError,
+    setLoading
   );
 
   useEffect(() => {
