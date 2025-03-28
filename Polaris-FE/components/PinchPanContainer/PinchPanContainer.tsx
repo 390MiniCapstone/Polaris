@@ -50,7 +50,7 @@ export default PinchPanContainer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#fceed4',
   },
   svgContainer: {
     width: '100%',

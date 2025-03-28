@@ -26,26 +26,26 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
     {
       SvgComponent: H1,
       name: 'Hall 1',
-      width: '2650',
-      height: '1800',
+      width: '4131',
+      height: '4413',
     },
     {
       SvgComponent: H2,
       name: 'Hall 2',
-      width: '2400',
-      height: '1800',
+      width: '3681',
+      height: '4069',
     },
     {
       SvgComponent: H8,
       name: 'Hall 8',
-      width: '1000',
-      height: '1000',
+      width: '1024',
+      height: '1024',
     },
     {
       SvgComponent: H9,
       name: 'Hall 9',
-      width: '1000',
-      height: '1000',
+      width: '1024',
+      height: '1024',
     },
   ],
   'MB Building': [
@@ -80,14 +80,14 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
     {
       SvgComponent: VL1,
       name: 'VL 1',
-      width: '1000',
-      height: '1000',
+      width: '1024',
+      height: '1024',
     },
     {
       SvgComponent: VL2,
       name: 'VL 2',
-      width: '1000',
-      height: '1000',
+      width: '1024',
+      height: '1024',
     },
   ],
   'CC Building': [
