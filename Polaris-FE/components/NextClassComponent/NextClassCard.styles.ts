@@ -103,10 +103,23 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-  optionsMenuContainer: {
+  signOutButtonContainer: {
     position: 'absolute',
-    top: -8,
-    right: -20,
+    top: -4,
+    right: 257,
     zIndex: 1,
+  },
+  signOutButton: {
+    backgroundColor: '#8B2E2E',
+    borderRadius: 8,
+    height: 34,
+    width: 69,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  signOutButtonText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });

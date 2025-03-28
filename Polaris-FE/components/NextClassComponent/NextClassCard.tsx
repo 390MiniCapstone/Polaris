@@ -58,34 +58,15 @@ const NextClassCard: React.FC = () => {
   return user ? (
     <Card style={styles.card}>
       <Card.Content>
-        {/* Options Menu */}
-        <View style={styles.optionsMenuContainer}>
-          <Menu
-            visible={visible[1]}
-            onDismiss={() => closeMenu(1)}
-            anchor={
-              <Button
-                onPress={() => openMenu(1)}
-                style={styles.menuButton}
-                labelStyle={styles.timeText}
-              >
-                <FontAwesome
-                  name="ellipsis-v"
-                  size={16}
-                  color="white"
-                  style={styles.timeText}
-                />
-              </Button>
-            }
+        {/* Sign Out Button */}
+        <View style={styles.signOutButtonContainer}>
+          <Button
+            onPress={confirmSignOut}
+            style={styles.signOutButton}
+            labelStyle={styles.signOutButtonText}
           >
-            <Menu.Item
-              title="Sign Out"
-              onPress={() => {
-                confirmSignOut();
-                closeMenu(1);
-              }}
-            />
-          </Menu>
+            Sign Out
+          </Button>
         </View>
 
         <View style={styles.header}>
