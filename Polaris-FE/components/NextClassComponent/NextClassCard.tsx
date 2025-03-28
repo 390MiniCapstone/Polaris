@@ -18,7 +18,7 @@ import { useNextClassTimer } from '@/hooks/useNextClassTimer';
 import { styles } from './NextClassCard.styles';
 
 const NextClassCard: React.FC = () => {
-  const [visible, setVisibility] = useState<{ [key: number]: boolean }>({});
+  const [visible, setVisibile] = useState(false);
   const { user, accessToken, promptAsync, logout } = useGoogleAuth();
   const { data: calendars, isLoading, error } = useGoogleCalendars();
   const { selectedCalendarId, selectedCalendarName, saveSelectedCalendar } =
@@ -29,13 +29,9 @@ const NextClassCard: React.FC = () => {
   );
   const { timeLeft, progress } = useNextClassTimer(nextevent ?? null);
 
-  const openMenu = (id: number) => {
-    setVisibility(prev => ({ ...prev, [id]: true }));
-  };
+  const openMenu = () => setVisibile(true);
 
-  const closeMenu = (id: number) => {
-    setVisibility(prev => ({ ...prev, [id]: false }));
-  };
+  const closeMenu = () => setVisibile(false);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -90,11 +86,11 @@ const NextClassCard: React.FC = () => {
 
         {/* Dropdown Menu */}
         <Menu
-          visible={visible[0]}
-          onDismiss={() => closeMenu(0)}
+          visible={visible}
+          onDismiss={closeMenu}
           anchor={
             <Button
-              onPress={() => openMenu(0)}
+              onPress={openMenu}
               style={styles.menuButton}
               labelStyle={styles.menuText}
             >
@@ -112,7 +108,7 @@ const NextClassCard: React.FC = () => {
                 key={calendar.id}
                 onPress={() => {
                   saveSelectedCalendar(calendar.id, calendar.summary);
-                  closeMenu(0);
+                  closeMenu();
                 }}
                 title={calendar.summary}
               />
