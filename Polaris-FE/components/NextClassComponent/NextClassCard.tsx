@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import {
   Card,
   Text,
@@ -18,8 +18,8 @@ import { useNextClassTimer } from '@/hooks/useNextClassTimer';
 import { styles } from './NextClassCard.styles';
 
 const NextClassCard: React.FC = () => {
-  const [visible, setVisible] = useState(false);
-  const { user, accessToken, promptAsync } = useGoogleAuth();
+  const [visible, setVisibility] = useState<{ [key: number]: boolean }>({});
+  const { user, accessToken, promptAsync, logout } = useGoogleAuth();
   const { data: calendars, isLoading, error } = useGoogleCalendars();
   const { selectedCalendarId, selectedCalendarName, saveSelectedCalendar } =
     useSelectedCalendar();
@@ -28,8 +28,14 @@ const NextClassCard: React.FC = () => {
     selectedCalendarId
   );
   const { timeLeft, progress } = useNextClassTimer(nextevent ?? null);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
+
+  const openMenu = (id: number) => {
+    setVisibility(prev => ({ ...prev, [id]: true }));
+  };
+
+  const closeMenu = (id: number) => {
+    setVisibility(prev => ({ ...prev, [id]: false }));
+  };
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -37,9 +43,51 @@ const NextClassCard: React.FC = () => {
     return `${hours}h ${minutes}m`;
   };
 
+  const confirmSignOut = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Sign Out', onPress: logout },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return user ? (
     <Card style={styles.card}>
       <Card.Content>
+        {/* Options Menu */}
+        <View style={styles.optionsMenuContainer}>
+          <Menu
+            visible={visible[1]}
+            onDismiss={() => closeMenu(1)}
+            anchor={
+              <Button
+                onPress={() => openMenu(1)}
+                style={styles.menuButton}
+                labelStyle={styles.timeText}
+              >
+                <FontAwesome
+                  name="ellipsis-v"
+                  size={16}
+                  color="white"
+                  style={styles.timeText}
+                />
+              </Button>
+            }
+          >
+            <Menu.Item
+              title="Sign Out"
+              onPress={() => {
+                confirmSignOut();
+                closeMenu(1);
+              }}
+            />
+          </Menu>
+        </View>
+
         <View style={styles.header}>
           <Text style={styles.title}>Next Class</Text>
 
@@ -61,11 +109,11 @@ const NextClassCard: React.FC = () => {
 
         {/* Dropdown Menu */}
         <Menu
-          visible={visible}
-          onDismiss={closeMenu}
+          visible={visible[0]}
+          onDismiss={() => closeMenu(0)}
           anchor={
             <Button
-              onPress={openMenu}
+              onPress={() => openMenu(0)}
               style={styles.menuButton}
               labelStyle={styles.menuText}
             >
@@ -83,7 +131,7 @@ const NextClassCard: React.FC = () => {
                 key={calendar.id}
                 onPress={() => {
                   saveSelectedCalendar(calendar.id, calendar.summary);
-                  closeMenu();
+                  closeMenu(0);
                 }}
                 title={calendar.summary}
               />

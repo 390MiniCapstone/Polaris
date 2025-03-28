@@ -103,4 +103,10 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  optionsMenuContainer: {
+    position: 'absolute',
+    top: -8,
+    right: -20,
+    zIndex: 1,
+  },
 });
