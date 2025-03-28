@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import {
   Card,
   Text,
@@ -19,7 +19,7 @@ import { styles } from './NextClassCard.styles';
 
 const NextClassCard: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const { user, accessToken, promptAsync } = useGoogleAuth();
+  const { user, accessToken, promptAsync, logout } = useGoogleAuth();
   const { data: calendars, isLoading, error } = useGoogleCalendars();
   const { selectedCalendarId, selectedCalendarName, saveSelectedCalendar } =
     useSelectedCalendar();
@@ -28,7 +28,9 @@ const NextClassCard: React.FC = () => {
     selectedCalendarId
   );
   const { timeLeft, progress } = useNextClassTimer(nextevent ?? null);
+
   const openMenu = () => setVisible(true);
+
   const closeMenu = () => setVisible(false);
 
   const formatTime = (seconds: number) => {
@@ -37,9 +39,32 @@ const NextClassCard: React.FC = () => {
     return `${hours}h ${minutes}m`;
   };
 
+  const confirmSignOut = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Sign Out', onPress: logout },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return user ? (
     <Card style={styles.card}>
       <Card.Content>
+        {/* Sign Out Button */}
+        <View style={styles.signOutButtonContainer}>
+          <Button
+            onPress={confirmSignOut}
+            style={styles.signOutButton}
+            labelStyle={styles.signOutButtonText}
+          >
+            Sign Out
+          </Button>
+        </View>
+
         <View style={styles.header}>
           <Text style={styles.title}>Next Class</Text>
 
