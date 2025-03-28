@@ -18,7 +18,7 @@ import { useNextClassTimer } from '@/hooks/useNextClassTimer';
 import { styles } from './NextClassCard.styles';
 
 const NextClassCard: React.FC = () => {
-  const [visible, setVisibile] = useState(false);
+  const [visible, setVisible] = useState(false);
   const { user, accessToken, promptAsync, logout } = useGoogleAuth();
   const { data: calendars, isLoading, error } = useGoogleCalendars();
   const { selectedCalendarId, selectedCalendarName, saveSelectedCalendar } =
@@ -29,9 +29,9 @@ const NextClassCard: React.FC = () => {
   );
   const { timeLeft, progress } = useNextClassTimer(nextevent ?? null);
 
-  const openMenu = () => setVisibile(true);
+  const openMenu = () => setVisible(true);
 
-  const closeMenu = () => setVisibile(false);
+  const closeMenu = () => setVisible(false);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
