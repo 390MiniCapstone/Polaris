@@ -94,7 +94,8 @@ const NextClassCard: React.FC = () => {
               style={styles.menuButton}
               labelStyle={styles.menuText}
             >
-              {selectedCalendarName}
+              {selectedCalendarName} <Text>{''}</Text>
+              <FontAwesome name="caret-down" size={14} color="#C0C0C0" />
             </Button>
           }
         >
