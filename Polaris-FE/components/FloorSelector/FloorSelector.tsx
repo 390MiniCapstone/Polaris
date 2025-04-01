@@ -1,6 +1,5 @@
 import React from 'react';
-import { FloorPlanObject } from '@/constants/floorPlans';
-import { FLOOR_PLANS } from '@/constants/floorPlans';
+import { FloorPlanObject, FLOOR_PLANS } from '@/constants/floorPlans';
 import { Picker } from '@react-native-picker/picker';
 import { StyleSheet, View } from 'react-native';
 import { handleFloorChange } from './utills';
