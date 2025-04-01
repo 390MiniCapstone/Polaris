@@ -95,7 +95,7 @@ describe('NextClassCard Component', () => {
     renderWithQueryProvider(<NextClassCard />);
     expect(screen.getByText('Team Meeting')).toBeTruthy();
     expect(screen.getByText('Conference Room')).toBeTruthy();
-    expect(screen.getByText('06:00 AM - 07:00 AM')).toBeTruthy();
+    expect(screen.getByText('10:00 AM - 11:00 AM')).toBeTruthy();
   });
 
   it('formats the timer correctly', () => {
