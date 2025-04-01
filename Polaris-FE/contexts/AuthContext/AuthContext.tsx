@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+} from 'react';
 import * as Google from 'expo-auth-session/providers/google';
 import {
   GoogleAuthProvider,
@@ -82,12 +88,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await authStorage.clearAuthData();
   };
 
+  const contextValue = useMemo(
+    () => ({ user, accessToken, refreshAccessToken, promptAsync, logout }),
+    [user, accessToken]
+  );
+
   return (
-    <AuthContext.Provider
-      value={{ user, accessToken, refreshAccessToken, promptAsync, logout }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
