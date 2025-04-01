@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
 import { BottomSheetComponent } from '@/components/BottomSheetComponent/BottomSheetComponent';
 import Ionicons from '@expo/vector-icons/Ionicons';
