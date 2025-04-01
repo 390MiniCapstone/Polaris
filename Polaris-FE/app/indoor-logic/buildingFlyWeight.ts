@@ -8,8 +8,11 @@ export class BuildingFlyWeight {
   private static buildings: Map<string, Building>;
 
   static getBuilding(name: string) {
+    if (!(name in FLOOR_PLANS)) {
+      throw new Error('Building not in Floor plans');
+    }
     let building = this.buildings.get(name);
-    if (!building) {
+    if (building) {
       return building;
     }
     // building not found, then create it and add it to flyweight

@@ -9,16 +9,24 @@ export const Unexplored = Infinity;
 export class AdjacencyListGraph<T extends Hashable> {
   private adjacencyList: HashMap<T, [T, Weight][]> = new HashMap();
 
+  constructor(edges: Edge<T>[] = []) {
+    this.addEdges(edges);
+  }
   keys() {
     return this.adjacencyList.keys();
   }
 
-  addEdge(u: T, v: T, weight: Weight) {
+  addEdge(edge: Edge<T>) {
+    const { nodes, weight, type } = edge;
+    const [u, v] = nodes;
     if (!this.adjacencyList.has(u)) this.adjacencyList.set(u, []);
     if (!this.adjacencyList.has(v)) this.adjacencyList.set(v, []);
 
     this.adjacencyList.get(u)!.push([v, weight]);
     this.adjacencyList.get(v)!.push([u, weight]); // Remove this for a directed graph
+  }
+  addEdges(edges: Edge<T>[]) {
+    edges.forEach(this.addEdge);
   }
 
   getNeighbours(u: T) {
@@ -26,8 +34,8 @@ export class AdjacencyListGraph<T extends Hashable> {
   }
 }
 
-export type Edge = {
-  readonly nodes: [NodeNav, NodeNav];
+export type Edge<T> = {
+  readonly nodes: [T, T];
   readonly weight: number;
   readonly type: EdgeType;
 };

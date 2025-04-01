@@ -1,5 +1,5 @@
 import { Hashable } from '@/utils/interfaces';
-import { AdjacencyListGraph, Unexplored, Weight } from './Graph';
+import { AdjacencyListGraph, Unexplored, Weight } from './graph';
 import { HashMap, PriorityQueue } from '@/utils/collections';
 
 export class Dijkstra<T extends Hashable> {
