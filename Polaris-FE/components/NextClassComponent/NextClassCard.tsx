@@ -51,6 +51,51 @@ const NextClassCard: React.FC = () => {
     );
   };
 
+  const renderMenuItems = () => {
+    if (isLoading) {
+      return <ActivityIndicator animating size="small" color="#ffffff" />;
+    }
+    if (error) {
+      return <Menu.Item title="Error loading calendars" disabled />;
+    }
+    if (calendars && calendars.length > 0) {
+      return calendars.map(calendar => (
+        <Menu.Item
+          key={calendar.id}
+          onPress={() => {
+            saveSelectedCalendar(calendar.id, calendar.summary);
+            closeMenu();
+          }}
+          title={calendar.summary}
+        />
+      ));
+    }
+    return <Menu.Item title="No calendars available" disabled />;
+  };
+
+  const renderEventDetails = () => {
+    if (!nextevent) {
+      return <Text style={styles.noEventText}>🚀 No Future Events Found</Text>;
+    }
+    return (
+      <React.Fragment>
+        <View style={styles.separator} />
+        <Text style={styles.classText}>{nextevent.summary}</Text>
+        <Text style={styles.locationText}>{nextevent.location}</Text>
+        {nextevent.start?.date ? (
+          <Text style={styles.timeText}>
+            {dayjs(nextevent.start.date).format('dddd, MMM D, YYYY')} (All Day)
+          </Text>
+        ) : (
+          <Text style={styles.timeText}>
+            {dayjs(nextevent?.start?.dateTime).format('hh:mm A')} -{' '}
+            {dayjs(nextevent?.end?.dateTime).format('hh:mm A')}
+          </Text>
+        )}
+      </React.Fragment>
+    );
+  };
+
   return user ? (
     <Card style={styles.card}>
       <Card.Content>
@@ -99,48 +144,11 @@ const NextClassCard: React.FC = () => {
             </Button>
           }
         >
-          {isLoading ? (
-            <ActivityIndicator animating size="small" color="#ffffff" />
-          ) : error ? (
-            <Menu.Item title="Error loading calendars" disabled />
-          ) : calendars && calendars.length > 0 ? (
-            calendars.map(calendar => (
-              <Menu.Item
-                key={calendar.id}
-                onPress={() => {
-                  saveSelectedCalendar(calendar.id, calendar.summary);
-                  closeMenu();
-                }}
-                title={calendar.summary}
-              />
-            ))
-          ) : (
-            <Menu.Item title="No calendars available" disabled />
-          )}
+          {renderMenuItems()}
         </Menu>
 
         {/* Event Details */}
-        {nextevent ? (
-          <>
-            <View style={styles.separator} />
-            <Text style={styles.classText}>{nextevent.summary}</Text>
-            <Text style={styles.locationText}>{nextevent.location}</Text>
-
-            {nextevent?.start?.date ? (
-              <Text style={styles.timeText}>
-                {dayjs(nextevent.start.date).format('dddd, MMM D, YYYY')} (All
-                Day)
-              </Text>
-            ) : (
-              <Text style={styles.timeText}>
-                {dayjs(nextevent?.start?.dateTime).format('hh:mm A')} -
-                {dayjs(nextevent?.end?.dateTime).format('hh:mm A')}
-              </Text>
-            )}
-          </>
-        ) : (
-          <Text style={styles.noEventText}>🚀 No Future Events Found</Text>
-        )}
+        {renderEventDetails()}
       </Card.Content>
 
       <Card.Actions>

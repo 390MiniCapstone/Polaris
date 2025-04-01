@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useMemo } from 'react';
 
 const EMPTY_STRING: string = '';
 
@@ -29,8 +29,13 @@ export const BuildingProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [indoorBuilding, setIndoorBuilding] = useState<string>(EMPTY_STRING);
 
+  const contextValue = useMemo(
+    () => ({ indoorBuilding, setIndoorBuilding }),
+    [indoorBuilding, setIndoorBuilding]
+  );
+
   return (
-    <BuildingContext.Provider value={{ indoorBuilding, setIndoorBuilding }}>
+    <BuildingContext.Provider value={contextValue}>
       {children}
     </BuildingContext.Provider>
   );
