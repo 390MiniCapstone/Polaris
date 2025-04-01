@@ -37,7 +37,6 @@ export function IconSymbol({
   size?: number;
   color: string | OpaqueColorValue;
   style?: StyleProp<ViewStyle>;
-  weight?: SymbolWeight;
 }>) {
   return (
     <MaterialIcons
