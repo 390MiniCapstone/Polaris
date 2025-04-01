@@ -5,12 +5,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import NextClassCard from '@/components/NextClassComponent/NextClassCard';
 import { useGoogleAuth } from '@/contexts/AuthContext/AuthContext';
 import { useGoogleNextEvent } from '@/hooks/useGoogleNextEvent';
+import { useGoogleCalendars } from '@/hooks/useGoogleCalendar';
 
 jest.mock('@/contexts/AuthContext/AuthContext');
 jest.mock('@/hooks/useGoogleNextEvent');
+jest.mock('@/hooks/useGoogleCalendar');
 
 const mockAuth = useGoogleAuth as jest.Mock;
 const mockNextEvent = useGoogleNextEvent as jest.Mock;
+const mockCalendars = useGoogleCalendars as jest.Mock;
 
 const queryClient = new QueryClient();
 
@@ -26,6 +29,7 @@ describe('NextClassCard Component', () => {
     });
 
     mockNextEvent.mockReturnValue({ data: null });
+    mockCalendars.mockReturnValue({ data: [] });
   });
 
   it('renders correctly when user is signed in', () => {
@@ -76,5 +80,34 @@ describe('NextClassCard Component', () => {
 
     renderWithQueryProvider(<NextClassCard />);
     expect(screen.queryByText('Sign Out')).toBeNull();
+  });
+
+  it('displays event details when there is an upcoming event', () => {
+    mockNextEvent.mockReturnValue({
+      data: {
+        summary: 'Team Meeting',
+        location: 'Conference Room',
+        start: { dateTime: '2025-04-01T10:00:00Z' },
+        end: { dateTime: '2025-04-01T11:00:00Z' },
+      },
+    });
+
+    renderWithQueryProvider(<NextClassCard />);
+    expect(screen.getByText('Team Meeting')).toBeTruthy();
+    expect(screen.getByText('Conference Room')).toBeTruthy();
+    expect(screen.getByText('06:00 AM - 07:00 AM')).toBeTruthy();
+  });
+
+  it('formats the timer correctly', () => {
+    mockNextEvent.mockReturnValue({
+      data: {
+        summary: 'Team Meeting',
+        start: { dateTime: '2025-04-01T10:00:00Z' },
+      },
+    });
+
+    renderWithQueryProvider(<NextClassCard />);
+    const timerText = screen.getByText(/h \d+m/); // Matches "xh ym" format
+    expect(timerText).toBeTruthy();
   });
 });

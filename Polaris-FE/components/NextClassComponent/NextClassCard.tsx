@@ -78,7 +78,7 @@ const NextClassCard: React.FC = () => {
       return <Text style={styles.noEventText}>🚀 No Future Events Found</Text>;
     }
     return (
-      <>
+      <React.Fragment>
         <View style={styles.separator} />
         <Text style={styles.classText}>{nextevent.summary}</Text>
         <Text style={styles.locationText}>{nextevent.location}</Text>
@@ -88,11 +88,11 @@ const NextClassCard: React.FC = () => {
           </Text>
         ) : (
           <Text style={styles.timeText}>
-            {dayjs(nextevent?.start?.dateTime).format('hh:mm A')} -
+            {dayjs(nextevent?.start?.dateTime).format('hh:mm A')} -{' '}
             {dayjs(nextevent?.end?.dateTime).format('hh:mm A')}
           </Text>
         )}
-      </>
+      </React.Fragment>
     );
   };
 
