@@ -40,59 +40,184 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
       width: '2643',
       height: '2823',
       nodes: [
-        new NodeNav('H0', 0.24, 0.84, 'hallway'),
-        new NodeNav('H1', 0.24, 0.9, 'hallway'),
-        new NodeNav('H2', 0.32, 0.9, 'hallway'),
-        new NodeNav('H3', 0.41, 0.9, 'hallway'),
-        new NodeNav('H4', 0.5, 0.9, 'hallway'),
-        new NodeNav('H5', 0.54, 0.9, 'hallway'),
-        new NodeNav('H6', 0.6, 0.9, 'hallway'),
-        new NodeNav('H7', 0.69, 0.9, 'hallway'),
-        new NodeNav('H8', 0.78, 0.9, 'hallway'),
-        new NodeNav('H9', 0.82, 0.9, 'hallway'),
-        new NodeNav('H10', 0.82, 0.85, 'hallway'),
-        new NodeNav('H11', 0.83, 0.78, 'hallway'),
-        new NodeNav('H12', 0.82, 0.71, 'hallway'),
-        new NodeNav('H13', 0.74, 0.71, 'hallway'),
-        new NodeNav('H14', 0.68, 0.72, 'hallway'),
-        new NodeNav('H15', 0.6, 0.71, 'hallway'),
-        new NodeNav('H16', 0.53, 0.71, 'hallway'),
-        new NodeNav('H17', 0.53, 0.79, 'hallway'),
-        new NodeNav('H18', 0.53, 0.86, 'hallway'),
-        new NodeNav('H19', 0.53, 0.66, 'hallway'),
-        new NodeNav('H20', 0.81, 0.94, 'hallway'),
-        new NodeNav('EN1', 0.79, 0.95, 'hallway'),
-        new NodeNav('EN2', 0.9, 0.88, 'hallway'),
-        new NodeNav('EN3', 0.59, 0.87, 'hallway'),
-        new NodeNav('EN4', 0.32, 0.94, 'hallway'),
-        new NodeNav('C1', 0.24, 0.79, 'hallway'),
+        //hallways
+        new NodeNav('0', 0.99, 0.89, 'hallway'),
+        new NodeNav('1', 0.81, 0.89, 'hallway'),
+        new NodeNav('2', 0.8, 0.82, 'hallway'),
+        new NodeNav('3', 0.81, 0.72, 'hallway'),
+        new NodeNav('4', 0.84, 0.71, 'hallway'),
+        new NodeNav('5', 0.91, 0.72, 'hallway'),
+        new NodeNav('6', 0.98, 0.62, 'hallway'),
+        new NodeNav('7', 0.84, 0.69, 'hallway'),
+        new NodeNav('8', 0.79, 0.69, 'hallway'),
+        new NodeNav('9', 0.79, 0.66, 'hallway'),
+        new NodeNav('10', 0.77, 0.66, 'hallway'),
+        new NodeNav('11', 0.7, 0.66, 'hallway'),
+        new NodeNav('12', 0.67, 0.64, 'hallway'),
+        new NodeNav('13', 0.64, 0.64, 'hallway'),
+        new NodeNav('14', 0.62, 0.68, 'hallway'),
+        new NodeNav('15', 0.61, 0.71, 'hallway'),
+        new NodeNav('16', 0.54, 0.71, 'hallway'),
+        new NodeNav('17', 0.54, 0.66, 'hallway'),
+        new NodeNav('18', 0.54, 0.63, 'hallway'),
+        new NodeNav('19', 0.52, 0.63, 'hallway'),
+        new NodeNav('20', 0.49, 0.63, 'hallway'),
+        new NodeNav('21', 0.49, 0.66, 'hallway'),
+        new NodeNav('22', 0.52, 0.49, 'hallway'),
+        new NodeNav('23', 0.54, 0.85, 'hallway'),
+        new NodeNav('24', 0.38, 0.85, 'hallway'),
+        new NodeNav('25', 0.25, 0.86, 'hallway'),
+        new NodeNav('26', 0.25, 0.81, 'hallway'),
+        new NodeNav('27', 0.19, 0.86, 'hallway'),
+        new NodeNav('28', 0.11, 0.86, 'hallway'),
+        new NodeNav('29', 0.11, 0.78, 'hallway'),
+        new NodeNav('30', 0.07, 0.76, 'hallway'),
+        new NodeNav('31', 0.08, 0.72, 'hallway'),
+        new NodeNav('32', 0.1, 0.69, 'hallway'),
+        new NodeNav('33', 0.07, 0.51, 'hallway'),
+        new NodeNav('34', 0.19, 0.67, 'hallway'),
+        new NodeNav('35', 0.27, 0.68, 'hallway'),
+        new NodeNav('36', 0.34, 0.99, 'hallway'),
+        new NodeNav('37', 0.75, 0.94, 'escalator'),
+        new NodeNav('38', 0.71, 0.89, 'hallway'),
+        new NodeNav('39', 0.61, 0.89, 'hallway'),
+        new NodeNav('40', 0.73, 0.71, 'hallway'),
+        new NodeNav('41', 0.66, 0.71, 'elevator'),
+        new NodeNav('42', 0.73, 0.75, 'hallway'),
+        new NodeNav('43', 0.77, 0.75, 'hallway'),
+
+        //rooms
+        new NodeNav('102-91', 0.61, 0.85, 'escalator'),
+        new NodeNav('102-90', 0.8, 0.94, 'room'),
+        new NodeNav('101', 0.94, 0.87, 'room'),
+        new NodeNav('102-2', 0.92, 0.77, 'room'),
+        new NodeNav('102-3', 0.77, 0.79, 'room'),
+        new NodeNav('198-1', 0.94, 0.72, 'room'),
+        new NodeNav('198', 0.93, 0.63, 'room'),
+        new NodeNav('118-5', 0.84, 0.66, 'room'),
+        new NodeNav('118-4', 0.84, 0.62, 'room'),
+        new NodeNav('118-3', 0.77, 0.62, 'room'),
+        new NodeNav('118', 0.74, 0.66, 'room'),
+        new NodeNav('118-2', 0.74, 0.62, 'room'),
+        new NodeNav('118-14', 0.69, 0.62, 'room'),
+        new NodeNav('118-1', 0.67, 0.66, 'room'),
+        new NodeNav('118-13', 0.67, 0.62, 'room'),
+        new NodeNav('118-12', 0.61, 0.64, 'room'),
+        new NodeNav('118-11', 0.64, 0.67, 'room'),
+        new NodeNav('115', 0.58, 0.53, 'room'),
+        new NodeNav('116-4', 0.58, 0.66, 'room'),
+        new NodeNav('116-1', 0.6, 0.67, 'room'),
+        new NodeNav('196-1', 0.58, 0.74, 'room'),
+        new NodeNav('196', 0.61, 0.75, 'room'),
+        new NodeNav('196-2', 0.59, 0.77, 'room'),
+        new NodeNav('112', 0.45, 0.64, 'washroom'),
+        new NodeNav('114', 0.48, 0.54, 'washroom'),
+        new NodeNav('199-40', 0.47, 0.48, 'room'),
+        new NodeNav('110-6', 0.39, 0.49, 'room'),
+        new NodeNav('110', 0.27, 0.52, 'room'),
+        new NodeNav('110-7', 0.16, 0.48, 'room'),
+        new NodeNav('190', 0.07, 0.49, 'room'),
+        new NodeNav('109-1', 0.07, 0.54, 'room'),
+        new NodeNav('109-2', 0.11, 0.53, 'room'),
+        new NodeNav('109', 0.1, 0.61, 'room'),
+        new NodeNav('110-12', 0.14, 0.7, 'room'),
+        new NodeNav('110-8', 0.19, 0.74, 'room'),
+        new NodeNav('110-2', 0.19, 0.76, 'washroom'),
+        new NodeNav('110-3', 0.24, 0.76, 'room'),
+        new NodeNav('110-1', 0.27, 0.7, 'room'),
+        new NodeNav('110-9', 0.36, 0.73, 'room'),
+        new NodeNav('110-5', 0.41, 0.71, 'room'),
+        new NodeNav('110-4', 0.36, 0.76, 'room'),
+        new NodeNav('102', 0.33, 0.85, 'room'),
+        new NodeNav('103', 0.34, 0.97, 'room'),
       ],
       edges: [
-        ['H0', 'H1', 'hallway'],
-        ['H1', 'H2', 'hallway'],
-        ['H2', 'H3', 'hallway'],
-        ['H3', 'H4', 'hallway'],
-        ['H4', 'H5', 'hallway'],
-        ['H5', 'H6', 'hallway'],
-        ['H6', 'H7', 'hallway'],
-        ['H7', 'H8', 'hallway'],
-        ['H8', 'H9', 'hallway'],
-        ['H9', 'H10', 'hallway'],
-        ['H10', 'H11', 'hallway'],
-        ['H11', 'H12', 'hallway'],
-        ['H12', 'H13', 'hallway'],
-        ['H13', 'H14', 'hallway'],
-        ['H14', 'H15', 'hallway'],
-        ['H15', 'H16', 'hallway'],
-        ['H16', 'H17', 'hallway'],
-        ['H17', 'H18', 'hallway'],
-        ['H16', 'H19', 'hallway'],
-        ['H5', 'H18', 'hallway'],
-        ['H9', 'H20', 'hallway'],
-        ['EN1', 'H20', 'hallway'],
-        ['EN2', 'H9', 'hallway'],
-        ['EN4', 'H2', 'hallway'],
-        ['C1', 'H0', 'hallway'],
+        ['0', '101', 'hallway'], // entrance
+        ['101', '1', 'hallway'],
+        ['1', '102-90', 'escalator'],
+        ['102-90', '37', 'hallway'],
+        ['1', '2', 'hallway'],
+        ['2', '102-2', 'hallway'],
+        ['2', '3', 'hallway'],
+        ['3', '4', 'hallway'],
+        ['4', '5', 'hallway'],
+        ['5', '198-1', 'hallway'], //room
+        ['3', '40', 'hallway'],
+        ['40', '42', 'hallway'],
+        ['42', '43', 'hallway'],
+        ['2', '102-2', 'hallway'],
+        ['43', '102-3', 'elevator'],
+        ['39', '38', 'hallway'],
+        ['38', '1', 'hallway'],
+        ['39', '102-91', 'escalator'],
+        ['4', '102-2', 'hallway'], //room
+        ['5', '198', 'stairs'],
+        ['5', '198-1', 'hallway'],
+        ['6', '198', 'hallway'], // entrance
+        ['118-5', '118-4', 'hallway'], //room
+        ['4', '7', 'hallway'],
+        ['7', '8', 'hallway'],
+        ['8', '9', 'hallway'],
+        ['9', '118-5', 'hallway'], //room
+        ['10', '118-3', 'hallway'], //room
+        ['9', '10', 'hallway'],
+        ['10', '118', 'hallway'], //room
+        ['118', '118-2', 'hallway'], //room
+        ['118', '11', 'hallway'],
+        ['11', '118-14', 'hallway'], //room
+        ['11', '118-1', 'hallway'], //room
+        ['118-1', '12', 'hallway'],
+        ['12', '118-13', 'hallway'], //room
+        ['12', '13', 'hallway'],
+        ['13', '118-12', 'hallway'], //room
+        ['13', '118-11', 'hallway'], //room
+        ['14', '15', 'hallway'],
+        ['14', '116-1', 'hallway'], //room
+        ['116-4', '115', 'hallway'], //room
+        ['15', '196', 'hallway'], //room
+        ['196', '196-1', 'hallway'], //room
+        ['196', '196-2', 'hallway'], //room
+        ['15', '16', 'hallway'],
+        ['16', '17', 'hallway'],
+        ['17', '18', 'hallway'],
+        ['18', '19', 'hallway'],
+        ['19', '20', 'hallway'],
+        ['20', '114', 'hallway'], //washroom
+        ['17', '21', 'hallway'], //washroom
+        ['21', '112', 'hallway'], //washroom
+        ['19', '22', 'hallway'],
+        ['22', '199-40', 'hallway'], //room
+        ['199-40', '110-6', 'hallway'], //room
+        ['23', '24', 'hallway'],
+        ['24', '110-4', 'hallway'], //room
+        ['110-4', '110-5', 'hallway'], //room
+        ['110-4', '110-9', 'hallway'], //room
+        ['24', '102', 'hallway'], //room
+        ['102', '25', 'hallway'],
+        ['102', '103', 'hallway'], //room
+        ['36', '103', 'hallway'], //room
+        ['25', '26', 'hallway'],
+        ['26', '110-3', 'hallway'], //room
+        ['25', '27', 'hallway'],
+        ['27', '28', 'hallway'],
+        ['28', '29', 'hallway'],
+        ['29', '30', 'hallway'],
+        ['30', '31', 'hallway'],
+        ['31', '32', 'hallway'],
+        ['32', '109', 'hallway'], //room
+        ['109', '109-1', 'hallway'], //room
+        ['109-1', '109-2', 'hallway'], //room
+        ['109-1', '33', 'hallway'],
+        ['33', '190', 'hallway'], //room
+        ['190', '110-7', 'hallway'], //room
+        ['110-7', '110', 'hallway'], //room
+        ['110', '110-6', 'hallway'], //room
+        ['27', '110-2', 'hallway'], //room
+        ['110-2', '110-12', 'hallway'], //room
+        ['110-2', '110-8', 'stairs'],
+        ['110-2', '34', 'hallway'],
+        ['34', '35', 'hallway'],
+        ['35', '110-1', 'hallway'], //room
       ],
     },
     {
@@ -228,59 +353,59 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         new NodeNav('H124', 0.25, 0.22, 'hallway'),
       ],
       edges: [
-        ['H0', 'H1', 'hallway'],  // ? escalator?
+        ['H0', 'H1', 'hallway'], // ? escalator?
         ['H1', 'H2', 'hallway'],
         ['H2', 'H3', 'hallway'],
-        ['H3', 'H4', 'hallway'],  // ? elevator?
+        ['H3', 'H4', 'hallway'], // ? elevator?
         ['H3', 'H5', 'hallway'],
-        ['H5', 'H6', 'hallway'],  // ? elevator?
+        ['H5', 'H6', 'hallway'], // ? elevator?
         ['H5', 'H7', 'hallway'],
         ['H7', 'H8', 'hallway'],
         ['H8', 'H9', 'hallway'],
         ['H9', 'H10', 'hallway'],
         ['H10', 'H11', 'hallway'],
-        ['H11', '224-1', 'hallway'],  // room
+        ['H11', '224-1', 'hallway'], // room
         ['H10', 'H13', 'hallway'],
         ['H13', 'H14', 'hallway'],
-        ['H14', '224', 'hallway'],  // room
+        ['H14', '224', 'hallway'], // room
         ['H13', 'H16', 'hallway'],
         ['H16', 'H17', 'hallway'],
         ['H17', 'H18', 'hallway'],
         ['H18', 'H19', 'hallway'],
         ['H19', 'H20', 'hallway'],
-        ['H20', 'H21', 'hallway'],  // ? stairs?
+        ['H20', 'H21', 'hallway'], // ? stairs?
         ['H21', 'H22', 'hallway'],
         ['H22', 'H23', 'hallway'],
-        ['H23', '290', 'hallway'],  // room
-        ['290', 'H35', 'hallway'],  // room, stairs?
+        ['H23', '290', 'hallway'], // room
+        ['290', 'H35', 'hallway'], // room, stairs?
         ['H35', 'H36', 'hallway'],
-        ['290', 'H37', 'hallway'],  // room, stairs?
+        ['290', 'H37', 'hallway'], // room, stairs?
         ['H37', 'H38', 'hallway'],
         ['H39', 'H40', 'hallway'],
-        ['H40', '290-1', 'hallway'],  // room
+        ['H40', '290-1', 'hallway'], // room
         ['H39', 'H42', 'hallway'],
         ['H42', 'H43', 'hallway'],
-        ['H43', '205', 'hallway'],  // room
+        ['H43', '205', 'hallway'], // room
         ['H22', 'H29', 'hallway'],
         ['H29', 'H30', 'hallway'],
-        ['H30', 'H31', 'hallway'],  // stairs?
-        ['H31', '283', 'hallway'],  // room
-        ['283', 'H33', 'hallway'],  // room, stairs?
+        ['H30', 'H31', 'hallway'], // stairs?
+        ['H31', '283', 'hallway'], // room
+        ['283', 'H33', 'hallway'], // room, stairs?
         ['H22', 'H24', 'hallway'],
-        ['H24', '225', 'hallway'],  // room
-        ['225', 'H26', 'hallway'],  // room
+        ['H24', '225', 'hallway'], // room
+        ['225', 'H26', 'hallway'], // room
         ['H26', 'H27', 'hallway'],
-        ['H27', 'H28', 'hallway'],  // stairs?
+        ['H27', 'H28', 'hallway'], // stairs?
         ['H19', 'H45', 'hallway'],
-        ['H45', '213-90', 'hallway'],  // room
-        ['213-90', 'H47', 'hallway'],  // room
+        ['H45', '213-90', 'hallway'], // room
+        ['213-90', 'H47', 'hallway'], // room
         ['H47', 'H48', 'hallway'],
         ['H48', 'H49', 'hallway'],
-        ['H49', '231-00', 'hallway'],  // room
-        ['231-00', 'H51', 'hallway'],  // room
+        ['H49', '231-00', 'hallway'], // room
+        ['231-00', 'H51', 'hallway'], // room
         ['H49', 'H52', 'hallway'],
         ['H52', 'H53', 'hallway'],
-        ['H53', '213-90', 'hallway'],  // room
+        ['H53', '213-90', 'hallway'], // room
         ['H53', 'H54', 'hallway'],
         ['H54', 'H55', 'hallway'],
         ['H55', 'H56', 'hallway'],
@@ -288,16 +413,16 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H53', 'H58', 'hallway'],
         ['H58', 'H59', 'hallway'],
         ['H58', 'H60', 'hallway'],
-        ['H60', '235', 'hallway'],  // room
-        ['235', 'H62', 'hallway'],  // room, stairs?
+        ['H60', '235', 'hallway'], // room
+        ['235', 'H62', 'hallway'], // room, stairs?
         ['H16', 'H63', 'hallway'],
         ['H16', 'H64', 'hallway'],
         ['H64', 'H65', 'hallway'],
         ['H65', 'H66', 'hallway'],
         ['H66', 'H67', 'hallway'],
         ['H67', 'H68', 'hallway'],
-        ['H68', '239-00', 'hallway'],  // room
-        ['239-00', 'H70', 'hallway'],  // room
+        ['H68', '239-00', 'hallway'], // room
+        ['239-00', 'H70', 'hallway'], // room
         ['H70', 'H71', 'hallway'],
         ['H71', 'H72', 'hallway'],
         ['H72', 'H73', 'hallway'],
@@ -306,16 +431,16 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H75', 'H76', 'hallway'],
         ['H75', 'H77', 'hallway'],
         ['H77', 'H78', 'hallway'],
-        ['H77', '222-01', 'hallway'],  // room
-        ['H78', '222-000', 'hallway'],  // room
+        ['H77', '222-01', 'hallway'], // room
+        ['H78', '222-000', 'hallway'], // room
         ['H77', 'H81', 'hallway'],
         ['H81', 'H82', 'hallway'],
         ['H82', 'H83', 'hallway'],
-        ['H83', '281', 'hallway'],  // room
-        ['H82', '280', 'hallway'],  // room
+        ['H83', '281', 'hallway'], // room
+        ['H82', '280', 'hallway'], // room
         ['H81', 'H86', 'hallway'],
         ['H86', 'H87', 'hallway'],
-        ['H87', '275', 'hallway'],  // room?  // todo: 275 is a stairway
+        ['H87', '275', 'hallway'], // room?  // todo: 275 is a stairway
         ['H87', 'H89', 'hallway'],
         ['H86', 'H90', 'hallway'],
         ['H90', 'H91', 'hallway'],
@@ -345,7 +470,7 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H93', 'H94', 'hallway'],
         ['H94', 'H77', 'hallway'],
         ['H107', 'H122', 'hallway'],
-        ['H122', 'H124', 'hallway'],  // escalators?
+        ['H122', 'H124', 'hallway'], // escalators?
         ['H122', 'H123', 'hallway'],
         ['H123', 'H2', 'hallway'],
         ['H5', 'H110', 'hallway'],
