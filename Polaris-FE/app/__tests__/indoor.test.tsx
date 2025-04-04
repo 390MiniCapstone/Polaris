@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react-native';
 import Indoor from '../indoor';
 import { useBuildingContext } from '@/contexts/BuildingContext/BuildingContext';
+import { FLOOR_PLANS } from '@/constants/floorPlans';
 
 jest.mock('@/contexts/BuildingContext/BuildingContext', () => ({
   useBuildingContext: jest.fn(),
@@ -30,7 +31,7 @@ jest.mock(
 describe('Indoor Component', () => {
   it('renders without crashing', () => {
     (useBuildingContext as jest.Mock).mockReturnValue({
-      indoorBuilding: 'Building A',
+      indoorBuilding: Object.keys(FLOOR_PLANS)[0],
     });
 
     const { getByTestId } = render(<Indoor />);

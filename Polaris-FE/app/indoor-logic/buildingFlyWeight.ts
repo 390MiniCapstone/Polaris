@@ -5,7 +5,7 @@ import { Building } from './building';
  * Building fly weight factory will take care of reviewing repeated elements that were already computed.
  */
 export class BuildingFlyWeight {
-  private static buildings: Map<string, Building>;
+  private static buildings = new Map<string, Building>();
 
   static getBuilding(name: string) {
     if (!(name in FLOOR_PLANS)) {
@@ -17,7 +17,7 @@ export class BuildingFlyWeight {
     }
     // building not found, then create it and add it to flyweight
     building = new Building(name, FLOOR_PLANS[name]);
-    // add to flyweight for caching
+    // add to flyweight for cachinBuildingFlyWeightg
     this.buildings.set(name, building);
     return building;
   }
