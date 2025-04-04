@@ -8,7 +8,7 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useZoomAndPan } from './useZoomAndPan';
 import { FloorPlanObject } from '@/constants/floorPlans';
 import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
-import { Graph } from '@/app/NodeNav';
+//import { Graph } from '@/app/NodeNav';
 import { dijkstra } from './utils';
 
 type PinchPanContainerProps = {
@@ -24,40 +24,40 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({ floorPlan }) => {
   const SvgComponent = floorPlan.SvgComponent;
   const initialOffsetY = 50;
 
-  const graphRef = useRef(new Graph());
-  const graph = graphRef.current;
+  // const graphRef = useRef(new Graph());
+  //  const graph = graphRef.current;
 
-  const [shortestPath, setShortestPath] = useState<string[]>([]);
+  // const [shortestPath, setShortestPath] = useState<string[]>([]);
 
-  useEffect(() => {
-    graph.nodes.clear();
-    graph.edges.clear();
+  // useEffect(() => {
+  //   graph.nodes.clear();
+  //   graph.edges.clear();
 
-    floorPlan?.nodes?.forEach(node => graph.addNode(node));
+  //   floorPlan?.nodes?.forEach(node => graph.addNode(node));
 
-    floorPlan?.edges?.forEach(edge => {
-      const fromNode = graph.nodes.get(edge.from);
-      const toNode = graph.nodes.get(edge.to);
+  //   floorPlan?.edges?.forEach(edge => {
+  //     const fromNode = graph.nodes.get(edge.from);
+  //     const toNode = graph.nodes.get(edge.to);
 
-      if (fromNode && toNode) {
-        const distance = fromNode.distanceTo(
-          toNode,
-          parseFloat(floorPlan.width),
-          parseFloat(floorPlan.height)
-        );
-        graph.addEdge(fromNode.id, toNode.id, distance);
-      }
-    });
+  //     if (fromNode && toNode) {
+  //       const distance = fromNode.distanceTo(
+  //         toNode,
+  //         parseFloat(floorPlan.width),
+  //         parseFloat(floorPlan.height)
+  //       );
+  //       graph.addEdge(fromNode.id, toNode.id, distance);
+  //     }
+  //   });
 
-    console.log('Graph Updated', graph);
+  //   console.log('Graph Updated', graph);
 
-    const startNode = 'EN4';
-    const endNode = 'H13';
-    const { path } = dijkstra(graph, startNode, endNode);
+  //   const startNode = 'EN4';
+  //   const endNode = 'H13';
+  //   const { path } = dijkstra(graph, startNode, endNode);
 
-    setShortestPath(path);
-    console.log(`Shortest Path: ${path.join(' → ')}`);
-  }, [floorPlan]);
+  //   setShortestPath(path);
+  //   console.log(`Shortest Path: ${path.join(' → ')}`);
+  // }, [floorPlan]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -79,7 +79,7 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({ floorPlan }) => {
           >
             <SvgComponent width="100%" height="100%" />
 
-            {floorPlan?.nodes?.map(node => (
+            {/* {floorPlan?.nodes?.map(node => (
               <React.Fragment key={node.id}>
                 <Circle
                   cx={node.getAbsoluteX(parseFloat(floorPlan.width))}
@@ -144,7 +144,7 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({ floorPlan }) => {
                   </SvgText>
                 </React.Fragment>
               );
-            })}
+            })} */}
           </Svg>
         </Animated.View>
       </GestureDetector>
