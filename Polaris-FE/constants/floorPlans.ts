@@ -353,12 +353,12 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         new NodeNav('H124', 0.25, 0.22, 'hallway'),
       ],
       edges: [
-        ['H0', 'H1', 'hallway'], // ? escalator?
+        ['H0', 'H1', 'escalator'],
         ['H1', 'H2', 'hallway'],
         ['H2', 'H3', 'hallway'],
-        ['H3', 'H4', 'hallway'], // ? elevator?
+        ['H3', 'H4', 'elevator'],
         ['H3', 'H5', 'hallway'],
-        ['H5', 'H6', 'hallway'], // ? elevator?
+        ['H5', 'H6', 'elevator'],
         ['H5', 'H7', 'hallway'],
         ['H7', 'H8', 'hallway'],
         ['H8', 'H9', 'hallway'],
@@ -373,13 +373,13 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H17', 'H18', 'hallway'],
         ['H18', 'H19', 'hallway'],
         ['H19', 'H20', 'hallway'],
-        ['H20', 'H21', 'hallway'], // ? stairs?
+        ['H20', 'H21', 'stairs'],
         ['H21', 'H22', 'hallway'],
         ['H22', 'H23', 'hallway'],
         ['H23', '290', 'hallway'], // room
-        ['290', 'H35', 'hallway'], // room, stairs?
-        ['H35', 'H36', 'hallway'],
-        ['290', 'H37', 'hallway'], // room, stairs?
+        ['290', 'H35', 'hallway'], // room
+        ['H35', 'H36', 'stairs'],
+        ['290', 'H37', 'stairs'], // room
         ['H37', 'H38', 'hallway'],
         ['H39', 'H40', 'hallway'],
         ['H40', '290-1', 'hallway'], // room
@@ -388,14 +388,14 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H43', '205', 'hallway'], // room
         ['H22', 'H29', 'hallway'],
         ['H29', 'H30', 'hallway'],
-        ['H30', 'H31', 'hallway'], // stairs?
+        ['H30', 'H31', 'stairs'],
         ['H31', '283', 'hallway'], // room
-        ['283', 'H33', 'hallway'], // room, stairs?
+        ['283', 'H33', 'stairs'], // room
         ['H22', 'H24', 'hallway'],
         ['H24', '225', 'hallway'], // room
         ['225', 'H26', 'hallway'], // room
         ['H26', 'H27', 'hallway'],
-        ['H27', 'H28', 'hallway'], // stairs?
+        ['H27', 'H28', 'stairs'],
         ['H19', 'H45', 'hallway'],
         ['H45', '213-90', 'hallway'], // room
         ['213-90', 'H47', 'hallway'], // room
@@ -414,7 +414,7 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H58', 'H59', 'hallway'],
         ['H58', 'H60', 'hallway'],
         ['H60', '235', 'hallway'], // room
-        ['235', 'H62', 'hallway'], // room, stairs?
+        ['235', 'H62', 'stairs'], // room
         ['H16', 'H63', 'hallway'],
         ['H16', 'H64', 'hallway'],
         ['H64', 'H65', 'hallway'],
@@ -440,8 +440,8 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H82', '280', 'hallway'], // room
         ['H81', 'H86', 'hallway'],
         ['H86', 'H87', 'hallway'],
-        ['H87', '275', 'hallway'], // room?  // todo: 275 is a stairway
-        ['H87', 'H89', 'hallway'],
+        ['H87', '275', 'hallway'], // room?
+        ['H87', 'H89', 'stairs'],
         ['H86', 'H90', 'hallway'],
         ['H90', 'H91', 'hallway'],
         ['H91', 'H92', 'hallway'],
@@ -470,7 +470,7 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H93', 'H94', 'hallway'],
         ['H94', 'H77', 'hallway'],
         ['H107', 'H122', 'hallway'],
-        ['H122', 'H124', 'hallway'], // escalators?
+        ['H122', 'H124', 'escalator'],
         ['H122', 'H123', 'hallway'],
         ['H123', 'H2', 'hallway'],
         ['H5', 'H110', 'hallway'],
