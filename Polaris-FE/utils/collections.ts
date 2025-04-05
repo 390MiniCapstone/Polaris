@@ -28,21 +28,79 @@ export class HashMap<K extends Hashable, V> {
 export class PriorityQueue<T> {
   private heap: { key: T; priority: number }[] = [];
 
-  enqueue(key: T, priority: number) {
+  enqueue(key: T, priority: number): void {
     this.heap.push({ key, priority });
-    this.heap.sort((a, b) => a.priority - b.priority);
+    this.bubbleUp(this.heap.length - 1);
   }
 
-  // Warning: dequeue operation is not O(log(n)) but can be improved in the future.
   dequeue(): T {
-    const element = this.heap.shift();
-    if (!element) {
+    let min = this.heap[0];
+    const length = this.heap.length - 1;
+    this.heap[0] = this.heap[length];
+    this.heap[length] = min;
+
+    const node = this.heap.pop();
+    if (!node) {
       throw new Error('Dequeue called but there are no elements left.');
     }
-    return element.key;
+
+    this.bubbleDown();
+    return node.key;
   }
 
   isEmpty(): boolean {
     return this.heap.length === 0;
+  }
+
+  getParentIndex(index: number) {
+    return Math.max(0, Math.floor((index - 1) / 2));
+  }
+  getLeftChild(index: number) {
+    return 2 * index + 1;
+  }
+
+  getRightChild(index: number) {
+    return 2 * index + 2;
+  }
+
+  bubbleDown(): void {
+    let currRoot = 0;
+    let index = currRoot;
+    let node = this.heap[currRoot];
+
+    while (currRoot < Math.floor(this.heap.length / 2)) {
+      let rightChild = this.getRightChild(currRoot);
+      let leftChild = this.getLeftChild(currRoot);
+
+      if (
+        rightChild < this.heap.length &&
+        this.heap[rightChild].priority < this.heap[leftChild].priority
+      ) {
+        index = rightChild;
+      } else {
+        index = leftChild;
+      }
+
+      if (node.priority <= this.heap[index].priority) {
+        break;
+      }
+
+      this.heap[currRoot] = this.heap[index];
+      currRoot = index;
+    }
+
+    this.heap[index] = node;
+  }
+
+  bubbleUp(index: number = this.heap.length - 1): void {
+    let parentIndex = this.getParentIndex(index);
+    let node = this.heap[index];
+
+    while (index > 0 && node.priority < this.heap[parentIndex].priority) {
+      this.heap[index] = this.heap[parentIndex];
+      index = parentIndex;
+      parentIndex = this.getParentIndex(index);
+    }
+    this.heap[index] = node;
   }
 }
