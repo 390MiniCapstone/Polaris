@@ -14,7 +14,6 @@ export const useMapLocation = () => {
 
   useEffect(() => {
     let subscriber: Location.LocationSubscription | null = null;
-    let intervalId: NodeJS.Timeout | null = null;
 
     (async () => {
       try {
@@ -25,11 +24,27 @@ export const useMapLocation = () => {
         }
 
         setPermissionStatus('granted');
+
+        const currentLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+        setLocation({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+        });
+
+        setRegion({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        });
+
         subscriber = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.BestForNavigation,
-            timeInterval: 0,
-            distanceInterval: 0,
+            timeInterval: 1000,
+            distanceInterval: 1,
           },
           newLocation => {
             const { latitude, longitude } = newLocation.coords;
@@ -51,9 +66,6 @@ export const useMapLocation = () => {
     return () => {
       if (subscriber) {
         subscriber.remove();
-      }
-      if (intervalId) {
-        clearInterval(intervalId);
       }
     };
   }, []);

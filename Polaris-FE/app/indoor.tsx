@@ -35,7 +35,7 @@ export default Indoor;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#fceed4',
   },
   floorPlanWrapper: {
     flex: 1,
