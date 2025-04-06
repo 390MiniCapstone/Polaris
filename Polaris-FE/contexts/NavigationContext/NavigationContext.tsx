@@ -7,21 +7,25 @@ import React, {
   useMemo,
 } from 'react';
 import { LatLng } from 'react-native-maps';
-import { NavigationState, TravelMode, RouteData } from '@/constants/types';
+import {
+  NavigationState,
+  TravelMode,
+  RouteData,
+  ShuttleLeg,
+  ShuttleBusStop,
+  ShuttleData,
+} from '@/constants/types';
 import { useMapLocation } from '@/hooks/useMapLocation';
-import { lineString, point } from '@turf/helpers';
-import nearestPointOnLine from '@turf/nearest-point-on-line';
 import { bottomSheetRef, mapRef } from '@/utils/refs';
 import { handleCurrentLocation } from '@/utils/mapHandlers';
 import {
-  clipPolylineFromSnappedPoint,
-  computeRemainingDistance,
-  computeRemainingTime,
   determineCurrentStep,
-  determineNextInstruction,
   animateNavCamera,
 } from '@/utils/navigationUtils';
 import { useGoogleMapsRoute } from '@/hooks/useGoogleMapsRoute';
+import { useNavigationData } from '@/hooks/useNavigationData';
+import { useShuttleBus } from '@/hooks/useShuttleBus';
+import { useShuttleData } from '@/hooks/useShuttleData';
 
 interface NavigationContextType {
   navigationState: NavigationState;
@@ -40,9 +44,15 @@ interface NavigationContextType {
   clippedPolyline: LatLng[] | null;
   handleStartNavigation: () => void;
   startNavigationToDestination: (dest: LatLng) => void;
+  setToDefault: () => void;
   cancelNavigation: () => void;
+  shuttleData: ShuttleData | null;
   error: Error | null;
   loading: boolean;
+  nearestBusStop: ShuttleBusStop | null;
+  otherBusStop: ShuttleBusStop | null;
+  nextDeparture: string | null;
+  currentLeg: ShuttleLeg;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(
@@ -66,98 +76,29 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
   const [clippedPolyline, setClippedPolyline] = useState<LatLng[] | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const { location } = useMapLocation();
-  const { routeData, setRouteData } = useGoogleMapsRoute(
-    location,
-    destination,
-    travelMode,
-    navigationState,
-    setError,
-    setLoading
+  const [nearestBusStop, setNearestBusStop] = useState<ShuttleBusStop | null>(
+    null
   );
-
-  useEffect(() => {
-    if (location && routeData) {
-      const turfLine = lineString(
-        routeData.polyline.map(coord => [coord.longitude, coord.latitude])
-      );
-      const userPoint = point([location.longitude, location.latitude]);
-      const snapped = nearestPointOnLine(turfLine, userPoint);
-      if (snapped?.geometry?.coordinates) {
-        const [lng, lat] = snapped.geometry.coordinates;
-        const snappedLoc: LatLng = { latitude: lat, longitude: lng };
-        setSnappedPoint(snappedLoc);
-
-        const newRemainingTime = computeRemainingTime(
-          routeData.steps,
-          snappedLoc,
-          routeData.totalDuration
-        );
-        const newRemainingDistance = computeRemainingDistance(
-          routeData.steps,
-          snappedLoc,
-          routeData.totalDistance
-        );
-        setRemainingTime(newRemainingTime);
-        setRemainingDistance(newRemainingDistance);
-
-        const instruction = determineNextInstruction(
-          routeData.steps,
-          snappedLoc,
-          travelMode
-        );
-        setNextInstruction(instruction);
-
-        const clipped = clipPolylineFromSnappedPoint(
-          routeData.polyline,
-          snappedLoc
-        );
-        setClippedPolyline(clipped);
-      }
-    }
-  }, [location, routeData, travelMode]);
-
-  useEffect(() => {
-    if (
-      navigationState === 'navigating' &&
-      is3d &&
-      location &&
-      clippedPolyline &&
-      routeData &&
-      snappedPoint
-    ) {
-      const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
-      if (currentStep)
-        animateNavCamera(location, clippedPolyline, currentStep, mapRef);
-    }
-  }, [
-    location,
-    navigationState,
-    is3d,
-    clippedPolyline,
-    routeData,
-    snappedPoint,
-  ]);
-
-  useEffect(() => {
-    if (!remainingDistance) return;
-    const arrivalThreshold = 10;
-    if (
-      navigationState === 'navigating' &&
-      remainingDistance <= arrivalThreshold
-    ) {
-      cancelNavigation();
-    }
-  }, [remainingDistance, navigationState]);
+  const [otherBusStop, setOtherBusStop] = useState<ShuttleBusStop | null>(null);
+  const [currentLeg, setCurrentLeg] = useState<ShuttleLeg>('legOne');
+  const [nextDeparture, setNextDeparture] = useState<string | null>(null);
 
   const handleStartNavigation = () => {
     if (!location || !clippedPolyline || !routeData || !snappedPoint || error)
       return;
     setNavigationState('navigating');
-    const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
-    if (currentStep)
-      animateNavCamera(location, clippedPolyline, currentStep, mapRef);
+    if (travelMode === 'SHUTTLE' && shuttleData && shuttleData.legOne) {
+      const currentStep = determineCurrentStep(
+        shuttleData.legOne.steps,
+        snappedPoint
+      );
+      if (currentStep)
+        animateNavCamera(location, clippedPolyline, currentStep, mapRef);
+    } else {
+      const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
+      if (currentStep)
+        animateNavCamera(location, clippedPolyline, currentStep, mapRef);
+    }
   };
 
   const startNavigationToDestination = (dest: LatLng) => {
@@ -176,6 +117,9 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     setNextInstruction(null);
     setSnappedPoint(null);
     setClippedPolyline(null);
+    setShuttleData(null);
+    setNearestBusStop(null);
+    setNextDeparture(null);
   };
 
   const cancelNavigation = () => {
@@ -183,6 +127,84 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     handleCurrentLocation(mapRef, location);
     setToDefault();
   };
+
+  const { location } = useMapLocation();
+
+  const { routeData, setRouteData } = useGoogleMapsRoute(
+    location,
+    destination,
+    travelMode,
+    navigationState,
+    setError,
+    setLoading
+  );
+
+  const { shuttleData, setShuttleData } = useShuttleBus(
+    location,
+    nearestBusStop,
+    setNearestBusStop,
+    otherBusStop,
+    setOtherBusStop,
+    destination,
+    travelMode,
+    navigationState,
+    setError,
+    setLoading,
+    setNextDeparture
+  );
+
+  useNavigationData(
+    location,
+    routeData,
+    navigationState,
+    travelMode,
+    setSnappedPoint,
+    setRemainingTime,
+    remainingDistance,
+    setRemainingDistance,
+    setNextInstruction,
+    setClippedPolyline,
+    cancelNavigation
+  );
+
+  useShuttleData(
+    location,
+    shuttleData,
+    navigationState,
+    travelMode,
+    otherBusStop,
+    currentLeg,
+    setCurrentLeg,
+    setSnappedPoint,
+    setRemainingTime,
+    setRemainingDistance,
+    setNextInstruction,
+    setClippedPolyline,
+    cancelNavigation
+  );
+
+  useEffect(() => {
+    if (
+      navigationState === 'navigating' &&
+      is3d &&
+      location &&
+      clippedPolyline &&
+      routeData &&
+      snappedPoint &&
+      currentLeg !== 'legTwo'
+    ) {
+      const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
+      if (currentStep)
+        animateNavCamera(location, clippedPolyline, currentStep, mapRef);
+    }
+  }, [
+    location,
+    navigationState,
+    is3d,
+    clippedPolyline,
+    routeData,
+    snappedPoint,
+  ]);
 
   const contextValue = useMemo(
     () => ({
@@ -202,9 +224,15 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
       clippedPolyline,
       handleStartNavigation,
       startNavigationToDestination,
+      setToDefault,
       cancelNavigation,
+      shuttleData,
       error,
       loading,
+      nearestBusStop,
+      otherBusStop,
+      nextDeparture,
+      currentLeg,
     }),
     [
       navigationState,
@@ -217,8 +245,12 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
       nextInstruction,
       snappedPoint,
       clippedPolyline,
+      shuttleData,
       error,
       loading,
+      nearestBusStop,
+      otherBusStop,
+      nextDeparture,
     ]
   );
 
