@@ -1,28 +1,27 @@
 import { ShuttleBusResponse } from '@/constants/types';
 import { toast } from 'sonner-native';
-
-let cookie: string | null = null;
+import CookieManager from '@react-native-cookies/cookies';
 
 const getShuttleCookie = async (): Promise<string> => {
   try {
-    const response = await fetch(
-      'https://shuttle.concordia.ca/concordiabusmap/Map.aspx',
-      {
-        method: 'GET',
-        headers: {
-          Host: 'shuttle.concordia.ca',
-        },
-      }
-    );
+    await fetch('https://shuttle.concordia.ca/concordiabusmap/Map.aspx', {
+      method: 'GET',
+      headers: {
+        Host: 'shuttle.concordia.ca',
+      },
+    });
 
-    const newCookie = response.headers.get('Set-Cookie');
+    const cookieData = await CookieManager.get('https://shuttle.concordia.ca');
 
-    if (!newCookie) {
-      throw new Error('Cookie not found in response headers.');
+    const cookie = Object.entries(cookieData)
+      .map(([key, cookie]) => `${key}=${cookie.value}`)
+      .join('; ');
+
+    if (!cookie) {
+      throw new Error('Cookie not found in cookie storage.');
     }
 
-    cookie = newCookie;
-    return newCookie;
+    return cookie;
   } catch (error) {
     console.error('Error fetching cookie:', error);
     throw error;
@@ -38,15 +37,13 @@ export const getShuttleBus = async (): Promise<ShuttleBusResponse> => {
         headers: {
           Host: 'shuttle.concordia.ca',
           'Content-Length': '0',
-          'Content-Type': 'application/json',
-          charset: 'UTF-8',
-          Cookie: cookie ? cookie : await getShuttleCookie(),
+          'Content-Type': 'application/json; charset=UTF-8',
         },
       }
     );
 
     if (response.status !== 200) {
-      cookie = await getShuttleCookie();
+      await getShuttleCookie();
       return getShuttleBus();
     }
 
