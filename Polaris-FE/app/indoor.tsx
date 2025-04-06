@@ -9,6 +9,8 @@ import { useBuildingContext } from '@/contexts/BuildingContext/BuildingContext';
 import { BuildingFlyWeight } from './indoor-logic/buildingFlyWeight';
 import { Building } from './indoor-logic/building';
 import { AdjacencyListGraph } from './indoor-logic/graph';
+import { Dijkstra } from './indoor-logic/dijkstra';
+import { NodeNav } from './NodeNav';
 
 const Indoor = () => {
   const { indoorBuilding } = useBuildingContext();
@@ -18,8 +20,13 @@ const Indoor = () => {
   useEffect(() => {
     if (!buildingRef.current) {
       buildingRef.current = BuildingFlyWeight.getBuilding(indoorBuilding);
-      const edges = buildingRef.current.getAllEdges();
-      const adjGraph = new AdjacencyListGraph();
+      const graph = buildingRef.current.getGraph();
+
+      const djs = new Dijkstra(new NodeNav('23', 0.27, 0.7, 'room'), graph);
+      const path = djs.getPathFromSource(
+        new NodeNav('199-40', 0.58, 0.53, 'room')
+      );
+      console.log(path.map(node => node.id));
     }
   }, []);
   return (

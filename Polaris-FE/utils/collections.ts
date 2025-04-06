@@ -25,7 +25,7 @@ export class HashMap<K extends Hashable, V> {
 }
 
 // min priority queue
-export class PriorityQueue<T> {
+export class PriorityQueueTemp<T> {
   private heap: { key: T; priority: number }[] = [];
 
   enqueue(key: T, priority: number): void {
@@ -105,5 +105,27 @@ export class PriorityQueue<T> {
     }
 
     this.heap[index] = node;
+  }
+}
+// min priority queue
+export class PriorityQueue<T> {
+  private heap: { key: T; priority: number }[] = [];
+
+  enqueue(key: T, priority: number) {
+    this.heap.push({ key, priority });
+    this.heap.sort((a, b) => a.priority - b.priority);
+  }
+
+  // Warning: dequeue operation is not O(log(n)) but can be improved in the future.
+  dequeue(): T {
+    const element = this.heap.shift();
+    if (!element) {
+      throw new Error('Dequeue called but there are no elements left.');
+    }
+    return element.key;
+  }
+
+  isEmpty(): boolean {
+    return this.heap.length === 0;
   }
 }

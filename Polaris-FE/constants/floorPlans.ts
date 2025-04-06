@@ -13,6 +13,7 @@ import { NodeNav } from '@/app/NodeNav';
 
 export type FloorPlanBuilding = {
   building: FloorPlanObject[];
+  floorEdges: FloorPlanEdge[];
 };
 
 export type EdgeType = 'stairs' | 'elevator' | 'hallway' | 'escalator';
@@ -20,8 +21,9 @@ export type EdgeType = 'stairs' | 'elevator' | 'hallway' | 'escalator';
 /**
  * An edge will be defined as ID_1, ID_2, EdgeType
  * The order of the node IDs don't matter. Whichever order you put it will not affect the graph topology.
+ *
  */
-export type FloorPlanEdge = [string, string, EdgeType];
+export type FloorPlanEdge = [string, string, EdgeType, boolean?];
 
 export type FloorPlanObject = {
   SvgComponent: React.FC<any>;

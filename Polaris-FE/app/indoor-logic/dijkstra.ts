@@ -42,13 +42,12 @@ export class Dijkstra<T extends Hashable> {
 
   getPathFromSource(destination: T): T[] {
     const path = [destination];
-    if (this.previous.get(destination) != undefined) {
-      throw new Error('Destination not found.');
-    }
 
     let current: T | undefined = destination;
-    while (current.equals(this.source)) {
+    console.log('path node', current);
+    while (!current.equals(this.source)) {
       current = this.previous.get(current);
+      console.log('path node', current);
       if (current == undefined) {
         throw new Error('Shortest path could not be found.');
       }
