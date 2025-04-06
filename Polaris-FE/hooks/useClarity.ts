@@ -17,7 +17,6 @@ const useClarity = () => {
         initialize: (key: string) => void;
       };
       Clarity.initialize(msClarityApiKey);
-      console.log('MS Clarity Initialized');
     }
   }, []);
 };
