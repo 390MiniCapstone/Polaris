@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { POIS as POI_CATEGORIES } from '@/constants/mapConstants';
 import { useMapLocation } from '@/hooks/useMapLocation';
@@ -94,6 +93,26 @@ describe('<POIs />', () => {
 
     await waitFor(() => {
       expect(global.fetch).not.toHaveBeenCalled();
+    });
+  });
+
+  test('sets search results to an empty array when results are null', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ results: null }),
+    });
+
+    const setSearchResultsMock = jest.fn();
+
+    const { getByText } = render(
+      <POIs setSearchResults={setSearchResultsMock} />
+    );
+
+    const categoryButton = getByText('Groceries');
+    fireEvent.press(categoryButton);
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+      expect(setSearchResultsMock).toHaveBeenCalledWith([]);
     });
   });
 });
