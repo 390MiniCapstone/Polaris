@@ -16,7 +16,12 @@ export const useGoogleMapsRoute = (
 
   useEffect(() => {
     (async () => {
-      if (!origin || !destination || navigationState === 'default') {
+      if (
+        !origin ||
+        !destination ||
+        navigationState === 'default' ||
+        travelMode === 'SHUTTLE'
+      ) {
         setLoading(false);
         return;
       }
