@@ -105,8 +105,6 @@ export const useShuttleBus = (
 
         const busPoints = await getBusPoints();
 
-        console.log('Bus Points:', busPoints);
-
         setShuttleData({
           legOne: legOne,
           legTwo: {
