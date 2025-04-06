@@ -9,6 +9,7 @@ import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
 import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 import useTheme from '@/hooks/useTheme';
+import { NavigationMarkers } from '@/components/Navigation/NavigationMarkers';
 
 interface MapComponentProps {
   region: Region | undefined;
@@ -70,6 +71,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           />
         )}
         <Buildings />
+        <NavigationMarkers />
       </MapView>
       <Navigation />
     </View>
