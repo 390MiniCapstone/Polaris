@@ -132,8 +132,7 @@ export const computeRemainingDistance = (
   totalDistance: number
 ): number => {
   let distanceUsed = 0;
-  for (let i = 0; i < steps.length; i++) {
-    const step = steps[i];
+  for (const step of steps) {
     const fraction = computeStepFraction(step.polyline, snapped);
     if (fraction !== undefined) {
       distanceUsed += step.distance * fraction;
