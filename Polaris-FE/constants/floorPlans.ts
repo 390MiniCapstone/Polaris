@@ -30,6 +30,7 @@ export type FloorPlanObject = {
   height: string;
   nodes: NodeNav[];
   edges: FloorPlanEdge[];
+  multiLayeredEdges?: FloorPlanEdge[];
 };
 
 export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
@@ -77,7 +78,7 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         new NodeNav('33', 0.07, 0.51, 'hallway'),
         new NodeNav('34', 0.19, 0.67, 'hallway'),
         new NodeNav('35', 0.27, 0.68, 'hallway'),
-        new NodeNav('36', 0.34, 0.99, 'hallway'),
+        new NodeNav('36', 0.34, 0.99, 'hallway'), //exit
         new NodeNav('37', 0.75, 0.94, 'escalator'),
         new NodeNav('38', 0.71, 0.89, 'hallway'),
         new NodeNav('39', 0.61, 0.89, 'hallway'),
@@ -134,29 +135,27 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
       edges: [
         ['0', '101', 'hallway'], // entrance
         ['101', '1', 'hallway'],
-        ['1', '102-90', 'escalator'],
-        ['102-90', '37', 'hallway'],
+        ['1', '102-90', 'hallway'],
+        ['102-90', '37', 'escalator'],
         ['1', '2', 'hallway'],
-        ['2', '102-2', 'hallway'],
+        ['2', '102-2', 'stairs'],
         ['2', '3', 'hallway'],
         ['3', '4', 'hallway'],
         ['4', '5', 'hallway'],
-        ['5', '198-1', 'hallway'], //room
+        ['5', '198-1', 'stairs'], //room
         ['3', '40', 'hallway'],
         ['40', '42', 'hallway'],
         ['42', '43', 'hallway'],
-        ['2', '102-2', 'hallway'],
-        ['43', '102-3', 'elevator'],
+        ['43', '102-3', 'hallway'],
         ['39', '38', 'hallway'],
         ['38', '1', 'hallway'],
         ['39', '102-91', 'escalator'],
         ['4', '102-2', 'hallway'], //room
         ['5', '198', 'stairs'],
-        ['5', '198-1', 'hallway'],
         ['6', '198', 'hallway'], // entrance
         ['118-5', '118-4', 'hallway'], //room
         ['4', '7', 'hallway'],
-        ['7', '8', 'hallway'],
+        ['7', '8', 'stairs'],
         ['8', '9', 'hallway'],
         ['9', '118-5', 'hallway'], //room
         ['10', '118-3', 'hallway'], //room
@@ -201,7 +200,7 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['25', '27', 'hallway'],
         ['27', '28', 'hallway'],
         ['28', '29', 'hallway'],
-        ['29', '30', 'hallway'],
+        ['29', '30', 'stairs'],
         ['30', '31', 'hallway'],
         ['31', '32', 'hallway'],
         ['32', '109', 'hallway'], //room
@@ -209,15 +208,28 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['109-1', '109-2', 'hallway'], //room
         ['109-1', '33', 'hallway'],
         ['33', '190', 'hallway'], //room
-        ['190', '110-7', 'hallway'], //room
+        ['190', '110-7', 'stairs'], //room
         ['110-7', '110', 'hallway'], //room
         ['110', '110-6', 'hallway'], //room
         ['27', '110-2', 'hallway'], //room
         ['110-2', '110-12', 'hallway'], //room
-        ['110-2', '110-8', 'stairs'],
+        ['110-2', '110-8', 'hallway'],
         ['110-2', '34', 'hallway'],
         ['34', '35', 'hallway'],
         ['35', '110-1', 'hallway'], //room
+        ['40', '41', 'elevator'],
+      ],
+
+      multiLayeredEdges: [
+        ['102-90', '37', 'escalator'],
+        ['39', '102-91', 'escalator'],
+        ['2', '102-2', 'stairs'],
+        ['5', '198-1', 'stairs'],
+        ['5', '198', 'stairs'],
+        ['7', '8', 'stairs'],
+        ['29', '30', 'stairs'],
+        ['190', '110-7', 'stairs'],
+        ['40', '41', 'elevator'],
       ],
     },
     {
@@ -647,8 +659,143 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
       name: 'MB S2',
       width: '1000',
       height: '1300',
-      nodes: [],
-      edges: [],
+      nodes: [
+        new NodeNav('0', 0.1, 0.48, 'hallway'),
+        new NodeNav('1', 0.38, 0.46, 'hallway'),
+        new NodeNav('2', 0.46, 0.46, 'hallway'),
+        new NodeNav('3', 0.45, 0.21, 'hallway'),
+        new NodeNav('4', 0.51, 0.22, 'hallway'),
+        new NodeNav('5', 0.56, 0.22, 'hallway'),
+        new NodeNav('6', 0.62, 0.21, 'hallway'),
+        new NodeNav('7', 0.67, 0.22, 'hallway'),
+        new NodeNav('8', 0.7, 0.21, 'hallway'),
+        new NodeNav('9', 0.51, 0.51, 'hallway'),
+        new NodeNav('10', 0.51, 0.59, 'hallway'),
+        new NodeNav('11', 0.58, 0.59, 'hallway'),
+        new NodeNav('12', 0.62, 0.59, 'hallway'),
+        new NodeNav('13', 0.67, 0.59, 'hallway'),
+        new NodeNav('14', 0.7, 0.59, 'hallway'),
+        new NodeNav('15', 0.75, 0.59, 'hallway'),
+        new NodeNav('16', 0.79, 0.58, 'hallway'),
+        new NodeNav('17', 0.57, 0.64, 'hallway'),
+        new NodeNav('18', 0.58, 0.71, 'hallway'),
+        new NodeNav('19', 0.58, 0.82, 'hallway'),
+        new NodeNav('20', 0.67, 0.82, 'hallway'),
+        new NodeNav('21', 0.71, 0.82, 'hallway'),
+        new NodeNav('22', 0.74, 0.82, 'hallway'),
+        new NodeNav('23', 0.79, 0.82, 'hallway'),
+        new NodeNav('24', 0.87, 0.82, 'hallway'),
+        new NodeNav('S2.245', 0.45, 0.14, 'room'),
+        new NodeNav('S2.255', 0.56, 0.18, 'room'),
+        new NodeNav('S2.273', 0.63, 0.14, 'room'),
+        new NodeNav('S2.275', 0.66, 0.14, 'room'),
+        new NodeNav('S2.279', 0.7, 0.13, 'room'),
+        new NodeNav('S2.285', 0.77, 0.21, 'room'),
+        new NodeNav('S2.330', 0.7, 0.37, 'room'),
+        new NodeNav('S2.21O', 0.67, 0.36, 'room'),
+        new NodeNav('S2.345', 0.63, 0.51, 'escalator'),
+        new NodeNav('R9', 0.62, 0.55, 'elevator'),
+        new NodeNav('R10', 0.67, 0.55, 'elevator'),
+        new NodeNav('R11', 0.7, 0.55, 'elevator'),
+        new NodeNav('S2.230', 0.75, 0.54, 'room'),
+        new NodeNav('S2.312', 0.78, 0.54, 'room'),
+        new NodeNav('S2.145', 0.52, 0.65, 'room'),
+        new NodeNav('S2.135', 0.52, 0.72, 'room'),
+        new NodeNav('S2.115', 0.5, 0.82, 'room'),
+        new NodeNav('S2.105', 0.58, 0.96, 'room'),
+        new NodeNav('S2.401', 0.67, 0.88, 'room'),
+        new NodeNav('S2.494', 0.74, 0.87, 'room'),
+        new NodeNav('S2.465', 0.85, 0.93, 'room'),
+        new NodeNav('S2.455', 0.89, 0.92, 'room'),
+        new NodeNav('S2.445', 0.94, 0.82, 'room'),
+        new NodeNav('S2.435', 0.86, 0.71, 'room'),
+        new NodeNav('S2.394', 0.8, 0.64, 'room'),
+        new NodeNav('S2.438', 0.73, 0.66, 'room'),
+        new NodeNav('S2.437', 0.74, 0.73, 'room'),
+        new NodeNav('S2.420', 0.7, 0.75, 'washroom'),
+        new NodeNav('S2.418', 0.67, 0.78, 'room'),
+        new NodeNav('S2.410', 0.63, 0.76, 'washroom'),
+        new NodeNav('S2.440', 0.65, 0.68, 'room'),
+        new NodeNav('R31', 0.69, 0.62, 'elevator'),
+        new NodeNav('R32', 0.65, 0.63, 'elevator'),
+        new NodeNav('R33', 0.61, 0.62, 'elevator'),
+        new NodeNav('S2.428', 0.79, 0.79, 'room'),
+      ],
+
+      edges: [
+        ['0', '1', 'stairs'],
+        ['1', '2', 'hallway'],
+        ['2', '3', 'hallway'],
+        ['3', 'S2.245', 'hallway'], //room
+        ['3', '4', 'hallway'],
+        ['4', '5', 'hallway'],
+        ['5', 'S2.255', 'hallway'], //room
+        ['5', '6', 'hallway'],
+        ['6', 'S2.273', 'hallway'], //room
+        ['6', '7', 'hallway'],
+        ['7', 'S2.275', 'hallway'], //room
+        ['7', 'S2.21O', 'hallway'], //room
+        ['7', '8', 'hallway'],
+        ['8', 'S2.279', 'hallway'], //room
+        ['8', 'S2.285', 'hallway'], //room
+        ['8', 'S2.330', 'hallway'], //room
+        ['4', '9', 'hallway'],
+        ['9', '10', 'hallway'],
+        ['9', 'S2.345', 'hallway'], //room
+        ['10', '11', 'hallway'],
+        ['11', '12', 'hallway'],
+        ['11', '17', 'hallway'],
+        ['12', 'R33', 'elevator'], //room
+        ['12', 'R9', 'elevator'], //room
+        ['12', '13', 'hallway'],
+        ['13', 'R32', 'elevator'], //room
+        ['13', 'R10', 'elevator'], //room
+        ['13', '14', 'hallway'],
+        ['14', 'R31', 'elevator'], //room
+        ['14', 'R11', 'elevator'], //room
+        ['14', '15', 'hallway'],
+        ['15', 'S2.230', 'hallway'], //room
+        ['15', 'S2.438', 'hallway'], //room
+        ['15', '16', 'hallway'],
+        ['16', 'S2.394', 'stairs'], //room
+        ['16', 'S2.312', 'hallway'], //room
+        ['17', 'S2.145', 'hallway'], //room
+        ['17', 'S2.440', 'hallway'], //room
+        ['17', '18', 'hallway'],
+        ['18', 'S2.135', 'hallway'], //room
+        ['18', 'S2.410', 'hallway'],
+        ['18', '19', 'hallway'],
+        ['19', 'S2.115', 'hallway'], //room
+        ['19', 'S2.105', 'hallway'], //room
+        ['19', '20', 'hallway'],
+        ['20', 'S2.418', 'hallway'],
+        ['20', 'S2.401', 'hallway'], //room
+        ['20', '21', 'hallway'],
+        ['21', 'R31', 'hallway'], //room
+        ['21', 'S2.420', 'hallway'], //room
+        ['21', '22', 'hallway'],
+        ['22', 'S2.494', 'stairs'], //room
+        ['22', 'S2.437', 'hallway'], //room
+        ['22', '23', 'hallway'],
+        ['23', 'R34', 'hallway'], //room
+        ['23', '24', 'hallway'],
+        ['24', 'S2.435', 'hallway'], //room
+        ['24', 'S2.445', 'hallway'], //room
+        ['24', 'S2.455', 'hallway'], //room
+        ['24', 'S2.465', 'hallway'], //room
+      ],
+
+      multiLayeredEdges: [
+        ['0', '1', 'stairs'],
+        ['12', 'R33', 'elevator'],
+        ['12', 'R9', 'elevator'],
+        ['13', 'R32', 'elevator'],
+        ['13', 'R10', 'elevator'],
+        ['14', 'R31', 'elevator'],
+        ['14', 'R11', 'elevator'],
+        ['16', 'S2.394', 'stairs'],
+        ['22', 'S2.494', 'stairs'],
+      ],
     },
   ],
   'VE Building': [
