@@ -1,10 +1,10 @@
-import { PriorityQueue } from '../collections';
+import { PriorityQueueTemp as PriorityQueueTemp } from '../collections';
 
 describe('PriorityQueue', () => {
-  let pq: PriorityQueue<number>;
+  let pq: PriorityQueueTemp<number>;
 
   beforeEach(() => {
-    pq = new PriorityQueue<number>();
+    pq = new PriorityQueueTemp<number>();
   });
 
   test('enqueue adds elements correctly', () => {
@@ -25,7 +25,6 @@ describe('PriorityQueue', () => {
       'Dequeue called but there are no elements left.'
     );
   });
-
   test('isEmpty returns true when queue is empty', () => {
     expect(pq.isEmpty()).toBe(true);
     pq.enqueue(30, 3);
@@ -52,6 +51,13 @@ describe('PriorityQueue', () => {
     pq.enqueue(20, 1);
     expect(pq.dequeue()).toBe(10);
     expect(pq.dequeue()).toBe(20);
+  });
+
+  test('handles consecutive enqueue dequeue sequences', () => {
+    pq.enqueue(10, 5);
+    expect(pq.dequeue()).toBe(10);
+    pq.enqueue(50, 0);
+    expect(pq.dequeue()).toBe(50);
   });
 
   test('handles complex enqueue/dequeue sequences', () => {

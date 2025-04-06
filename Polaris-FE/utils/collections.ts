@@ -34,18 +34,19 @@ export class PriorityQueueTemp<T> {
   }
 
   dequeue(): T {
-    let min = this.heap[0];
-    const length = this.heap.length - 1;
-    this.heap[0] = this.heap[length];
-    this.heap[length] = min;
-
-    const node = this.heap.pop();
-    if (!node) {
+    if (this.heap.length === 0) {
       throw new Error('Dequeue called but there are no elements left.');
     }
 
-    this.bubbleDown();
-    return node.key;
+    const min = this.heap[0];
+    const last = this.heap.pop()!;
+
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.bubbleDown(0);
+    }
+
+    return min.key;
   }
 
   isEmpty(): boolean {
@@ -63,11 +64,11 @@ export class PriorityQueueTemp<T> {
     return 2 * index + 2;
   }
 
-  bubbleDown(): void {
-    let currRoot = 0;
+  bubbleDown(currRoot: number): void {
     let index = currRoot;
     let node = this.heap[currRoot];
 
+    // exit once we reach a leaf node
     while (currRoot < Math.floor(this.heap.length / 2)) {
       let rightChild = this.getRightChild(currRoot);
       let leftChild = this.getLeftChild(currRoot);
@@ -92,7 +93,7 @@ export class PriorityQueueTemp<T> {
     this.heap[index] = node;
   }
 
-  bubbleUp(index: number = this.heap.length - 1): void {
+  bubbleUp(index: number): void {
     const node = this.heap[index];
 
     while (index > 0) {
@@ -107,6 +108,7 @@ export class PriorityQueueTemp<T> {
     this.heap[index] = node;
   }
 }
+
 // min priority queue
 export class PriorityQueue<T> {
   private heap: { key: T; priority: number }[] = [];
