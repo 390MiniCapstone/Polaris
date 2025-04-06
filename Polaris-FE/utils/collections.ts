@@ -53,7 +53,7 @@ export class PriorityQueue<T> {
   }
 
   getParentIndex(index: number) {
-    return Math.max(0, Math.floor((index - 1) / 2));
+    return Math.floor((index - 1) / 2);
   }
   getLeftChild(index: number) {
     return 2 * index + 1;
@@ -93,14 +93,17 @@ export class PriorityQueue<T> {
   }
 
   bubbleUp(index: number = this.heap.length - 1): void {
-    let parentIndex = this.getParentIndex(index);
-    let node = this.heap[index];
+    const node = this.heap[index];
 
-    while (index > 0 && node.priority < this.heap[parentIndex].priority) {
+    while (index > 0) {
+      const parentIndex = this.getParentIndex(index);
+      if (node.priority >= this.heap[parentIndex].priority) {
+        break;
+      }
       this.heap[index] = this.heap[parentIndex];
       index = parentIndex;
-      parentIndex = this.getParentIndex(index);
     }
+
     this.heap[index] = node;
   }
 }
