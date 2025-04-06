@@ -37,32 +37,25 @@ export const NavigationInfo: React.FC = () => {
     if (loading) {
       return <ActivityIndicator testID="ActivityIndicator" />;
     } else if (error) {
-      return (
-        <React.Fragment>
-          <Text style={styles.greyText}>{error.message}</Text>
-        </React.Fragment>
-      );
+      return <Text style={styles.greyText}>{error.message}</Text>;
     } else if (
       navigationState === 'planning' &&
       travelMode === 'SHUTTLE' &&
       nextDeparture
     ) {
       return (
-        <React.Fragment>
-          <Text style={styles.greyText}>Next Shuttle at {nextDeparture}</Text>
-        </React.Fragment>
+        <Text style={styles.greyText}>Next Shuttle at {nextDeparture}</Text>
       );
     } else if (
       navigationState === 'navigating' &&
       travelMode === 'SHUTTLE' &&
-      currentLeg === 'legTwo'
+      currentLeg === 'legTwo' &&
+      shuttleData?.legTwo
     ) {
       return (
-        <React.Fragment>
-          <Text style={styles.greyText}>
-            Arriving at {ETA(shuttleData?.legTwo?.busData.totalDuration!)}
-          </Text>
-        </React.Fragment>
+        <Text style={styles.greyText}>
+          Arriving at {ETA(shuttleData?.legTwo?.busData.totalDuration)}
+        </Text>
       );
     } else if (remainingTime && remainingDistance) {
       return (

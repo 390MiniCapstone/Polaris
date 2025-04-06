@@ -89,7 +89,7 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     if (!location || !clippedPolyline || !routeData || !snappedPoint || error)
       return;
     setNavigationState('navigating');
-    if (travelMode === 'SHUTTLE' && shuttleData && shuttleData.legOne) {
+    if (travelMode === 'SHUTTLE' && shuttleData?.legOne) {
       const currentStep = determineCurrentStep(
         shuttleData.legOne.steps,
         snappedPoint

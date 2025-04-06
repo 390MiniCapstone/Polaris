@@ -2,8 +2,62 @@ import React from 'react';
 import { LatLng, Marker } from 'react-native-maps';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { TravelMode, ShuttleBusStop } from '@/constants/types';
 import { StyleSheet, Text, View } from 'react-native';
 import useTheme from '@/hooks/useTheme';
+
+const Buses: React.FC<{
+  busPoints: LatLng[] | undefined;
+  navigationState: string;
+  nextDeparture: string | null;
+}> = ({ busPoints, navigationState, nextDeparture }) => {
+  if (!busPoints || navigationState === 'default' || !nextDeparture) {
+    return null;
+  }
+
+  return (
+    <>
+      {busPoints.map((point: LatLng) => (
+        <Marker key={`${point.latitude}-${point.longitude}`} coordinate={point}>
+          <FontAwesome6
+            testID="shuttle-marker"
+            name="van-shuttle"
+            size={18}
+            color="white"
+          />
+        </Marker>
+      ))}
+    </>
+  );
+};
+
+const Stops = ({
+  travelMode,
+  nearestBusStop,
+  otherBusStop,
+}: {
+  travelMode: TravelMode;
+  nearestBusStop: ShuttleBusStop | null;
+  otherBusStop: ShuttleBusStop | null;
+}) => {
+  if (travelMode === 'SHUTTLE' && nearestBusStop && otherBusStop) {
+    return (
+      <>
+        <Marker testID="stop-marker" coordinate={nearestBusStop.location}>
+          <View style={styles.stopView}>
+            <Text style={styles.stopText}>{nearestBusStop.shortName}</Text>
+          </View>
+        </Marker>
+        <Marker testID="stop-marker" coordinate={otherBusStop.location}>
+          <View style={styles.stopView}>
+            <Text style={styles.stopText}>{otherBusStop.shortName}</Text>
+          </View>
+        </Marker>
+      </>
+    );
+  }
+  return null;
+};
 
 export const NavigationMarkers: React.FC = () => {
   const { theme } = useTheme();
@@ -19,52 +73,6 @@ export const NavigationMarkers: React.FC = () => {
     snappedPoint,
   } = useNavigation();
 
-  const Buses = () => {
-    if (
-      !shuttleData ||
-      !shuttleData.legTwo ||
-      !shuttleData.legTwo.busPoints ||
-      navigationState === 'default' ||
-      !nextDeparture
-    ) {
-      return null;
-    }
-
-    return (
-      <>
-        {shuttleData.legTwo.busPoints.map((point: LatLng, index: number) => (
-          <Marker key={index} coordinate={point}>
-            <FontAwesome6
-              testID="shuttle-marker"
-              name="van-shuttle"
-              size={18}
-              color="white"
-            />
-          </Marker>
-        ))}
-      </>
-    );
-  };
-
-  const Stops = () => {
-    if (travelMode === 'SHUTTLE' && nearestBusStop && otherBusStop) {
-      return (
-        <>
-          <Marker testID="stop-marker" coordinate={nearestBusStop.location}>
-            <View style={styles.stopView}>
-              <Text style={styles.stopText}>{nearestBusStop.shortName}</Text>
-            </View>
-          </Marker>
-          <Marker testID="stop-marker" coordinate={otherBusStop.location}>
-            <View style={styles.stopView}>
-              <Text style={styles.stopText}>{otherBusStop.shortName}</Text>
-            </View>
-          </Marker>
-        </>
-      );
-    }
-  };
-
   return (
     <>
       {(navigationState === 'planning' || navigationState === 'navigating') &&
@@ -79,8 +87,16 @@ export const NavigationMarkers: React.FC = () => {
           />
         )}
 
-      {Buses()}
-      {Stops()}
+      <Buses
+        busPoints={shuttleData?.legTwo?.busPoints}
+        navigationState={navigationState}
+        nextDeparture={nextDeparture}
+      />
+      <Stops
+        travelMode={travelMode}
+        nearestBusStop={nearestBusStop}
+        otherBusStop={otherBusStop}
+      />
     </>
   );
 };
