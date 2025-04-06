@@ -501,6 +501,20 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H111', 'H7', 'hallway'],
         ['H121', 'H74', 'hallway'],
       ],
+      multiLayeredEdges: [
+        ['H0', 'H1', 'escalator'],
+        ['H3', 'H4', 'elevator'],
+        ['H5', 'H6', 'elevator'],
+        ['H20', 'H21', 'stairs'],
+        ['H35', 'H36', 'stairs'],
+        ['290', 'H37', 'stairs'],
+        ['H30', 'H31', 'stairs'],
+        ['283', 'H33', 'stairs'],
+        ['H27', 'H28', 'stairs'],
+        ['235', 'H62', 'stairs'],
+        ['H87', 'H89', 'stairs'],
+        ['H122', 'H124', 'escalator'],
+      ],
     },
     {
       SvgComponent: H8,
@@ -558,6 +572,8 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         new NodeNav('H29', 0.82, 0.83, 'hallway'),
         new NodeNav('H30', 0.85, 0.83, 'hallway'),
         new NodeNav('H31', 0.41, 0.33, 'escalator'), // Not part of annotation (added after)
+        new NodeNav('H32', 0.38, 0.2, 'hallway'), // stairs, Not part of annotation (added after)
+        new NodeNav('H33', 0.39, 0.34, 'hallway'), // stairs, Not part of annotation (added after)
         new NodeNav('1.249', 0.57, 0.16, 'room'),
         new NodeNav('1.265', 0.67, 0.16, 'room'),
         new NodeNav('1.347', 0.75, 0.2, 'room'),
@@ -613,8 +629,8 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H12', 'R15', 'hallway'],
         ['H13', 'H14', 'hallway'],
         ['H13', 'H14', 'hallway'],
-        ['H13', 'R8', 'hallway'],
-        ['H13', 'R14', 'hallway'],
+        ['H13', 'R8', 'elevator'],
+        ['H13', 'R14', 'elevator'],
         ['H14', 'H15', 'hallway'],
         ['H14', 'R9', 'hallway'],
         ['H14', 'R13', 'hallway'],
@@ -652,6 +668,13 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
         ['H29', 'H30', 'hallway'],
         ['H30', '1.436', 'hallway'],
         ['H10', 'H31', 'escalator'],
+        ['H32', 'H33', 'stairs'],
+      ],
+      multiLayeredEdges: [
+        ['H10', 'H31', 'escalator'],
+        ['H13', 'R8', 'elevator'],
+        ['H13', 'R14', 'elevator'],
+        ['H32', 'H33', 'stairs'],
       ],
     },
     {
