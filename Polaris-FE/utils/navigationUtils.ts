@@ -1,4 +1,5 @@
 import { Step } from '@/constants/types';
+import dayjs from 'dayjs';
 import MapView, { LatLng } from 'react-native-maps';
 import { Linking, Platform } from 'react-native';
 import { MutableRefObject } from 'react';
@@ -7,6 +8,234 @@ import {
   getDistanceFromLatLonInMeters,
   handleCurrentLocation,
 } from '@/utils/mapHandlers';
+import { toast } from 'sonner-native';
+
+export const ShuttleBusStops = {
+  LOY: {
+    name: 'Loyola Campus',
+    shortName: 'LOY',
+    location: {
+      latitude: 45.458416868597745,
+      longitude: -73.63831310019523,
+    },
+    schedule: {
+      MonThu: [
+        '09:15',
+        '09:30',
+        '09:45',
+        '10:00',
+        '10:10',
+        '10:30',
+        '10:40',
+        '11:00',
+        '11:15',
+        '11:30',
+        '11:45',
+        '12:00',
+        '12:10',
+        '12:30',
+        '12:45',
+        '13:00',
+        '13:15',
+        '13:30',
+        '13:45',
+        '14:00',
+        '14:15',
+        '14:30',
+        '14:45',
+        '15:00',
+        '15:15',
+        '15:30',
+        '15:45',
+        '16:00',
+        '16:15',
+        '16:30',
+        '16:45',
+        '17:00',
+        '17:15',
+        '17:30',
+        '17:45',
+        '18:00',
+        '18:15',
+        '18:30',
+      ],
+      Fri: [
+        '09:15',
+        '09:30',
+        '09:45',
+        '10:15',
+        '10:45',
+        '11:00',
+        '11:15',
+        '12:00',
+        '12:15',
+        '12:45',
+        '13:00',
+        '13:15',
+        '13:45',
+        '14:15',
+        '14:30',
+        '14:45',
+        '15:00',
+        '15:15',
+        '15:30',
+        '15:45',
+        '16:15',
+        '17:15',
+        '17:45',
+        '18:15',
+      ],
+    },
+  },
+  SGW: {
+    name: 'Downtown Campus',
+    shortName: 'SGW',
+    location: {
+      latitude: 45.497198471361926,
+      longitude: -73.57844843923921,
+    },
+    schedule: {
+      MonThu: [
+        '09:30',
+        '09:45',
+        '10:00',
+        '10:10',
+        '10:30',
+        '10:40',
+        '11:00',
+        '11:15',
+        '11:30',
+        '11:45',
+        '12:00',
+        '12:10',
+        '12:30',
+        '12:45',
+        '13:00',
+        '13:15',
+        '13:30',
+        '13:45',
+        '14:00',
+        '14:15',
+        '14:30',
+        '14:45',
+        '15:00',
+        '15:15',
+        '15:30',
+        '15:45',
+        '16:00',
+        '16:15',
+        '16:30',
+        '16:45',
+        '17:00',
+        '17:15',
+        '17:30',
+        '17:45',
+        '18:00',
+        '18:15',
+        '18:30',
+        '20:30',
+      ],
+      Fri: [
+        '09:45',
+        '10:00',
+        '10:15',
+        '10:45',
+        '11:15',
+        '11:30',
+        '12:15',
+        '12:30',
+        '12:45',
+        '13:15',
+        '13:45',
+        '14:00',
+        '14:15',
+        '14:45',
+        '15:00',
+        '15:15',
+        '15:30',
+        '15:45',
+        '16:00',
+        '16:45',
+        '17:15',
+        '17:45',
+        '18:15',
+      ],
+    },
+  },
+};
+
+export function getNextDeparture(
+  stop: typeof ShuttleBusStops.LOY | typeof ShuttleBusStops.SGW,
+  walkTime: number
+): string | null {
+  const dayOfWeek = new Date().getDay();
+
+  if (dayOfWeek !== 5 && (dayOfWeek < 1 || dayOfWeek > 4)) {
+    return null;
+  }
+
+  const schedule = dayOfWeek === 5 ? stop.schedule.Fri : stop.schedule.MonThu;
+
+  if (!schedule || schedule.length === 0) {
+    return null;
+  }
+
+  const now = new Date();
+  const waitSeconds = walkTime ? walkTime : 0;
+  const thresholdTime = new Date(now.getTime() + waitSeconds * 1000);
+
+  for (const timeStr of schedule) {
+    const [hourStr, minuteStr] = timeStr.split(':');
+    const hour = Number(hourStr);
+    const minute = Number(minuteStr);
+
+    const departureTime = new Date();
+    departureTime.setHours(hour, minute, 0, 0);
+
+    if (departureTime > thresholdTime) {
+      return dayjs(departureTime).format('h:mma');
+    }
+  }
+  return null;
+}
+
+export function ETA(seconds: number): string {
+  return dayjs().add(seconds, 'second').format('h:mma');
+}
+
+export const getNearestBusStop = (
+  location: LatLng
+): typeof ShuttleBusStops.LOY => {
+  const distanceToLoyola = getDistanceBetweenPoints(
+    location,
+    ShuttleBusStops.LOY.location
+  );
+  const distanceToSGW = getDistanceBetweenPoints(
+    location,
+    ShuttleBusStops.SGW.location
+  );
+
+  return distanceToLoyola <= distanceToSGW
+    ? ShuttleBusStops.LOY
+    : ShuttleBusStops.SGW;
+};
+
+export const getOtherBusStop = (
+  location: LatLng
+): typeof ShuttleBusStops.LOY => {
+  const distanceToLoyola = getDistanceBetweenPoints(
+    location,
+    ShuttleBusStops.LOY.location
+  );
+  const distanceToSGW = getDistanceBetweenPoints(
+    location,
+    ShuttleBusStops.SGW.location
+  );
+
+  return distanceToLoyola >= distanceToSGW
+    ? ShuttleBusStops.LOY
+    : ShuttleBusStops.SGW;
+};
 
 export const getDistanceBetweenPoints = (p1: LatLng, p2: LatLng): number => {
   const R = 6371000;
@@ -345,6 +574,7 @@ export const handleGoButton = ({
   handleStartNavigation,
   mapRef,
   error,
+  nextDeparture,
 }: {
   navigationState: string;
   is3d: boolean;
@@ -355,6 +585,7 @@ export const handleGoButton = ({
   handleStartNavigation: () => void;
   mapRef: MutableRefObject<MapView | null>;
   error: Error | null;
+  nextDeparture: string | null;
 }) => {
   if (navigationState === 'navigating') {
     if (is3d) {
@@ -372,5 +603,11 @@ export const handleGoButton = ({
     return;
   }
 
+  if (travelMode === 'SHUTTLE' && !nextDeparture) {
+    toast.error('No Shuttle Available', {
+      description: 'Please select a different travel mode.',
+    });
+    return;
+  }
   handleStartNavigation();
 };
