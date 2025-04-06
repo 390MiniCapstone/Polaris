@@ -55,6 +55,13 @@ jest.mock('expo-location', () => ({
   },
 }));
 
+jest.mock('@react-native-cookies/cookies', () => ({
+  get: jest.fn(() => Promise.resolve({})),
+  set: jest.fn(() => Promise.resolve()),
+  clearAll: jest.fn(() => Promise.resolve()),
+  clearByName: jest.fn(() => Promise.resolve()),
+}));
+
 jest.mock('@gorhom/bottom-sheet', () => {
   const { View } = require('react-native');
   return {

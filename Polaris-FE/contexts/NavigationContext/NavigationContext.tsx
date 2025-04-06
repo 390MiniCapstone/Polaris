@@ -41,7 +41,9 @@ interface NavigationContextType {
   remainingTime: number | null;
   nextInstruction: string | null;
   snappedPoint: LatLng | null;
+  setSnappedPoint: (point: LatLng | null) => void;
   clippedPolyline: LatLng[] | null;
+  setClippedPolyline: (polyline: LatLng[] | null) => void;
   handleStartNavigation: () => void;
   startNavigationToDestination: (dest: LatLng) => void;
   setToDefault: () => void;
@@ -221,7 +223,9 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
       remainingTime,
       nextInstruction,
       snappedPoint,
+      setSnappedPoint,
       clippedPolyline,
+      setClippedPolyline,
       handleStartNavigation,
       startNavigationToDestination,
       setToDefault,

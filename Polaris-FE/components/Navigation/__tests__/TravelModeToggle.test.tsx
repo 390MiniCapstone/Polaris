@@ -21,87 +21,76 @@ import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 describe('TravelModeToggle', () => {
   const setTravelModeMock = jest.fn();
 
+  const mockUseNavigation = (travelMode = 'DRIVE') => {
+    (useNavigation as jest.Mock).mockReturnValue({
+      travelMode,
+      setTravelMode: setTravelModeMock,
+    });
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders all transport mode buttons', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      travelMode: 'DRIVE',
-      setTravelMode: setTravelModeMock,
+  describe('Rendering', () => {
+    it('renders all transport mode buttons', () => {
+      mockUseNavigation();
+      const { getByTestId } = render(<TravelModeToggle />);
+
+      expect(getByTestId('transport-mode-button-DRIVE')).toBeTruthy();
+      expect(getByTestId('transport-mode-button-WALK')).toBeTruthy();
+      expect(getByTestId('transport-mode-button-TRANSIT')).toBeTruthy();
+      expect(getByTestId('transport-mode-button-BICYCLE')).toBeTruthy();
+      expect(getByTestId('transport-mode-button-SHUTTLE')).toBeTruthy();
     });
 
-    const { getByTestId } = render(<TravelModeToggle />);
+    it('applies selected style only to active travel mode button', () => {
+      mockUseNavigation('WALK');
+      const { getByTestId } = render(<TravelModeToggle />);
+      const walkButton = getByTestId('transport-mode-button-WALK');
+      const driveButton = getByTestId('transport-mode-button-DRIVE');
 
-    expect(getByTestId('transport-mode-button-DRIVE')).toBeTruthy();
-    expect(getByTestId('transport-mode-button-WALK')).toBeTruthy();
-    expect(getByTestId('transport-mode-button-TRANSIT')).toBeTruthy();
-    expect(getByTestId('transport-mode-button-BICYCLE')).toBeTruthy();
+      expect(walkButton).toHaveStyle({
+        backgroundColor: 'rgba(143, 34, 54, 1)',
+      });
+      expect(driveButton).not.toHaveStyle({ backgroundColor: '#9A2E3F' });
+    });
   });
 
-  it('calls setTravelMode with DRIVE when the DRIVE button is pressed', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      travelMode: 'WALK',
-      setTravelMode: setTravelModeMock,
+  describe('Interaction', () => {
+    it('calls setTravelMode when pressing DRIVE button', () => {
+      mockUseNavigation();
+      const { getByTestId } = render(<TravelModeToggle />);
+      fireEvent.press(getByTestId('transport-mode-button-DRIVE'));
+      expect(setTravelModeMock).toHaveBeenCalledWith('DRIVE');
     });
 
-    const { getByTestId } = render(<TravelModeToggle />);
-    const driveButton = getByTestId('transport-mode-button-DRIVE');
-    fireEvent.press(driveButton);
-
-    expect(setTravelModeMock).toHaveBeenCalledWith('DRIVE');
-  });
-
-  it('calls setTravelMode with WALK when the WALK button is pressed', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      travelMode: 'DRIVE',
-      setTravelMode: setTravelModeMock,
+    it('calls setTravelMode when pressing WALK button', () => {
+      mockUseNavigation();
+      const { getByTestId } = render(<TravelModeToggle />);
+      fireEvent.press(getByTestId('transport-mode-button-WALK'));
+      expect(setTravelModeMock).toHaveBeenCalledWith('WALK');
     });
 
-    const { getByTestId } = render(<TravelModeToggle />);
-    const walkButton = getByTestId('transport-mode-button-WALK');
-    fireEvent.press(walkButton);
-
-    expect(setTravelModeMock).toHaveBeenCalledWith('WALK');
-  });
-
-  it('calls setTravelMode with TRANSIT when the TRANSIT button is pressed', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      travelMode: 'DRIVE',
-      setTravelMode: setTravelModeMock,
+    it('calls setTravelMode when pressing TRANSIT button', () => {
+      mockUseNavigation();
+      const { getByTestId } = render(<TravelModeToggle />);
+      fireEvent.press(getByTestId('transport-mode-button-TRANSIT'));
+      expect(setTravelModeMock).toHaveBeenCalledWith('TRANSIT');
     });
 
-    const { getByTestId } = render(<TravelModeToggle />);
-    const transitButton = getByTestId('transport-mode-button-TRANSIT');
-    fireEvent.press(transitButton);
-
-    expect(setTravelModeMock).toHaveBeenCalledWith('TRANSIT');
-  });
-
-  it('calls setTravelMode with BICYCLE when the BICYCLE button is pressed', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      travelMode: 'DRIVE',
-      setTravelMode: setTravelModeMock,
+    it('calls setTravelMode when pressing BICYCLE button', () => {
+      mockUseNavigation();
+      const { getByTestId } = render(<TravelModeToggle />);
+      fireEvent.press(getByTestId('transport-mode-button-BICYCLE'));
+      expect(setTravelModeMock).toHaveBeenCalledWith('BICYCLE');
     });
 
-    const { getByTestId } = render(<TravelModeToggle />);
-    const bicycleButton = getByTestId('transport-mode-button-BICYCLE');
-    fireEvent.press(bicycleButton);
-
-    expect(setTravelModeMock).toHaveBeenCalledWith('BICYCLE');
-  });
-
-  it('applies the selected style for the active travel mode', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      travelMode: 'WALK',
-      setTravelMode: setTravelModeMock,
+    it('calls setTravelMode when pressing SHUTTLE button', () => {
+      mockUseNavigation();
+      const { getByTestId } = render(<TravelModeToggle />);
+      fireEvent.press(getByTestId('transport-mode-button-SHUTTLE'));
+      expect(setTravelModeMock).toHaveBeenCalledWith('SHUTTLE');
     });
-
-    const { getByTestId } = render(<TravelModeToggle />);
-    const walkButton = getByTestId('transport-mode-button-WALK');
-    expect(walkButton).toHaveStyle({ backgroundColor: '#9A2E3F' });
-
-    const driveButton = getByTestId('transport-mode-button-DRIVE');
-    expect(driveButton).not.toHaveStyle({ backgroundColor: '#9A2E3F' });
   });
 });

@@ -17,15 +17,6 @@ jest.mock('@expo/vector-icons', () => {
   };
 });
 
-const createTestQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
 jest.mock('expo-font', () => ({
   loadAsync: jest.fn(),
   isLoaded: jest.fn(() => true),
@@ -48,6 +39,22 @@ jest.mock('sonner-native', () => {
   };
 });
 
+jest.mock('@react-native-cookies/cookies', () => ({
+  get: jest.fn(() => Promise.resolve({})),
+  set: jest.fn(() => Promise.resolve()),
+  clearAll: jest.fn(() => Promise.resolve()),
+  clearByName: jest.fn(() => Promise.resolve()),
+}));
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
 describe('HomeScreen Minimal Test', () => {
   it('renders without crashing and displays "Campus"', async () => {
     const queryClient = createTestQueryClient();
@@ -63,6 +70,7 @@ describe('HomeScreen Minimal Test', () => {
         </BuildingProvider>
       </QueryClientProvider>
     );
+
     expect(getByText('Campus')).toBeTruthy();
   });
 });

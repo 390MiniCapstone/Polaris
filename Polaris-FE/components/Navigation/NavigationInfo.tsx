@@ -35,7 +35,7 @@ export const NavigationInfo: React.FC = () => {
 
   function routeEstimates() {
     if (loading) {
-      return <ActivityIndicator />;
+      return <ActivityIndicator testID="ActivityIndicator" />;
     } else if (error) {
       return (
         <React.Fragment>
@@ -77,7 +77,7 @@ export const NavigationInfo: React.FC = () => {
         </React.Fragment>
       );
     } else {
-      return <ActivityIndicator />;
+      return <ActivityIndicator testID="ActivityIndicator" />;
     }
   }
 

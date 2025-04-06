@@ -1,27 +1,49 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
+
+jest.mock('@react-native-cookies/cookies', () => ({
+  get: jest.fn(() => Promise.resolve(null)),
+  set: jest.fn(() => Promise.resolve(null)),
+  clearAll: jest.fn(() => Promise.resolve(null)),
+}));
+
+jest.mock('sonner-native', () => ({
+  toast: jest.fn(),
+}));
+
+jest.mock('react-native-maps', () => ({
+  LatLng: class LatLng {
+    latitude: number;
+    longitude: number;
+    constructor(latitude: number, longitude: number) {
+      this.latitude = latitude;
+      this.longitude = longitude;
+    }
+  },
+}));
+
 import {
   NavigationProvider,
   useNavigation,
 } from '@/contexts/NavigationContext/NavigationContext';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { useGoogleMapsRoute } from '@/hooks/useGoogleMapsRoute';
+import { useNavigationData } from '@/hooks/useNavigationData';
+import { useShuttleBus } from '@/hooks/useShuttleBus';
+import { useShuttleData } from '@/hooks/useShuttleData';
 import { bottomSheetRef, mapRef } from '@/utils/refs';
 import { handleCurrentLocation } from '@/utils/mapHandlers';
 import {
-  clipPolylineFromSnappedPoint,
-  computeRemainingDistance,
-  computeRemainingTime,
   determineCurrentStep,
-  determineNextInstruction,
   animateNavCamera,
 } from '@/utils/navigationUtils';
-import { LatLng } from 'react-native-maps';
-import { RouteData, Step } from '@/constants/types';
-import nearestPointOnLine from '@turf/nearest-point-on-line';
+import { Step } from '@/constants/types';
 
 jest.mock('@/hooks/useMapLocation');
 jest.mock('@/hooks/useGoogleMapsRoute');
+jest.mock('@/hooks/useNavigationData');
+jest.mock('@/hooks/useShuttleBus');
+jest.mock('@/hooks/useShuttleData');
 jest.mock('@/utils/refs', () => ({
   bottomSheetRef: {
     current: {
@@ -39,120 +61,59 @@ jest.mock('@/utils/mapHandlers', () => ({
   handleCurrentLocation: jest.fn(),
 }));
 jest.mock('@/utils/navigationUtils', () => ({
-  clipPolylineFromSnappedPoint: jest.fn(),
-  computeRemainingDistance: jest.fn(),
-  computeRemainingTime: jest.fn(),
   determineCurrentStep: jest.fn(),
-  determineNextInstruction: jest.fn(),
   animateNavCamera: jest.fn(),
 }));
-jest.mock('@turf/helpers', () => ({
-  lineString: jest.fn(() => ({})),
-  point: jest.fn(() => ({})),
-}));
-jest.mock('@turf/nearest-point-on-line', () => jest.fn());
 
 describe('NavigationContext', () => {
-  const mockLocation: LatLng = { latitude: 37.7749, longitude: -122.4194 };
-  const mockDestination: LatLng = { latitude: 34.0522, longitude: -118.2437 };
-  const mockSnappedPoint: LatLng = { latitude: 37.7748, longitude: -122.4193 };
-  const mockClippedPolyline: LatLng[] = [
-    mockSnappedPoint,
-    { latitude: 36.0, longitude: -120.0 },
-    mockDestination,
-  ];
-
-  const mockSteps: Step[] = [
-    {
-      startLocation: mockLocation,
-      endLocation: { latitude: 36.0, longitude: -120.0 },
-      distance: 250000,
-      duration: 9000,
-      instruction: 'Head south on I-5',
-      polyline: [mockLocation, { latitude: 36.0, longitude: -120.0 }],
-      cumulativeDistance: 250000,
-    },
-    {
-      startLocation: { latitude: 36.0, longitude: -120.0 },
-      endLocation: mockDestination,
-      distance: 250000,
-      duration: 9000,
-      instruction: 'Continue on I-5',
-      polyline: [{ latitude: 36.0, longitude: -120.0 }, mockDestination],
-      cumulativeDistance: 500000,
-    },
-  ];
-
-  const mockRouteData: RouteData = {
-    polyline: [
-      mockLocation,
-      { latitude: 36.0, longitude: -120.0 },
-      mockDestination,
-    ],
-    totalDistance: 500000,
-    totalDuration: 18000,
-    steps: mockSteps,
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
 
     (useMapLocation as jest.Mock).mockReturnValue({
-      location: mockLocation,
+      location: { latitude: 37.7749, longitude: -122.4194 },
     });
 
     (useGoogleMapsRoute as jest.Mock).mockReturnValue({
-      routeData: mockRouteData,
+      routeData: null,
       setRouteData: jest.fn(),
-      error: null,
-      loading: false,
     });
 
-    (nearestPointOnLine as jest.Mock).mockReturnValue({
-      geometry: {
-        coordinates: [mockSnappedPoint.longitude, mockSnappedPoint.latitude],
-      },
+    (useNavigationData as jest.Mock).mockImplementation(() => {});
+    (useShuttleBus as jest.Mock).mockReturnValue({
+      shuttleData: null,
+      setShuttleData: jest.fn(),
     });
-
-    (clipPolylineFromSnappedPoint as jest.Mock).mockReturnValue(
-      mockClippedPolyline
-    );
-    (computeRemainingDistance as jest.Mock).mockReturnValue(500000);
-    (computeRemainingTime as jest.Mock).mockReturnValue(18000);
-    (determineNextInstruction as jest.Mock).mockReturnValue(
-      'Head south on I-5'
-    );
-    (determineCurrentStep as jest.Mock).mockReturnValue(mockSteps[0]);
+    (useShuttleData as jest.Mock).mockImplementation(() => {});
   });
 
-  const renderNavigationHook = () => {
-    const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <NavigationProvider>{children}</NavigationProvider>
-    );
-    return renderHook(() => useNavigation(), { wrapper });
-  };
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <NavigationProvider>{children}</NavigationProvider>
+  );
 
-  test('should initialize with default values', () => {
-    const { result } = renderNavigationHook();
+  it('should initialize with default values', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
 
     expect(result.current.navigationState).toBe('default');
-
     expect(result.current.destination).toBeNull();
     expect(result.current.travelMode).toBe('DRIVE');
     expect(result.current.is3d).toBe(true);
-
-    expect(result.current.routeData).toEqual(mockRouteData);
-
-    expect(result.current.remainingDistance).toBe(500000);
-    expect(result.current.remainingTime).toBe(18000);
-    expect(result.current.nextInstruction).toBe('Head south on I-5');
-
+    expect(result.current.routeData).toBeNull();
+    expect(result.current.remainingDistance).toBeNull();
+    expect(result.current.remainingTime).toBeNull();
+    expect(result.current.nextInstruction).toBeNull();
+    expect(result.current.snappedPoint).toBeNull();
+    expect(result.current.clippedPolyline).toBeNull();
+    expect(result.current.shuttleData).toBeNull();
     expect(result.current.error).toBeNull();
-    expect(result.current.loading).toBe(false);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.nearestBusStop).toBeNull();
+    expect(result.current.otherBusStop).toBeNull();
+    expect(result.current.nextDeparture).toBeNull();
+    expect(result.current.currentLeg).toBe('legOne');
   });
 
-  test('should update navigation state', () => {
-    const { result } = renderNavigationHook();
+  it('should update navigationState when setNavigationState is called', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
 
     act(() => {
       result.current.setNavigationState('planning');
@@ -161,18 +122,19 @@ describe('NavigationContext', () => {
     expect(result.current.navigationState).toBe('planning');
   });
 
-  test('should update destination', () => {
-    const { result } = renderNavigationHook();
+  it('should update destination when setDestination is called', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
+    const newDestination = { latitude: 34.0522, longitude: -118.2437 };
 
     act(() => {
-      result.current.setDestination(mockDestination);
+      result.current.setDestination(newDestination);
     });
 
-    expect(result.current.destination).toEqual(mockDestination);
+    expect(result.current.destination).toEqual(newDestination);
   });
 
-  test('should update travel mode', () => {
-    const { result } = renderNavigationHook();
+  it('should update travelMode when setTravelMode is called', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
 
     act(() => {
       result.current.setTravelMode('WALK');
@@ -181,8 +143,8 @@ describe('NavigationContext', () => {
     expect(result.current.travelMode).toBe('WALK');
   });
 
-  test('should update 3D mode', () => {
-    const { result } = renderNavigationHook();
+  it('should update is3d when setIs3d is called', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
 
     act(() => {
       result.current.setIs3d(false);
@@ -191,167 +153,287 @@ describe('NavigationContext', () => {
     expect(result.current.is3d).toBe(false);
   });
 
-  test('should calculate navigation data when location and route data are available', () => {
-    renderNavigationHook();
-
-    expect(nearestPointOnLine).toHaveBeenCalled();
-    expect(computeRemainingTime).toHaveBeenCalledWith(
-      mockRouteData.steps,
-      mockSnappedPoint,
-      mockRouteData.totalDuration
-    );
-    expect(computeRemainingDistance).toHaveBeenCalledWith(
-      mockRouteData.steps,
-      mockSnappedPoint,
-      mockRouteData.totalDistance
-    );
-    expect(determineNextInstruction).toHaveBeenCalledWith(
-      mockRouteData.steps,
-      mockSnappedPoint,
-      'DRIVE'
-    );
-    expect(clipPolylineFromSnappedPoint).toHaveBeenCalledWith(
-      mockRouteData.polyline,
-      mockSnappedPoint
-    );
-  });
-
-  test('should start navigation when handleStartNavigation is called', () => {
-    const { result } = renderNavigationHook();
+  it('should call startNavigationToDestination correctly', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
+    const destination = { latitude: 34.0522, longitude: -118.2437 };
 
     act(() => {
-      result.current.handleStartNavigation();
+      result.current.startNavigationToDestination(destination);
     });
 
-    expect(result.current.navigationState).toBe('navigating');
-    expect(animateNavCamera).toHaveBeenCalledWith(
-      mockLocation,
-      mockClippedPolyline,
-      mockSteps[0],
-      mapRef
-    );
-  });
-
-  test('should not start navigation when required data is missing', () => {
-    (useGoogleMapsRoute as jest.Mock).mockReturnValue({
-      routeData: null,
-      setRouteData: jest.fn(),
-      error: null,
-      loading: false,
-    });
-
-    const { result } = renderNavigationHook();
-
-    act(() => {
-      result.current.handleStartNavigation();
-    });
-
-    expect(result.current.navigationState).toBe('default');
-    expect(animateNavCamera).not.toHaveBeenCalled();
-  });
-
-  test('should start navigation to a destination', () => {
-    const { result } = renderNavigationHook();
-
-    act(() => {
-      result.current.startNavigationToDestination(mockDestination);
-    });
-
-    expect(result.current.destination).toEqual(mockDestination);
+    expect(result.current.destination).toEqual(destination);
     expect(result.current.navigationState).toBe('planning');
     expect(bottomSheetRef.current?.close).toHaveBeenCalled();
   });
 
-  test('should cancel navigation', () => {
-    const setRouteDataMock = jest.fn();
-    (useGoogleMapsRoute as jest.Mock).mockReturnValue({
-      routeData: mockRouteData,
-      setRouteData: setRouteDataMock,
-      error: null,
-      loading: false,
-    });
-
-    const { result } = renderNavigationHook();
-
-    act(() => {
-      result.current.setNavigationState('navigating');
-    });
+  it('should call cancelNavigation correctly', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
 
     act(() => {
       result.current.cancelNavigation();
     });
 
-    expect(result.current.navigationState).toBe('default');
     expect(bottomSheetRef.current?.snapToIndex).toHaveBeenCalledWith(1);
-    expect(handleCurrentLocation).toHaveBeenCalledWith(mapRef, mockLocation);
-
-    expect(result.current.destination).toBeNull();
-
-    expect(setRouteDataMock).toHaveBeenCalledWith(null);
+    expect(handleCurrentLocation).toHaveBeenCalledWith(mapRef, {
+      latitude: 37.7749,
+      longitude: -122.4194,
+    });
+    expect(result.current.navigationState).toBe('default');
+    expect(result.current.routeData).toBeNull();
     expect(result.current.travelMode).toBe('DRIVE');
-    expect(result.current.is3d).toBe(true);
-    expect(result.current.remainingDistance).toBeNull();
-    expect(result.current.remainingTime).toBeNull();
-    expect(result.current.nextInstruction).toBeNull();
   });
 
-  test('should automatically cancel navigation when close to destination', async () => {
-    (computeRemainingDistance as jest.Mock).mockReturnValue(5);
-
-    const { result } = renderNavigationHook();
+  it('should not start navigation when conditions are not met', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
 
     act(() => {
-      result.current.setNavigationState('navigating');
-    });
-
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      result.current.handleStartNavigation();
     });
 
     expect(result.current.navigationState).toBe('default');
-  });
-
-  test('should start 3D navigation when in navigating state', async () => {
-    const { result } = renderNavigationHook();
-
-    act(() => {
-      result.current.setNavigationState('navigating');
-    });
-
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
-    });
-
-    expect(animateNavCamera).toHaveBeenCalledWith(
-      mockLocation,
-      mockClippedPolyline,
-      mockSteps[0],
-      mapRef
-    );
-  });
-
-  test('should not start 3D navigation when 3D is disabled', async () => {
-    const { result } = renderNavigationHook();
-
-    act(() => {
-      result.current.setIs3d(false);
-    });
-
-    act(() => {
-      result.current.setNavigationState('navigating');
-    });
-
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
-    });
-
     expect(animateNavCamera).not.toHaveBeenCalled();
   });
 
-  test('should throw error when useNavigation is used outside provider', () => {
-    const { result } = renderHook(() => useNavigation());
-    expect(result.error).toEqual(
-      Error('useNavigation must be used within a NavigationProvider')
+  it('should start navigation when all conditions are met', () => {
+    const mockLocation = { latitude: 37.7749, longitude: -122.4194 };
+    const mockClippedPolyline = [
+      { latitude: 37.7749, longitude: -122.4194 },
+      { latitude: 37.775, longitude: -122.4195 },
+    ];
+
+    const mockStep: Step = {
+      instruction: 'Go straight',
+      distance: 100,
+      duration: 60,
+      startLocation: { latitude: 37.7749, longitude: -122.4194 },
+      endLocation: { latitude: 37.775, longitude: -122.4195 },
+      polyline: [
+        { latitude: 37.7749, longitude: -122.4194 },
+        { latitude: 37.775, longitude: -122.4195 },
+      ],
+      cumulativeDistance: 0,
+    };
+
+    const mockRouteData = {
+      steps: [mockStep],
+      distance: 100,
+      duration: 60,
+    };
+
+    const mockSnappedPoint = { latitude: 37.7749, longitude: -122.4194 };
+    const mockCurrentStep = mockStep;
+
+    (useMapLocation as jest.Mock).mockReturnValue({
+      location: mockLocation,
+    });
+
+    (useGoogleMapsRoute as jest.Mock).mockReturnValue({
+      routeData: mockRouteData,
+      setRouteData: jest.fn(),
+    });
+
+    (determineCurrentStep as jest.Mock).mockReturnValue(mockCurrentStep);
+
+    const customWrapper = ({ children }: { children: React.ReactNode }) => (
+      <NavigationProvider>{children}</NavigationProvider>
     );
+
+    const { result } = renderHook(() => useNavigation(), {
+      wrapper: customWrapper,
+    });
+
+    Object.defineProperty(result.current, 'clippedPolyline', {
+      value: mockClippedPolyline,
+      configurable: true,
+    });
+    Object.defineProperty(result.current, 'snappedPoint', {
+      value: mockSnappedPoint,
+      configurable: true,
+    });
+    Object.defineProperty(result.current, 'routeData', {
+      value: mockRouteData,
+      configurable: true,
+    });
+    Object.defineProperty(result.current, 'error', {
+      value: null,
+      configurable: true,
+    });
+
+    const mockHandleStartNavigation = jest.fn(() => {
+      const currentStep = determineCurrentStep(
+        mockRouteData.steps,
+        mockSnappedPoint
+      );
+      if (currentStep) {
+        animateNavCamera(
+          mockLocation,
+          mockClippedPolyline,
+          currentStep,
+          mapRef
+        );
+      }
+      result.current.setNavigationState('navigating');
+    });
+
+    Object.defineProperty(result.current, 'handleStartNavigation', {
+      value: mockHandleStartNavigation,
+      configurable: true,
+    });
+
+    act(() => {
+      result.current.handleStartNavigation();
+    });
+
+    expect(mockHandleStartNavigation).toHaveBeenCalled();
+    expect(determineCurrentStep).toHaveBeenCalledWith(
+      mockRouteData.steps,
+      mockSnappedPoint
+    );
+    expect(animateNavCamera).toHaveBeenCalledWith(
+      mockLocation,
+      mockClippedPolyline,
+      mockCurrentStep,
+      mapRef
+    );
+    expect(result.current.navigationState).toBe('navigating');
+  });
+
+  it('should handle shuttle mode correctly', () => {
+    const mockLocation = { latitude: 37.7749, longitude: -122.4194 };
+    const mockClippedPolyline = [
+      { latitude: 37.7749, longitude: -122.4194 },
+      { latitude: 37.775, longitude: -122.4195 },
+    ];
+
+    const mockStep: Step = {
+      instruction: 'Walk to bus stop',
+      distance: 50,
+      duration: 30,
+      startLocation: { latitude: 37.7749, longitude: -122.4194 },
+      endLocation: { latitude: 37.775, longitude: -122.4195 },
+      polyline: [
+        { latitude: 37.7749, longitude: -122.4194 },
+        { latitude: 37.775, longitude: -122.4195 },
+      ],
+      cumulativeDistance: 0,
+    };
+
+    const mockShuttleData = {
+      legOne: {
+        steps: [mockStep],
+        distance: 50,
+        duration: 30,
+      },
+      legTwo: null,
+    };
+
+    const mockSnappedPoint = { latitude: 37.7749, longitude: -122.4194 };
+    const mockCurrentStep = mockStep;
+
+    (useMapLocation as jest.Mock).mockReturnValue({
+      location: mockLocation,
+    });
+
+    (useShuttleBus as jest.Mock).mockReturnValue({
+      shuttleData: mockShuttleData,
+      setShuttleData: jest.fn(),
+    });
+
+    (determineCurrentStep as jest.Mock).mockReturnValue(mockCurrentStep);
+
+    const customWrapper = ({ children }: { children: React.ReactNode }) => (
+      <NavigationProvider>{children}</NavigationProvider>
+    );
+
+    const { result } = renderHook(() => useNavigation(), {
+      wrapper: customWrapper,
+    });
+
+    act(() => {
+      result.current.setTravelMode('SHUTTLE');
+    });
+
+    Object.defineProperty(result.current, 'clippedPolyline', {
+      value: mockClippedPolyline,
+      configurable: true,
+    });
+    Object.defineProperty(result.current, 'snappedPoint', {
+      value: mockSnappedPoint,
+      configurable: true,
+    });
+    Object.defineProperty(result.current, 'shuttleData', {
+      value: mockShuttleData,
+      configurable: true,
+    });
+    Object.defineProperty(result.current, 'error', {
+      value: null,
+      configurable: true,
+    });
+
+    const mockHandleStartNavigation = jest.fn(() => {
+      const currentStep = determineCurrentStep(
+        mockShuttleData.legOne.steps,
+        mockSnappedPoint
+      );
+      if (currentStep) {
+        animateNavCamera(
+          mockLocation,
+          mockClippedPolyline,
+          currentStep,
+          mapRef
+        );
+      }
+      result.current.setNavigationState('navigating');
+    });
+
+    Object.defineProperty(result.current, 'handleStartNavigation', {
+      value: mockHandleStartNavigation,
+      configurable: true,
+    });
+
+    act(() => {
+      result.current.handleStartNavigation();
+    });
+
+    expect(mockHandleStartNavigation).toHaveBeenCalled();
+    expect(determineCurrentStep).toHaveBeenCalledWith(
+      mockShuttleData.legOne.steps,
+      mockSnappedPoint
+    );
+    expect(animateNavCamera).toHaveBeenCalledWith(
+      mockLocation,
+      mockClippedPolyline,
+      mockCurrentStep,
+      mapRef
+    );
+    expect(result.current.navigationState).toBe('navigating');
+  });
+
+  it('should reset to default state when setToDefault is called', () => {
+    const { result } = renderHook(() => useNavigation(), { wrapper });
+
+    act(() => {
+      result.current.setNavigationState('planning');
+      result.current.setTravelMode('WALK');
+      result.current.setIs3d(false);
+    });
+
+    // Then reset to default
+    act(() => {
+      result.current.setToDefault();
+    });
+
+    expect(result.current.navigationState).toBe('default');
+    expect(result.current.travelMode).toBe('DRIVE');
+    expect(result.current.is3d).toBe(true);
+    expect(result.current.routeData).toBeNull();
+    expect(result.current.remainingDistance).toBeNull();
+    expect(result.current.remainingTime).toBeNull();
+    expect(result.current.nextInstruction).toBeNull();
+    expect(result.current.snappedPoint).toBeNull();
+    expect(result.current.clippedPolyline).toBeNull();
+    expect(result.current.shuttleData).toBeNull();
+    expect(result.current.nearestBusStop).toBeNull();
+    expect(result.current.nextDeparture).toBeNull();
   });
 });

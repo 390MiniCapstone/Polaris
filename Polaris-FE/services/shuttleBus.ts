@@ -2,7 +2,7 @@ import { ShuttleBusResponse } from '@/constants/types';
 import { toast } from 'sonner-native';
 import CookieManager from '@react-native-cookies/cookies';
 
-const getShuttleCookie = async (): Promise<string> => {
+export const getShuttleCookie = async (): Promise<string> => {
   try {
     await fetch('https://shuttle.concordia.ca/concordiabusmap/Map.aspx', {
       method: 'GET',

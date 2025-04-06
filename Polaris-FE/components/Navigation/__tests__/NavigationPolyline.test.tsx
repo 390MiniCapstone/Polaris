@@ -3,6 +3,7 @@ import { render } from '@testing-library/react-native';
 import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 
+// Mocks
 jest.mock('@/contexts/NavigationContext/NavigationContext', () => ({
   useNavigation: jest.fn(),
 }));
@@ -10,7 +11,6 @@ jest.mock('@/contexts/NavigationContext/NavigationContext', () => ({
 jest.mock('react-native-maps', () => {
   const { View } = require('react-native');
   return {
-    Marker: (props: any) => <View testID="marker" {...props} />,
     Polyline: (props: any) => <View testID="polyline" {...props} />,
   };
 });
@@ -30,11 +30,7 @@ jest.mock('@/hooks/useTheme', () => ({
   }),
 }));
 
-afterEach(() => {
-  jest.clearAllMocks();
-});
-
-describe('NavigationPolyline Component', () => {
+describe('NavigationPolyline', () => {
   const destination = { latitude: 10, longitude: 20 };
   const snappedPoint = { latitude: 10, longitude: 20 };
   const clippedPolyline = [
@@ -42,89 +38,98 @@ describe('NavigationPolyline Component', () => {
     { latitude: 30, longitude: 40 },
   ];
 
-  it('should not render anything if navigationState is not "planning" or "navigating"', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      navigationState: 'default',
-      travelMode: 'WALK',
-      destination,
-      snappedPoint,
-      clippedPolyline,
-    });
-    const { queryByTestId } = render(<NavigationPolyline />);
-    expect(queryByTestId('marker')).toBeNull();
-    expect(queryByTestId('polyline')).toBeNull();
-  });
-
-  it('should not render anything if clippedPolyline is missing', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      navigationState: 'planning',
-      travelMode: 'WALK',
-      destination,
-      snappedPoint,
-      clippedPolyline: null,
-    });
-    const { queryByTestId } = render(<NavigationPolyline />);
-    expect(queryByTestId('marker')).toBeNull();
-    expect(queryByTestId('polyline')).toBeNull();
-  });
-
-  it('should not render anything if snappedPoint is missing', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      navigationState: 'planning',
-      travelMode: 'WALK',
-      destination,
-      snappedPoint: null,
-      clippedPolyline,
-    });
-    const { queryByTestId } = render(<NavigationPolyline />);
-    expect(queryByTestId('marker')).toBeNull();
-    expect(queryByTestId('polyline')).toBeNull();
-  });
-
-  it('should render a Marker and a dashed Polyline when travelMode is "WALK"', () => {
+  const mockUseNavigation = (override = {}) => {
     (useNavigation as jest.Mock).mockReturnValue({
       navigationState: 'planning',
       travelMode: 'WALK',
       destination,
       snappedPoint,
       clippedPolyline,
+      shuttleData: null,
+      nextDeparture: null,
+      ...override,
     });
-    const { getByTestId, getAllByTestId } = render(<NavigationPolyline />);
+  };
 
-    expect(getByTestId('marker')).toBeTruthy();
-
-    const polylineElements = getAllByTestId('polyline');
-    expect(polylineElements).toHaveLength(1);
-    expect(polylineElements[0].props.strokeWidth).toBe(4);
-    expect(polylineElements[0].props.strokeColor).toBe(
-      mockTheme.colors.primary
-    );
-    expect(polylineElements[0].props.lineDashPattern).toEqual([5, 10]);
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should render a Marker and two Polylines when travelMode is not "WALK"', () => {
-    (useNavigation as jest.Mock).mockReturnValue({
-      navigationState: 'planning',
-      travelMode: 'DRIVE',
-      destination,
-      snappedPoint,
-      clippedPolyline,
+  describe('Common rendering checks', () => {
+    it('does not render if navigationState is not planning or navigating', () => {
+      mockUseNavigation({ navigationState: 'default' });
+      const { queryAllByTestId } = render(<NavigationPolyline />);
+      expect(queryAllByTestId('polyline')).toHaveLength(0);
     });
-    const { getByTestId, getAllByTestId } = render(<NavigationPolyline />);
 
-    expect(getByTestId('marker')).toBeTruthy();
+    it('does not render if clippedPolyline is missing', () => {
+      mockUseNavigation({ clippedPolyline: null });
+      const { queryAllByTestId } = render(<NavigationPolyline />);
+      expect(queryAllByTestId('polyline')).toHaveLength(0);
+    });
 
-    const polylineElements = getAllByTestId('polyline');
-    expect(polylineElements).toHaveLength(2);
+    it('does not render if snappedPoint is missing', () => {
+      mockUseNavigation({ snappedPoint: null });
+      const { queryAllByTestId } = render(<NavigationPolyline />);
+      expect(queryAllByTestId('polyline')).toHaveLength(0);
+    });
 
-    expect(polylineElements[0].props.strokeWidth).toBe(9);
-    expect(polylineElements[0].props.strokeColor).toBe(
-      mockTheme.colors.primary
-    );
+    it('does not render if destination is missing', () => {
+      mockUseNavigation({ destination: null });
+      const { queryAllByTestId } = render(<NavigationPolyline />);
+      expect(queryAllByTestId('polyline')).toHaveLength(0);
+    });
+  });
 
-    expect(polylineElements[1].props.strokeWidth).toBe(6);
-    expect(polylineElements[1].props.strokeColor).toBe(
-      mockTheme.colors.secondary
-    );
+  describe('Travel mode specific behavior', () => {
+    it('renders a dashed polyline when travelMode is WALK', () => {
+      mockUseNavigation({ travelMode: 'WALK' });
+      const { getAllByTestId } = render(<NavigationPolyline />);
+      const polylines = getAllByTestId('polyline');
+      expect(polylines).toHaveLength(1);
+      expect(polylines[0].props.strokeWidth).toBe(4);
+      expect(polylines[0].props.strokeColor).toBe(mockTheme.colors.primary);
+      expect(polylines[0].props.lineDashPattern).toEqual([5, 10]);
+    });
+
+    it('renders two polylines when travelMode is DRIVE', () => {
+      mockUseNavigation({ travelMode: 'DRIVE' });
+      const { getAllByTestId } = render(<NavigationPolyline />);
+      const polylines = getAllByTestId('polyline');
+      expect(polylines).toHaveLength(2);
+      expect(polylines[0].props.strokeWidth).toBe(9);
+      expect(polylines[0].props.strokeColor).toBe(mockTheme.colors.primary);
+      expect(polylines[1].props.strokeWidth).toBe(6);
+      expect(polylines[1].props.strokeColor).toBe(mockTheme.colors.secondary);
+    });
+
+    it('renders 4 polylines for SHUTTLE mode if shuttle data exists', () => {
+      mockUseNavigation({
+        travelMode: 'SHUTTLE',
+        nextDeparture: '12:00',
+        shuttleData: {
+          legOne: { polyline: clippedPolyline },
+          legTwo: { busData: { polyline: clippedPolyline } },
+          legThree: { polyline: clippedPolyline },
+        },
+      });
+      const { getAllByTestId } = render(<NavigationPolyline />);
+      const polylines = getAllByTestId('polyline');
+      expect(polylines).toHaveLength(4);
+      expect(polylines[0].props.lineDashPattern).toEqual([5, 10]);
+      expect(polylines[1].props.strokeWidth).toBe(9);
+      expect(polylines[2].props.strokeWidth).toBe(6);
+      expect(polylines[3].props.lineDashPattern).toEqual([5, 10]);
+    });
+
+    it('does not render polylines for SHUTTLE if data is incomplete', () => {
+      mockUseNavigation({
+        travelMode: 'SHUTTLE',
+        nextDeparture: null,
+        shuttleData: null,
+      });
+      const { queryAllByTestId } = render(<NavigationPolyline />);
+      expect(queryAllByTestId('polyline')).toHaveLength(0);
+    });
   });
 });
