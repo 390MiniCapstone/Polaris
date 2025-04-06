@@ -11,9 +11,9 @@ jest.mock('@/contexts/AuthContext/AuthContext');
 jest.mock('@/hooks/useGoogleNextEvent');
 jest.mock('@/hooks/useGoogleCalendar');
 
-const mockAuth = useGoogleAuth as jest.Mock;
-const mockNextEvent = useGoogleNextEvent as jest.Mock;
-const mockCalendars = useGoogleCalendars as jest.Mock;
+const mockAuth = jest.mocked(useGoogleAuth);
+const mockNextEvent = jest.mocked(useGoogleNextEvent);
+const mockCalendars = jest.mocked(useGoogleCalendars);
 
 const queryClient = new QueryClient();
 
