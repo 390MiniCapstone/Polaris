@@ -28,7 +28,6 @@ export const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
         contentContainerStyle={{
           paddingHorizontal: 20,
           paddingBottom: 100,
-          paddingTop: 10,
         }}
       >
         {children}
