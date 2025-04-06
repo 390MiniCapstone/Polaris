@@ -7,12 +7,14 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { handleGoButton } from '@/utils/navigationUtils';
+import { ETA, handleGoButton } from '@/utils/navigationUtils';
 import { mapRef } from '@/utils/refs';
 import { useMapLocation } from '@/hooks/useMapLocation';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
+import useTheme from '@/hooks/useTheme';
 
 export const NavigationInfo: React.FC = () => {
+  const { theme } = useTheme();
   const { location } = useMapLocation();
   const {
     travelMode,
@@ -24,17 +26,45 @@ export const NavigationInfo: React.FC = () => {
     cancelNavigation,
     handleStartNavigation,
     navigationState,
-    routeData,
+    shuttleData,
     error,
     loading,
+    nextDeparture,
+    currentLeg,
   } = useNavigation();
 
   function routeEstimates() {
     if (loading) {
       return <ActivityIndicator />;
     } else if (error) {
-      return <Text style={styles.greyText}>Directions Not Available</Text>;
-    } else if (routeData && remainingTime && remainingDistance) {
+      return (
+        <React.Fragment>
+          <Text style={styles.greyText}>{error.message}</Text>
+        </React.Fragment>
+      );
+    } else if (
+      navigationState === 'planning' &&
+      travelMode === 'SHUTTLE' &&
+      nextDeparture
+    ) {
+      return (
+        <React.Fragment>
+          <Text style={styles.greyText}>Next Shuttle at {nextDeparture}</Text>
+        </React.Fragment>
+      );
+    } else if (
+      navigationState === 'navigating' &&
+      travelMode === 'SHUTTLE' &&
+      currentLeg === 'legTwo'
+    ) {
+      return (
+        <React.Fragment>
+          <Text style={styles.greyText}>
+            Arriving at {ETA(shuttleData?.legTwo?.busData.totalDuration!)}
+          </Text>
+        </React.Fragment>
+      );
+    } else if (remainingTime && remainingDistance) {
       return (
         <React.Fragment>
           <Text style={styles.whiteText}>
@@ -62,6 +92,7 @@ export const NavigationInfo: React.FC = () => {
       handleStartNavigation,
       mapRef,
       error,
+      nextDeparture,
     });
   };
 
@@ -82,7 +113,7 @@ export const NavigationInfo: React.FC = () => {
         style={
           navigationState === 'navigating'
             ? styles.currentButton
-            : styles.goButton
+            : [styles.goButton, { backgroundColor: theme.colors.primary }]
         }
         onPress={handlePress}
       >
@@ -143,7 +174,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   goButton: {
-    backgroundColor: '#9A2E3F',
     borderRadius: 12,
     height: 36,
     width: 52,
