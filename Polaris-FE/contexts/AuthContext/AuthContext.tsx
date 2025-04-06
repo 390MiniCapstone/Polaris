@@ -65,10 +65,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       signInWithCredential(auth, credential)
         .then(async authUser => {
           setUser(authUser);
-          setAccessToken(access_token || null);
+          setAccessToken(access_token ?? null);
           await authStorage.saveAuthData(
             authUser,
-            access_token || '',
+            access_token ?? '',
             response.authentication?.refreshToken
           );
         })
