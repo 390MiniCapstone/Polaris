@@ -159,7 +159,7 @@ describe('GooglePlacesInput', () => {
   it('sets an empty array when data.predictions is null or undefined', async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        json: () => Promise.resolve({ predictions: null }), // Simulate null predictions
+        json: () => Promise.resolve({ predictions: null }),
       })
     ) as jest.Mock;
 
