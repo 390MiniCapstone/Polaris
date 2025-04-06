@@ -35,7 +35,7 @@ export const POIs: React.FC<POIs> = ({ setSearchResults }) => {
       const response = await fetch(url);
       const data = await response.json();
 
-      setSearchResults(data.results || []);
+      setSearchResults(data.results ?? []);
     } catch (error) {
       console.error('Error fetching POIs:', error);
       setSearchResults([]);

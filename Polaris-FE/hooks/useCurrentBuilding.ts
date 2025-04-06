@@ -29,7 +29,7 @@ const findCurrentBuilding = (latitude: number, longitude: number) => {
     });
   };
 
-  return searchBuildings(downtownBuildings) || searchBuildings(loyolaBuildings);
+  return searchBuildings(downtownBuildings) ?? searchBuildings(loyolaBuildings);
 };
 
 export const useCurrentBuilding = () => {
@@ -43,7 +43,7 @@ export const useCurrentBuilding = () => {
         location.latitude,
         location.longitude
       );
-      setCurrentBuilding(building || null);
+      setCurrentBuilding(building ?? null);
     }
   }, [location]);
 

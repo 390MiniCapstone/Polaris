@@ -59,7 +59,7 @@ export const getGoogleMapsRoute = async (
     const leg = route.legs[0];
 
     const encodedPolyline =
-      route.polyline?.encodedPolyline || leg.polyline?.encodedPolyline;
+      route.polyline?.encodedPolyline ?? leg.polyline?.encodedPolyline;
     if (!encodedPolyline) {
       throw new Error('No polyline provided in route or leg.');
     }
@@ -78,7 +78,7 @@ export const getGoogleMapsRoute = async (
         .map(([lat, lng]) => ({ latitude: lat, longitude: lng }));
       const stepDuration = step.staticDuration.replace('s', '');
 
-      const instruction = step.navigationInstruction?.instructions || '';
+      const instruction = step.navigationInstruction?.instructions ?? '';
 
       return {
         startLocation: {
