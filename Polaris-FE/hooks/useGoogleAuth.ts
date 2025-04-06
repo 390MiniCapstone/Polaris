@@ -48,6 +48,7 @@ export function useGoogleAuth() {
         setAccessToken(access_token ?? null);
         setUser(authUser);
 
+        // Save user and token in AsyncStorage
         await AsyncStorage.setItem('@user', JSON.stringify(authUser));
         await AsyncStorage.setItem('@access_token', access_token ?? '');
       });
