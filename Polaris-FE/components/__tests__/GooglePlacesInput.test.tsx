@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import GooglePlacesInput from '@/components/GooglePlacesInput/GooglePlacesInput';
 import { useMapLocation } from '@/hooks/useMapLocation';
@@ -155,5 +154,118 @@ describe('GooglePlacesInput', () => {
       expect(global.fetch).not.toHaveBeenCalled();
       expect(setSearchResultsMock).toHaveBeenCalledWith([]);
     });
+  });
+
+  it('sets an empty array when data.predictions is null or undefined', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ predictions: null }), // Simulate null predictions
+      })
+    ) as jest.Mock;
+
+    const setSearchResultsMock = jest.fn();
+
+    const { rerender } = render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query=""
+        setQuery={jest.fn()}
+      />
+    );
+
+    rerender(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="test"
+        setQuery={jest.fn()}
+      />
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+      expect(setSearchResultsMock).toHaveBeenCalledWith([]);
+    });
+  });
+
+  test('clears timeout when a new query is entered', async () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const setSearchResultsMock = jest.fn();
+
+    const { rerender } = render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="initial"
+        setQuery={jest.fn()}
+      />
+    );
+
+    rerender(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="new query"
+        setQuery={jest.fn()}
+      />
+    );
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    clearTimeoutSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  test('clears timeout on component unmount', async () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const setSearchResultsMock = jest.fn();
+
+    const { unmount } = render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="test"
+        setQuery={jest.fn()}
+      />
+    );
+
+    unmount();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    clearTimeoutSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  test('logs an error when fetch fails', async () => {
+    const consoleErrorMock = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+    global.fetch = jest.fn(() => Promise.reject(new Error('Fetch failed')));
+
+    const setSearchResultsMock = jest.fn();
+
+    render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="test"
+        setQuery={jest.fn()}
+      />
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+      expect(consoleErrorMock).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    consoleErrorMock.mockRestore();
   });
 });

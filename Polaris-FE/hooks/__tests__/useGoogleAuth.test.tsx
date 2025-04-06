@@ -112,7 +112,6 @@ describe('useGoogleAuth', () => {
     };
     const mockStoredToken = 'test_access_token';
 
-    // Mock AsyncStorage to simulate stored user and token
     (AsyncStorage.getItem as jest.Mock).mockImplementation(key => {
       if (key === '@user')
         return Promise.resolve(JSON.stringify(mockStoredUser));
@@ -122,18 +121,15 @@ describe('useGoogleAuth', () => {
 
     const { result, waitForNextUpdate } = renderHook(() => useGoogleAuth());
 
-    // Simulate loading the user and token
     await act(async () => {
       await waitForNextUpdate();
     });
 
-    // Ensure the user and token are loaded
     expect(result.current.user).toEqual(mockStoredUser);
     expect(result.current.accessToken).toEqual(mockStoredToken);
 
     result.current.logout();
 
-    // Wait for the state to update
     await waitFor(() => {
       const { user, accessToken } = result.current;
 
@@ -141,8 +137,36 @@ describe('useGoogleAuth', () => {
       expect(accessToken).toBeNull();
     });
 
-    // Verify that AsyncStorage items are removed
     expect(AsyncStorage.removeItem).toHaveBeenCalledWith('@user');
     expect(AsyncStorage.removeItem).toHaveBeenCalledWith('@access_token');
+  });
+
+  it('handles missing access_token gracefully', async () => {
+    const mockAuthUser = { user: { uid: '12345', email: 'test@example.com' } };
+    (GoogleAuthProvider.credential as jest.Mock).mockReturnValue(
+      'mockCredential'
+    );
+    (signInWithCredential as jest.Mock).mockResolvedValue(mockAuthUser);
+
+    const useAuthRequestMock = jest.requireMock(
+      'expo-auth-session/providers/google'
+    ).useAuthRequest;
+    useAuthRequestMock.mockReturnValueOnce([
+      {
+        type: 'success',
+        params: { id_token: 'test_id_token', access_token: null },
+      },
+      jest.fn(),
+    ]);
+
+    const { result } = renderHook(() => useGoogleAuth());
+
+    await waitFor(() => {
+      const { accessToken } = result.current;
+
+      expect(accessToken).toBeNull();
+    });
+
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith('@access_token', '');
   });
 });
