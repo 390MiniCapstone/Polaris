@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import polyline from '@mapbox/polyline';
 import { LatLng } from 'react-native-maps';
 import { toast } from 'sonner-native';
-import { TravelMode, RouteData, Step } from '@/constants/types';
+import { TravelMode, RouteData, Step, stepType } from '@/constants/types';
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
   ?.googleMapsApiKey as string;
@@ -71,7 +71,7 @@ export const getGoogleMapsRoute = async (
     const totalDuration = route.duration.replace('s', '');
 
     let cumulativeDistance = 0;
-    const steps: Step[] = leg.steps.map((step: any) => {
+    const steps: Step[] = leg.steps.map((step: stepType) => {
       cumulativeDistance += step.distanceMeters;
       const decodedStepPolyline: LatLng[] = polyline
         .decode(step.polyline.encodedPolyline)
