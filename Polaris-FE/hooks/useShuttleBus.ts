@@ -11,19 +11,33 @@ import {
 } from '@/utils/navigationUtils';
 import { toast } from 'sonner-native';
 
-export const useShuttleBus = (
-  origin: LatLng | null,
-  nearestBusStop: ShuttleBusStop | null,
-  setNearestBusStop: (busStop: ShuttleBusStop | null) => void,
-  otherBusStop: ShuttleBusStop | null,
-  setOtherBusStop: (busStop: ShuttleBusStop | null) => void,
-  destination: LatLng | null,
-  travelMode: TravelMode,
-  navigationState: string,
-  setError: (error: Error | null) => void,
-  setLoading: (loading: boolean) => void,
-  setNextDeparture: (nextDeparture: string | null) => void
-) => {
+interface ShuttleBusProps {
+  origin: LatLng | null;
+  nearestBusStop: ShuttleBusStop | null;
+  setNearestBusStop: (busStop: ShuttleBusStop | null) => void;
+  otherBusStop: ShuttleBusStop | null;
+  setOtherBusStop: (busStop: ShuttleBusStop | null) => void;
+  destination: LatLng | null;
+  travelMode: TravelMode;
+  navigationState: string;
+  setError: (error: Error | null) => void;
+  setLoading: (loading: boolean) => void;
+  setNextDeparture: (nextDeparture: string | null) => void;
+}
+
+export const useShuttleBus = ({
+  origin,
+  nearestBusStop,
+  setNearestBusStop,
+  otherBusStop,
+  setOtherBusStop,
+  destination,
+  travelMode,
+  navigationState,
+  setError,
+  setLoading,
+  setNextDeparture,
+}: ShuttleBusProps) => {
   const [shuttleData, setShuttleData] = useState<ShuttleData | null>(null);
 
   const getBusPoints = async () => {

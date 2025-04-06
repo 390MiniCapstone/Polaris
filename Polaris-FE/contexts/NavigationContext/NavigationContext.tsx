@@ -64,8 +64,11 @@ const NavigationContext = createContext<NavigationContextType | undefined>(
 export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const { location } = useMapLocation();
+
   const [navigationState, setNavigationState] =
     useState<NavigationState>('default');
+  const [origin, setOrigin] = useState<LatLng | null>(location);
   const [destination, setDestination] = useState<LatLng | null>(null);
   const [travelMode, setTravelMode] = useState<TravelMode>('DRIVE');
   const [is3d, setIs3d] = useState(true);
@@ -130,8 +133,6 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     setToDefault();
   };
 
-  const { location } = useMapLocation();
-
   const { routeData, setRouteData } = useGoogleMapsRoute(
     location,
     destination,
@@ -141,8 +142,8 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     setLoading
   );
 
-  const { shuttleData, setShuttleData } = useShuttleBus(
-    location,
+  const { shuttleData, setShuttleData } = useShuttleBus({
+    origin,
     nearestBusStop,
     setNearestBusStop,
     otherBusStop,
@@ -152,11 +153,11 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     navigationState,
     setError,
     setLoading,
-    setNextDeparture
-  );
+    setNextDeparture,
+  });
 
   useNavigationData(
-    location,
+    origin,
     routeData,
     navigationState,
     travelMode,
