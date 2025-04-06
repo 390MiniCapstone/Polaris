@@ -35,7 +35,9 @@ export const useShuttleData = (
   useEffect(() => {
     if (!location || !shuttleData || navigationState !== 'navigating') return;
 
-    if (currentLeg === 'legOne' && shuttleData.legOne) {
+    const handleLegOne = () => {
+      if (!shuttleData.legOne) return;
+
       const turfLine = lineString(
         shuttleData.legOne.polyline.map(coord => [
           coord.longitude,
@@ -45,57 +47,56 @@ export const useShuttleData = (
       const userPoint = point([location.longitude, location.latitude]);
       const snapped = nearestPointOnLine(turfLine, userPoint);
 
-      if (snapped?.geometry?.coordinates) {
-        const [lng, lat] = snapped.geometry.coordinates;
-        const snappedLoc: LatLng = { latitude: lat, longitude: lng };
-        setSnappedPoint(snappedLoc);
+      if (!snapped?.geometry?.coordinates) return;
 
-        const newRemainingTime = computeRemainingTime(
-          shuttleData.legOne.steps,
-          snappedLoc,
-          shuttleData.legOne.totalDuration
-        );
-        const newRemainingDistance = computeRemainingDistance(
-          shuttleData.legOne.steps,
-          snappedLoc,
-          shuttleData.legOne.totalDistance
-        );
-        setRemainingTime(newRemainingTime);
-        setRemainingDistance(newRemainingDistance);
+      const [lng, lat] = snapped.geometry.coordinates;
+      const snappedLoc: LatLng = { latitude: lat, longitude: lng };
+      setSnappedPoint(snappedLoc);
 
-        const instruction = determineNextInstruction(
-          shuttleData.legOne.steps,
-          snappedLoc,
-          'WALK'
-        );
-        setNextInstruction(instruction);
+      const newRemainingTime = computeRemainingTime(
+        shuttleData.legOne.steps,
+        snappedLoc,
+        shuttleData.legOne.totalDuration
+      );
+      const newRemainingDistance = computeRemainingDistance(
+        shuttleData.legOne.steps,
+        snappedLoc,
+        shuttleData.legOne.totalDistance
+      );
 
-        const clipped = clipPolylineFromSnappedPoint(
-          shuttleData.legOne.polyline,
-          snappedLoc
-        );
-        setClippedPolyline(clipped);
+      setRemainingTime(newRemainingTime);
+      setRemainingDistance(newRemainingDistance);
+      setNextInstruction(
+        determineNextInstruction(shuttleData.legOne.steps, snappedLoc, 'WALK')
+      );
+      setClippedPolyline(
+        clipPolylineFromSnappedPoint(shuttleData.legOne.polyline, snappedLoc)
+      );
 
-        const arrivalThreshold = 10;
-        if (newRemainingDistance <= arrivalThreshold) {
-          setCurrentLeg('legTwo');
-        }
+      if (newRemainingDistance <= 10) {
+        setCurrentLeg('legTwo');
       }
-    } else if (currentLeg === 'legTwo' && otherBusStop) {
+    };
+
+    const handleLegTwo = () => {
+      if (!otherBusStop) return;
+
       const distanceToOtherStop = getDistanceBetweenPoints(
         location,
         otherBusStop.location
       );
-
       setNextInstruction(
         `Take the Concordia shuttle bus to ${otherBusStop.name}`
       );
 
-      const arrivalThreshold = 20;
-      if (distanceToOtherStop <= arrivalThreshold) {
+      if (distanceToOtherStop <= 20) {
         setCurrentLeg('legThree');
       }
-    } else if (currentLeg === 'legThree' && shuttleData.legThree) {
+    };
+
+    const handleLegThree = () => {
+      if (!shuttleData.legThree) return;
+
       const turfLine = lineString(
         shuttleData.legThree.polyline.map(coord => [
           coord.longitude,
@@ -105,42 +106,44 @@ export const useShuttleData = (
       const userPoint = point([location.longitude, location.latitude]);
       const snapped = nearestPointOnLine(turfLine, userPoint);
 
-      if (snapped?.geometry?.coordinates) {
-        const [lng, lat] = snapped.geometry.coordinates;
-        const snappedLoc: LatLng = { latitude: lat, longitude: lng };
-        setSnappedPoint(snappedLoc);
+      if (!snapped?.geometry?.coordinates) return;
 
-        const newRemainingTime = computeRemainingTime(
-          shuttleData.legThree.steps,
-          snappedLoc,
-          shuttleData.legThree.totalDuration
-        );
-        const newRemainingDistance = computeRemainingDistance(
-          shuttleData.legThree.steps,
-          snappedLoc,
-          shuttleData.legThree.totalDistance
-        );
-        setRemainingTime(newRemainingTime);
-        setRemainingDistance(newRemainingDistance);
+      const [lng, lat] = snapped.geometry.coordinates;
+      const snappedLoc: LatLng = { latitude: lat, longitude: lng };
+      setSnappedPoint(snappedLoc);
 
-        const instruction = determineNextInstruction(
-          shuttleData.legThree.steps,
-          snappedLoc,
-          'WALK'
-        );
-        setNextInstruction(instruction);
+      const newRemainingTime = computeRemainingTime(
+        shuttleData.legThree.steps,
+        snappedLoc,
+        shuttleData.legThree.totalDuration
+      );
+      const newRemainingDistance = computeRemainingDistance(
+        shuttleData.legThree.steps,
+        snappedLoc,
+        shuttleData.legThree.totalDistance
+      );
 
-        const clipped = clipPolylineFromSnappedPoint(
-          shuttleData.legThree.polyline,
-          snappedLoc
-        );
-        setClippedPolyline(clipped);
+      setRemainingTime(newRemainingTime);
+      setRemainingDistance(newRemainingDistance);
+      setNextInstruction(
+        determineNextInstruction(shuttleData.legThree.steps, snappedLoc, 'WALK')
+      );
+      setClippedPolyline(
+        clipPolylineFromSnappedPoint(shuttleData.legThree.polyline, snappedLoc)
+      );
 
-        const arrivalThreshold = 10;
-        if (newRemainingDistance <= arrivalThreshold) {
-          cancelNavigation();
-        }
+      if (newRemainingDistance <= 10) {
+        cancelNavigation();
       }
+    };
+
+    // Choose what to handle based on currentLeg
+    if (currentLeg === 'legOne') {
+      handleLegOne();
+    } else if (currentLeg === 'legTwo') {
+      handleLegTwo();
+    } else if (currentLeg === 'legThree') {
+      handleLegThree();
     }
   }, [location, shuttleData, navigationState, currentLeg, travelMode]);
 };

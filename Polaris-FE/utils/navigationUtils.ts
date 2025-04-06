@@ -49,8 +49,7 @@ export function getNextDeparture(
   }
 
   const now = new Date();
-  const waitSeconds = walkTime ? walkTime : 0;
-  const thresholdTime = new Date(now.getTime() + waitSeconds * 1000);
+  const thresholdTime = new Date(now.getTime() + walkTime * 1000);
 
   for (const timeStr of schedule) {
     const [hourStr, minuteStr] = timeStr.split(':');
