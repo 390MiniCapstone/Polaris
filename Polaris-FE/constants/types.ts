@@ -25,13 +25,18 @@ export type RouteData = {
   totalDistance: number;
   totalDuration: number;
   steps: Step[];
+};
+
+export type BusLeg = {
+  busData: RouteData;
+  busPoints: LatLng[];
 } | null;
 
 export type ShuttleLeg = 'legOne' | 'legTwo' | 'legThree' | null;
 
 export type ShuttleData = {
   legOne: RouteData;
-  busPoints: LatLng[];
+  legTwo: BusLeg;
   legThree: RouteData;
 } | null;
 
@@ -42,5 +47,15 @@ export type ShuttleBusResponse = {
       Latitude: number;
       Longitude: number;
     }[];
+  };
+};
+
+export type ShuttleBusStop = {
+  name: string;
+  shortName: string;
+  location: LatLng;
+  schedule: {
+    MonThu: string[];
+    Fri: string[];
   };
 };
