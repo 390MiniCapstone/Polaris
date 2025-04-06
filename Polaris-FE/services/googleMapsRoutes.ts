@@ -32,7 +32,7 @@ export const getGoogleMapsRoute = async (
           },
         },
       },
-      travelMode: travelMode,
+      travelMode: travelMode === 'SHUTTLE' ? 'WALK' : travelMode,
       ...(travelMode === 'DRIVE' && { routingPreference: 'TRAFFIC_AWARE' }),
       computeAlternativeRoutes: false,
       languageCode: 'en-CA',
