@@ -34,7 +34,12 @@ export const NavigationMarkers: React.FC = () => {
       <>
         {shuttleData.legTwo.busPoints.map((point: LatLng, index: number) => (
           <Marker key={index} coordinate={point}>
-            <FontAwesome6 name="van-shuttle" size={18} color="white" />
+            <FontAwesome6
+              testID="shuttle-marker"
+              name="van-shuttle"
+              size={18}
+              color="white"
+            />
           </Marker>
         ))}
       </>
@@ -45,12 +50,12 @@ export const NavigationMarkers: React.FC = () => {
     if (travelMode === 'SHUTTLE' && nearestBusStop && otherBusStop) {
       return (
         <>
-          <Marker coordinate={nearestBusStop.location}>
+          <Marker testID="stop-marker" coordinate={nearestBusStop.location}>
             <View style={styles.stopView}>
               <Text style={styles.stopText}>{nearestBusStop.shortName}</Text>
             </View>
           </Marker>
-          <Marker coordinate={otherBusStop.location}>
+          <Marker testID="stop-marker" coordinate={otherBusStop.location}>
             <View style={styles.stopView}>
               <Text style={styles.stopText}>{otherBusStop.shortName}</Text>
             </View>
@@ -67,6 +72,7 @@ export const NavigationMarkers: React.FC = () => {
         snappedPoint &&
         destination && (
           <Marker
+            testID="destination-marker"
             key={theme.colors.primary}
             coordinate={destination}
             pinColor={theme.colors.primary}
