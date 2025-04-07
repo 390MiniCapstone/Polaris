@@ -8,14 +8,17 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useZoomAndPan } from './useZoomAndPan';
 import { FloorPlanObject } from '@/constants/floorPlans';
 import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
-//import { Graph } from '@/app/NodeNav';
-import { dijkstra } from './utils';
+import { NodeNav } from '@/app/NodeNav';
 
 type PinchPanContainerProps = {
   floorPlan: FloorPlanObject;
+  path: NodeNav[];
 };
 
-const PinchPanContainer: React.FC<PinchPanContainerProps> = ({ floorPlan }) => {
+const PinchPanContainer: React.FC<PinchPanContainerProps> = ({
+  floorPlan,
+  path,
+}) => {
   const { zoomLevel, panTranslateX, panTranslateY, gesture } = useZoomAndPan(
     1,
     3,
@@ -23,41 +26,6 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({ floorPlan }) => {
   );
   const SvgComponent = floorPlan.SvgComponent;
   const initialOffsetY = 50;
-
-  // const graphRef = useRef(new Graph());
-  //  const graph = graphRef.current;
-
-  // const [shortestPath, setShortestPath] = useState<string[]>([]);
-
-  // useEffect(() => {
-  //   graph.nodes.clear();
-  //   graph.edges.clear();
-
-  //   floorPlan?.nodes?.forEach(node => graph.addNode(node));
-
-  //   floorPlan?.edges?.forEach(edge => {
-  //     const fromNode = graph.nodes.get(edge.from);
-  //     const toNode = graph.nodes.get(edge.to);
-
-  //     if (fromNode && toNode) {
-  //       const distance = fromNode.distanceTo(
-  //         toNode,
-  //         parseFloat(floorPlan.width),
-  //         parseFloat(floorPlan.height)
-  //       );
-  //       graph.addEdge(fromNode.id, toNode.id, distance);
-  //     }
-  //   });
-
-  //   console.log('Graph Updated', graph);
-
-  //   const startNode = 'EN4';
-  //   const endNode = 'H13';
-  //   const { path } = dijkstra(graph, startNode, endNode);
-
-  //   setShortestPath(path);
-  //   console.log(`Shortest Path: ${path.join(' → ')}`);
-  // }, [floorPlan]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -79,27 +47,18 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({ floorPlan }) => {
           >
             <SvgComponent width="100%" height="100%" />
 
-            {/* {floorPlan?.nodes?.map(node => (
+            {path.map(node => (
               <React.Fragment key={node.id}>
                 <Circle
                   cx={node.getAbsoluteX(parseFloat(floorPlan.width))}
                   cy={node.getAbsoluteY(parseFloat(floorPlan.height))}
                   r={15}
-                  fill={shortestPath.includes(node.id) ? 'red' : 'lightgrey'}
+                  fill="red" // changed from 'red' to 'blue'
                 />
-                <SvgText
-                  x={node.getAbsoluteX(parseFloat(floorPlan.width)) + 20}
-                  y={node.getAbsoluteY(parseFloat(floorPlan.height)) - 20}
-                  fontSize="25"
-                  fill="purple"
-                  textAnchor="middle"
-                >
-                  {node.id}
-                </SvgText>
               </React.Fragment>
             ))}
 
-            {floorPlan?.edges?.map((edge, index) => {
+            {/* {floorPlan?.edges?.map((edge, index) => {
               const fromNode = floorPlan.nodes.find(n => n.id === edge.from);
               const toNode = floorPlan.nodes.find(n => n.id === edge.to);
 

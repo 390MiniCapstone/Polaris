@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 
 import PinchPanContainer from '@/components/PinchPanContainer/PinchPanContainer';
@@ -17,23 +17,27 @@ const Indoor = () => {
   const DEFAULT_FLOOR = FLOOR_PLANS?.[indoorBuilding]?.[0];
   const buildingRef = useRef<Building>();
   const [floorPlan, setFloorPlan] = useState(DEFAULT_FLOOR);
-  useEffect(() => {
-    if (!buildingRef.current) {
-      buildingRef.current = BuildingFlyWeight.getBuilding(indoorBuilding);
-      const graph = buildingRef.current.getGraph();
 
-      const djs = new Dijkstra(new NodeNav('23', 0.27, 0.7, 'room'), graph);
-      const path = djs.getPathFromSource(
-        new NodeNav('199-40', 0.58, 0.53, 'room')
-      );
-      console.log(path.map(node => node.id));
-    }
-  }, []);
+  const { path } = useMemo(() => {
+    buildingRef.current = BuildingFlyWeight.getBuilding(indoorBuilding);
+    const graph = buildingRef.current.getGraph();
+
+    const djs = new Dijkstra(new NodeNav('23', 0.27, 0.7, 'room'), graph);
+    const path = djs.getPathFromSource(
+      new NodeNav('199-40', 0.58, 0.53, 'room')
+    );
+    // console.log(path.map(node => node.id));
+
+    return { path: path };
+  }, [indoorBuilding]);
+
+  console.log(path);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
         <View style={styles.floorPlanWrapper}>
-          <PinchPanContainer floorPlan={floorPlan} />
+          <PinchPanContainer floorPlan={floorPlan} path={path} />
         </View>
         <IndoorBottomSheetComponent
           floorPlan={floorPlan}
