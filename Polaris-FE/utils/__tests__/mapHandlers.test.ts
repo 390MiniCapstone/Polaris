@@ -1,6 +1,7 @@
 import { MutableRefObject } from 'react';
 import MapView from 'react-native-maps';
 import { SharedValue } from 'react-native-reanimated';
+import * as Location from 'expo-location';
 import {
   handleCurrentLocation,
   handleCampusSelect,
@@ -8,6 +9,8 @@ import {
   getDistanceFromLatLonInMeters,
   calculateBearing,
 } from '@/utils/mapHandlers';
+import { renderHook } from '@testing-library/react-hooks';
+import { useMapLocation } from '@/hooks/useMapLocation';
 
 const createMockSharedValue = (initial: number): SharedValue<number> => ({
   value: initial,
@@ -22,6 +25,8 @@ jest.mock('react-native-reanimated', () => ({
   withSpring: (value: number) => value,
   withTiming: (value: number) => value,
 }));
+
+jest.mock('expo-location');
 
 describe('mapHandlers', () => {
   describe('handleCurrentLocation', () => {
@@ -141,6 +146,30 @@ describe('mapHandlers', () => {
     it('returns 0° when moving north', () => {
       const bearing = calculateBearing(0, 0, 1, 0);
       expect(bearing).toBeCloseTo(0, 0);
+    });
+  });
+
+  describe('useMapLocation error handling', () => {
+    it('handles errors when Location.watchPositionAsync throws an error', async () => {
+      const mockWatchPositionAsync = jest
+        .spyOn(Location, 'watchPositionAsync')
+        .mockRejectedValueOnce(new Error('Location error'));
+
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
+      const { result, waitFor } = renderHook(() => useMapLocation());
+
+      await waitFor(() => {
+        expect(result.current.permissionStatus).toBe('error');
+      });
+
+      expect(mockWatchPositionAsync).toHaveBeenCalled();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error getting location:',
+        expect.any(Error)
+      );
     });
   });
 });

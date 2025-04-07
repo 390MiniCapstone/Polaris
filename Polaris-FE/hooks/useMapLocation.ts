@@ -59,6 +59,7 @@ export const useMapLocation = () => {
           }
         );
       } catch (error) {
+        console.error('Error getting location:', error);
         setPermissionStatus('error');
       }
     })();

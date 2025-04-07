@@ -54,7 +54,7 @@ const GooglePlacesInput: React.FC<GooglePlacesInputProps> = ({
       )
         .then(res => res.json())
         .then(data => {
-          setSearchResults(data.predictions || []);
+          setSearchResults(data.predictions ?? []);
         })
         .catch(error => console.error(error));
     }, 500);

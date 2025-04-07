@@ -59,3 +59,12 @@ export type ShuttleBusStop = {
     Fri: string[];
   };
 };
+
+export type stepType = {
+  distanceMeters: number;
+  polyline: { encodedPolyline: string };
+  staticDuration: string;
+  navigationInstruction?: { instructions: string };
+  startLocation: { latLng: { latitude: number; longitude: number } };
+  endLocation: { latLng: { latitude: number; longitude: number } };
+};
