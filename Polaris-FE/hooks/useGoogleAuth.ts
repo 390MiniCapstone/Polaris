@@ -45,12 +45,12 @@ export function useGoogleAuth() {
 
       const credential = GoogleAuthProvider.credential(id_token);
       signInWithCredential(auth, credential).then(async authUser => {
-        setAccessToken(access_token || null);
+        setAccessToken(access_token ?? null);
         setUser(authUser);
 
         // Save user and token in AsyncStorage
         await AsyncStorage.setItem('@user', JSON.stringify(authUser));
-        await AsyncStorage.setItem('@access_token', access_token || '');
+        await AsyncStorage.setItem('@access_token', access_token ?? '');
       });
     }
   }, [response]);

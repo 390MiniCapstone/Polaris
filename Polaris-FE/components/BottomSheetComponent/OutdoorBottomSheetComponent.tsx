@@ -82,7 +82,7 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
                 onPress={() =>
                   handleLocationSelect(
                     result.place_id,
-                    result.description || result.name || 'Unknown Place'
+                    result.description ?? result.name ?? 'Unknown Place'
                   )
                 }
               >
@@ -95,7 +95,7 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
                   />
                   <View style={styles.textContainer}>
                     <Text style={styles.poiName}>
-                      {result.name || result.description}
+                      {result.name ?? result.description}
                     </Text>
                     {result.vicinity && (
                       <Text style={styles.poiVicinity}>{result.vicinity}</Text>
