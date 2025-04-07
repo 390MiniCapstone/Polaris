@@ -43,7 +43,7 @@ export const useCurrentBuilding = () => {
         location.latitude,
         location.longitude
       );
-      setCurrentBuilding(building || null);
+      setCurrentBuilding(building ?? null);
     }
   }, [location]);
 
