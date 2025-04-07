@@ -88,6 +88,12 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
   const [currentLeg, setCurrentLeg] = useState<ShuttleLeg>('legOne');
   const [nextDeparture, setNextDeparture] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (location && !origin) {
+      setOrigin(location);
+    }
+  }, [location]);
+
   const handleStartNavigation = () => {
     if (!location || !clippedPolyline || !routeData || !snappedPoint || error)
       return;

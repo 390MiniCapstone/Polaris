@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
-import { Region } from 'react-native-maps';
+import { LatLng, Region } from 'react-native-maps';
 import { LocationPermissionStatus } from '@/constants/types';
 
 export const useMapLocation = () => {
-  const [location, setLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
+  const [location, setLocation] = useState<LatLng | null>(null);
   const [region, setRegion] = useState<Region | undefined>(undefined);
   const [permissionStatus, setPermissionStatus] =
     useState<LocationPermissionStatus>('requesting');
