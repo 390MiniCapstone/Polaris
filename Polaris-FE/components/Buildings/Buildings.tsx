@@ -1,40 +1,51 @@
 import React from 'react';
-import { Marker } from 'react-native-maps';
-import { Building, BUILDING_INFO } from '@/constants/buildingInfo';
+import { Geojson, Marker } from 'react-native-maps';
 import { handleCalloutPress } from './utils';
 import { useRouter } from 'expo-router';
 import { useBuildingContext } from '@/contexts/BuildingContext/BuildingContext';
-import useTheme from '@/hooks/useTheme';
+import { campusBuildings } from '@/constants/buildings';
+import { pointOnFeature } from '@turf/turf';
 
 export const Buildings: React.FC = () => {
   const { setIndoorBuilding } = useBuildingContext();
   const router = useRouter();
 
-  const { theme } = useTheme();
-  const pinTheme = theme.colors.secondary;
-
   return (
     <>
-      {BUILDING_INFO.map((building: Building) => (
-        <Marker
-          key={`${building.Building}-${pinTheme}`}
-          testID="concordia-building"
-          coordinate={{
-            latitude: parseFloat(building.Latitude),
-            longitude: parseFloat(building.Longitude),
-          }}
-          title={building.Building_Name}
-          description={`${building.Building_Long_Name} - ${building.Address}`}
-          pinColor={pinTheme}
-          onCalloutPress={() =>
-            handleCalloutPress(
-              building.Building_Name,
-              router,
-              setIndoorBuilding
-            )
+      {campusBuildings.features.map(feature => {
+        const geoFeature = feature as GeoJSON.Feature<
+          GeoJSON.Polygon,
+          {
+            name: string;
+            campus: string;
+            building: string;
+            shortName: string;
+            address: string;
           }
-        />
-      ))}
+        >;
+
+        const point = pointOnFeature(geoFeature);
+        const [longitude, latitude] = point.geometry.coordinates;
+
+        return (
+          <Marker
+            key={`${feature.properties.building}`}
+            testID="concordia-building"
+            coordinate={{ latitude, longitude }}
+            title={feature.properties.name}
+            description={`${feature.properties.shortName} - ${feature.properties.address}`}
+            onCalloutPress={() =>
+              handleCalloutPress(
+                feature.properties.shortName,
+                router,
+                setIndoorBuilding
+              )
+            }
+          >
+            <Geojson geojson={campusBuildings as GeoJSON.FeatureCollection} />
+          </Marker>
+        );
+      })}
     </>
   );
 };

@@ -1,39 +1,82 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { Buildings } from '../Buildings';
-import { Building } from '@/constants/buildingInfo';
-import { BuildingProvider } from '../../../contexts/BuildingContext/BuildingContext';
+import { BuildingProvider } from '@/contexts/BuildingContext/BuildingContext';
 
-jest.mock('@/constants/buildingInfo', () => ({
-  BUILDING_INFO: [
-    {
-      Building: 'B1',
-      Latitude: '11',
-      Longitude: '11',
-      Building_Name: 'Building A',
-      Building_Long_Name: 'Building A Long Name',
-      Address: '123',
-    },
-    {
-      Building: 'B2',
-      Latitude: '22',
-      Longitude: '22',
-      Building_Name: 'Building B',
-      Building_Long_Name: 'Building B Long Name',
-      Address: '456',
-    },
-    {
-      Building: 'B3',
-      Latitude: '33',
-      Longitude: '33',
-      Building_Name: 'Building C',
-      Building_Long_Name: 'Building C Long Name',
-      Address: '789',
-    },
-  ] as Building[],
+jest.mock('@/constants/buildings', () => ({
+  campusBuildings: {
+    features: [
+      {
+        type: 'Feature',
+        properties: {
+          building: 'B1',
+          name: 'Building A',
+          shortName: 'BldgA',
+          address: '123',
+          campus: 'Campus A',
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [0, 0],
+              [0, 1],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          ],
+        },
+      },
+      {
+        type: 'Feature',
+        properties: {
+          building: 'B2',
+          name: 'Building B',
+          shortName: 'BldgB',
+          address: '456',
+          campus: 'Campus B',
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [0, 0],
+              [0, 1],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          ],
+        },
+      },
+      {
+        type: 'Feature',
+        properties: {
+          building: 'B3',
+          name: 'Building C',
+          shortName: 'BldgC',
+          address: '789',
+          campus: 'Campus C',
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [0, 0],
+              [0, 1],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          ],
+        },
+      },
+    ],
+  },
 }));
 
-describe('Testing the buildings Component', () => {
+describe('Testing the Buildings Component', () => {
   it('Three building markers should render on screen', () => {
     render(
       <BuildingProvider>
