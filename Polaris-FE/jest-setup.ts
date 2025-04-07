@@ -62,6 +62,7 @@ jest.mock('@gorhom/bottom-sheet', () => {
     default: View,
     BottomSheetTextInput: View,
     BottomSheetView: View,
+    BottomSheetScrollView: View,
   };
 });
 

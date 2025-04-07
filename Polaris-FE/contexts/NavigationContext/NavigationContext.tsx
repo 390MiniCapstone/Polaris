@@ -19,28 +19,30 @@ import {
   computeRemainingTime,
   determineCurrentStep,
   determineNextInstruction,
-  startNavigation,
+  animateNavCamera,
 } from '@/utils/navigationUtils';
 import { useGoogleMapsRoute } from '@/hooks/useGoogleMapsRoute';
 
 interface NavigationContextType {
   navigationState: NavigationState;
   setNavigationState: (state: NavigationState) => void;
-  destination: LatLng;
+  destination: LatLng | null;
   setDestination: (dest: LatLng) => void;
   travelMode: TravelMode;
   setTravelMode: (mode: TravelMode) => void;
   is3d: boolean;
   setIs3d: (is3d: boolean) => void;
   routeData: RouteData | null;
-  remainingDistance: number;
-  remainingTime: number;
-  nextInstruction: string;
+  remainingDistance: number | null;
+  remainingTime: number | null;
+  nextInstruction: string | null;
   snappedPoint: LatLng | null;
   clippedPolyline: LatLng[] | null;
   handleStartNavigation: () => void;
   startNavigationToDestination: (dest: LatLng) => void;
   cancelNavigation: () => void;
+  error: Error | null;
+  loading: boolean;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(
@@ -52,20 +54,19 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [navigationState, setNavigationState] =
     useState<NavigationState>('default');
-  const [destination, setDestination] = useState<LatLng>({
-    latitude: 0,
-    longitude: 0,
-  });
+  const [destination, setDestination] = useState<LatLng | null>(null);
   const [travelMode, setTravelMode] = useState<TravelMode>('DRIVE');
   const [is3d, setIs3d] = useState(true);
-  const [remainingDistance, setRemainingDistance] = useState<number>(0);
-  const [remainingTime, setRemainingTime] = useState<number>(0);
-  const [nextInstruction, setNextInstruction] = useState<string>('');
+  const [remainingDistance, setRemainingDistance] = useState<number | null>(
+    null
+  );
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+  const [nextInstruction, setNextInstruction] = useState<string | null>(null);
   const [snappedPoint, setSnappedPoint] = useState<LatLng | null>(null);
   const [clippedPolyline, setClippedPolyline] = useState<LatLng[] | null>(null);
 
   const { location } = useMapLocation();
-  const { routeData } = useGoogleMapsRoute(
+  const { routeData, setRouteData, error, loading } = useGoogleMapsRoute(
     location,
     destination,
     travelMode,
@@ -124,7 +125,7 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     ) {
       const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
       if (currentStep)
-        startNavigation(location, clippedPolyline, currentStep, mapRef);
+        animateNavCamera(location, clippedPolyline, currentStep, mapRef);
     }
   }, [
     location,
@@ -136,6 +137,7 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
   ]);
 
   useEffect(() => {
+    if (!remainingDistance) return;
     const arrivalThreshold = 10;
     if (
       navigationState === 'navigating' &&
@@ -146,11 +148,12 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
   }, [remainingDistance, navigationState]);
 
   const handleStartNavigation = () => {
-    if (!location || !clippedPolyline || !routeData || !snappedPoint) return;
+    if (!location || !clippedPolyline || !routeData || !snappedPoint || error)
+      return;
     setNavigationState('navigating');
     const currentStep = determineCurrentStep(routeData.steps, snappedPoint);
     if (currentStep)
-      startNavigation(location, clippedPolyline, currentStep, mapRef);
+      animateNavCamera(location, clippedPolyline, currentStep, mapRef);
   };
 
   const startNavigationToDestination = (dest: LatLng) => {
@@ -159,10 +162,22 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
     setNavigationState('planning');
   };
 
+  const setToDefault = () => {
+    setNavigationState('default');
+    setRouteData(null);
+    setTravelMode('DRIVE');
+    setIs3d(true);
+    setRemainingDistance(null);
+    setRemainingTime(null);
+    setNextInstruction(null);
+    setSnappedPoint(null);
+    setClippedPolyline(null);
+  };
+
   const cancelNavigation = () => {
     bottomSheetRef.current?.snapToIndex(1);
     handleCurrentLocation(mapRef, location);
-    setNavigationState('default');
+    setToDefault();
   };
 
   const contextValue = useMemo(
@@ -184,6 +199,8 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
       handleStartNavigation,
       startNavigationToDestination,
       cancelNavigation,
+      error,
+      loading,
     }),
     [
       navigationState,
@@ -196,6 +213,8 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({
       nextInstruction,
       snappedPoint,
       clippedPolyline,
+      error,
+      loading,
     ]
   );
 

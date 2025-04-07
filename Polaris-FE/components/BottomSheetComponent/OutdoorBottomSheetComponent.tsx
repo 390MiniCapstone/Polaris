@@ -7,20 +7,25 @@ import {
   Keyboard,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
-import GooglePlacesInput from '@/components/GooglePlacesInput';
+import GooglePlacesInput from '@/components/GooglePlacesInput/GooglePlacesInput';
 import Constants from 'expo-constants';
 import { bottomSheetRef, inputRef } from '@/utils/refs';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 import { BottomSheetComponent } from '@/components/BottomSheetComponent/BottomSheetComponent';
 import NextClassCard from '@/components/NextClassComponent/NextClassCard';
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface OutdoorBottomSheetProps {
   animatedPosition: Animated.SharedValue<number>;
 }
 
-interface SearchResult {
+export interface SearchResult {
   place_id: string;
   description: string;
+  latitude: number;
+  longitude: number;
+  name?: string;
+  vicinity?: string;
 }
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
@@ -62,6 +67,7 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
     >
       <View style={styles.container}>
         <GooglePlacesInput
+          searchResults={searchResults}
           setSearchResults={setSearchResults}
           onFocus={() => bottomSheetRef.current?.snapToIndex(3)}
           query={query}
@@ -74,17 +80,29 @@ export const OutdoorBottomSheetComponent: React.FC<OutdoorBottomSheetProps> = ({
               <TouchableOpacity
                 style={styles.searchResult}
                 onPress={() =>
-                  handleLocationSelect(result.place_id, result.description)
+                  handleLocationSelect(
+                    result.place_id,
+                    result.description ?? result.name ?? 'Unknown Place'
+                  )
                 }
               >
-                <Text style={styles.searchResultText}>
-                  {result.description}
-                </Text>
+                <View style={styles.resultContent}>
+                  <MaterialIcons
+                    name="place"
+                    size={24}
+                    color="#fff"
+                    style={styles.poiIcon}
+                  />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.poiName}>
+                      {result.name ?? result.description}
+                    </Text>
+                    {result.vicinity && (
+                      <Text style={styles.poiVicinity}>{result.vicinity}</Text>
+                    )}
+                  </View>
+                </View>
               </TouchableOpacity>
-
-              {index < searchResults.length - 1 && (
-                <View style={styles.separator} testID="separator" />
-              )}
             </View>
           ))}
         </View>
@@ -104,17 +122,42 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   searchResult: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(151, 151, 151, 0.25)',
     paddingVertical: 12,
-    paddingHorizontal: 5,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+    marginHorizontal: 12,
+    shadowColor: 'rgba(49, 49, 49, 0.6)',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 5,
   },
-  searchResultText: {
-    width: '100%',
-    color: 'white',
+  resultContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  poiIcon: {
+    marginRight: 16,
+    opacity: 0.8,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  poiName: {
     fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#5E5F62',
-    marginHorizontal: 5,
+  poiVicinity: {
+    fontSize: 14,
+    color: '#A0A0A0',
+    marginTop: 2,
+    letterSpacing: 0.2,
   },
 });

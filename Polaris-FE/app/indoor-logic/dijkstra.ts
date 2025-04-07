@@ -42,17 +42,42 @@ export class Dijkstra<T extends Hashable> {
 
   getPathFromSource(destination: T): T[] {
     const path = [destination];
+    console.log('PATH TEST', path);
 
     let current: T | undefined = destination;
-    console.log('path node', current);
+    // console.log('path node', current);
     while (!current.equals(this.source)) {
       current = this.previous.get(current);
-      console.log('path node', current);
+      // console.log('path node', current);
       if (current == undefined) {
         throw new Error('Shortest path could not be found.');
       }
       path.push(current);
     }
     return path.reverse();
+  }
+
+  getEdgesFromSource(
+    destination: T,
+    graph: AdjacencyListGraph<T>
+  ): { from: T; to: T; weight: Weight }[] {
+    const path = this.getPathFromSource(destination);
+    const edges = [];
+
+    for (let i = 0; i < path.length - 1; i++) {
+      const from = path[i];
+      const to = path[i + 1];
+
+      const neighbors = graph.getNeighbours(from);
+      const weight = neighbors.find(([neighbor]) => neighbor.equals(to))?.[1];
+
+      if (weight === undefined) {
+        throw new Error(`Edge not found between ${from} and ${to}`);
+      }
+
+      edges.push({ from, to, weight });
+    }
+
+    return edges;
   }
 }

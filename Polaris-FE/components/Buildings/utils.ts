@@ -6,7 +6,7 @@ export const handleCalloutPress = (
   router: Router,
   setIndoorBuilding: React.Dispatch<React.SetStateAction<string>>
 ) => {
-  const pressable = ['Hall', 'MB', 'VE', 'CC'].filter((el: string) =>
+  const pressable = ['Hall', 'MB', 'VE', 'CC', 'VL'].filter((el: string) =>
     buildingName.includes(el)
   );
   if (pressable.length) {

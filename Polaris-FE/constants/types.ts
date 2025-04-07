@@ -26,3 +26,12 @@ export type RouteData = {
   totalDuration: number;
   steps: Step[];
 };
+
+export type stepType = {
+  distanceMeters: number;
+  polyline: { encodedPolyline: string };
+  staticDuration: string;
+  navigationInstruction?: { instructions: string };
+  startLocation: { latLng: { latitude: number; longitude: number } };
+  endLocation: { latLng: { latitude: number; longitude: number } };
+};

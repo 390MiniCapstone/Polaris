@@ -1,7 +1,7 @@
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import GooglePlacesInput from '@/components/GooglePlacesInput';
+import GooglePlacesInput from '@/components/GooglePlacesInput/GooglePlacesInput';
 import { useMapLocation } from '@/hooks/useMapLocation';
+import { SearchResult } from '../BottomSheetComponent/OutdoorBottomSheetComponent';
 
 jest.mock('@/hooks/useMapLocation', () => ({
   useMapLocation: jest.fn(),
@@ -9,6 +9,20 @@ jest.mock('@/hooks/useMapLocation', () => ({
 
 describe('GooglePlacesInput', () => {
   const setSearchResultsMock = jest.fn();
+  const searchResultsMock: SearchResult[] = [
+    {
+      place_id: 'place1',
+      description: 'Test Location 1',
+      latitude: 0,
+      longitude: 0,
+    },
+    {
+      place_id: 'place2',
+      description: 'Test Location 2',
+      latitude: 0,
+      longitude: 0,
+    },
+  ];
   const onFocusMock = jest.fn();
   const setQueryMock = jest.fn();
 
@@ -19,12 +33,13 @@ describe('GooglePlacesInput', () => {
     (useMapLocation as jest.Mock).mockReturnValue({ location: fakeLocation });
   });
 
-  test('renders correctly without clear button when query is empty', () => {
+  test('renders correctly without clear button when searchResults is empty', () => {
     const { queryByTestId, queryByText } = render(
       <GooglePlacesInput
+        searchResults={[]}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
-        query=""
+        query="anything"
         setQuery={setQueryMock}
       />
     );
@@ -39,6 +54,7 @@ describe('GooglePlacesInput', () => {
   test('calls onFocus when the input is focused', () => {
     const { getByTestId } = render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query=""
@@ -54,6 +70,7 @@ describe('GooglePlacesInput', () => {
   test('displays clear button when query is non-empty and clears query when pressed', () => {
     const { getByText } = render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query="test"
@@ -76,6 +93,7 @@ describe('GooglePlacesInput', () => {
 
     const { rerender } = render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query=""
@@ -85,6 +103,7 @@ describe('GooglePlacesInput', () => {
 
     rerender(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query="New Query"
@@ -103,6 +122,7 @@ describe('GooglePlacesInput', () => {
 
     render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query=""
@@ -122,6 +142,7 @@ describe('GooglePlacesInput', () => {
 
     render(
       <GooglePlacesInput
+        searchResults={searchResultsMock}
         setSearchResults={setSearchResultsMock}
         onFocus={onFocusMock}
         query="Some Query"
@@ -132,6 +153,117 @@ describe('GooglePlacesInput', () => {
     await waitFor(() => {
       expect(global.fetch).not.toHaveBeenCalled();
       expect(setSearchResultsMock).toHaveBeenCalledWith([]);
+    });
+  });
+
+  it('sets an empty array when data.predictions is null or undefined', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ predictions: null }),
+      })
+    ) as jest.Mock;
+
+    const setSearchResultsMock = jest.fn();
+
+    const { rerender } = render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query=""
+        setQuery={jest.fn()}
+      />
+    );
+
+    rerender(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="test"
+        setQuery={jest.fn()}
+      />
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+      expect(setSearchResultsMock).toHaveBeenCalledWith([]);
+    });
+  });
+
+  test('clears timeout when a new query is entered', async () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const setSearchResultsMock = jest.fn();
+
+    const { rerender } = render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="initial"
+        setQuery={jest.fn()}
+      />
+    );
+
+    rerender(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="new query"
+        setQuery={jest.fn()}
+      />
+    );
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    clearTimeoutSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  test('clears timeout on component unmount', async () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const setSearchResultsMock = jest.fn();
+
+    const { unmount } = render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="test"
+        setQuery={jest.fn()}
+      />
+    );
+
+    unmount();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    clearTimeoutSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  test('logs an error when fetch fails', async () => {
+    const consoleErrorMock = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+    global.fetch = jest.fn(() => Promise.reject(new Error('Fetch failed')));
+
+    const setSearchResultsMock = jest.fn();
+
+    render(
+      <GooglePlacesInput
+        searchResults={[]}
+        setSearchResults={setSearchResultsMock}
+        onFocus={jest.fn()}
+        query="test"
+        setQuery={jest.fn()}
+      />
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+      expect(consoleErrorMock).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });

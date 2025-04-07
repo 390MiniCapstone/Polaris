@@ -132,8 +132,7 @@ export const computeRemainingDistance = (
   totalDistance: number
 ): number => {
   let distanceUsed = 0;
-  for (let i = 0; i < steps.length; i++) {
-    const step = steps[i];
+  for (const step of steps) {
     const fraction = computeStepFraction(step.polyline, snapped);
     if (fraction !== undefined) {
       distanceUsed += step.distance * fraction;
@@ -267,7 +266,7 @@ export const openTransitInMaps = (
     .catch(err => console.error('An error occurred', err));
 };
 
-export const startNavigation = (
+export const animateNavCamera = (
   location: LatLng,
   clippedPolyline: LatLng[],
   currentStep: Step,
@@ -335,7 +334,7 @@ export const startNavigation = (
   );
 };
 
-export const handleTransitNavigation = ({
+export const handleGoButton = ({
   navigationState,
   is3d,
   location,
@@ -344,15 +343,17 @@ export const handleTransitNavigation = ({
   setIs3d,
   handleStartNavigation,
   mapRef,
+  error,
 }: {
   navigationState: string;
   is3d: boolean;
   location: { latitude: number; longitude: number } | null;
   travelMode: string;
-  destination: LatLng;
+  destination: LatLng | null;
   setIs3d: (value: boolean) => void;
   handleStartNavigation: () => void;
   mapRef: MutableRefObject<MapView | null>;
+  error: Error | null;
 }) => {
   if (navigationState === 'navigating') {
     if (is3d) {
@@ -365,7 +366,7 @@ export const handleTransitNavigation = ({
     return;
   }
 
-  if (travelMode === 'TRANSIT' && location) {
+  if (travelMode === 'TRANSIT' && location && destination && !error) {
     openTransitInMaps(location, destination);
     return;
   }

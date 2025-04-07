@@ -1,7 +1,8 @@
 import Constants from 'expo-constants';
 import polyline from '@mapbox/polyline';
 import { LatLng } from 'react-native-maps';
-import { TravelMode, RouteData, Step } from '@/constants/types';
+import { toast } from 'sonner-native';
+import { TravelMode, RouteData, Step, stepType } from '@/constants/types';
 
 const GOOGLE_MAPS_API_KEY = Constants.expoConfig?.extra
   ?.googleMapsApiKey as string;
@@ -58,7 +59,7 @@ export const getGoogleMapsRoute = async (
     const leg = route.legs[0];
 
     const encodedPolyline =
-      route.polyline?.encodedPolyline || leg.polyline?.encodedPolyline;
+      route.polyline?.encodedPolyline ?? leg.polyline?.encodedPolyline;
     if (!encodedPolyline) {
       throw new Error('No polyline provided in route or leg.');
     }
@@ -70,14 +71,14 @@ export const getGoogleMapsRoute = async (
     const totalDuration = route.duration.replace('s', '');
 
     let cumulativeDistance = 0;
-    const steps: Step[] = leg.steps.map((step: any) => {
+    const steps: Step[] = leg.steps.map((step: stepType) => {
       cumulativeDistance += step.distanceMeters;
       const decodedStepPolyline: LatLng[] = polyline
         .decode(step.polyline.encodedPolyline)
         .map(([lat, lng]) => ({ latitude: lat, longitude: lng }));
       const stepDuration = step.staticDuration.replace('s', '');
 
-      const instruction = step.navigationInstruction?.instructions || '';
+      const instruction = step.navigationInstruction?.instructions ?? '';
 
       return {
         startLocation: {
@@ -103,7 +104,10 @@ export const getGoogleMapsRoute = async (
       steps,
     };
   } catch (error) {
-    console.error('Error fetching route:', error);
+    toast.error('Directions Not Available', {
+      description: `${error instanceof Error ? error.message : 'Unknown error'}`,
+      duration: 2000,
+    });
     throw error;
   }
 };

@@ -40,8 +40,8 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
     {
       SvgComponent: H1,
       name: 'Hall 1',
-      width: '2643',
-      height: '2823',
+      width: '4131',
+      height: '4413',
       nodes: [
         //hallways
         new NodeNav('0', 0.99, 0.89, 'hallway'),
@@ -237,8 +237,8 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
     {
       SvgComponent: H2,
       name: 'Hall 2',
-      width: '2400',
-      height: '1800',
+      width: '3681',
+      height: '4069',
       nodes: [
         new NodeNav('H0', 0.27, 0.21, 'hallway'),
         new NodeNav('H1', 0.27, 0.27, 'hallway'),
@@ -529,8 +529,8 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
     {
       SvgComponent: H9,
       name: 'Hall 9',
-      width: '1000',
-      height: '1000',
+      width: '1024',
+      height: '1024',
       nodes: [],
       edges: [],
     },
@@ -991,8 +991,8 @@ export const FLOOR_PLANS: Record<string, FloorPlanObject[]> = {
     {
       SvgComponent: VL2,
       name: 'VL 2',
-      width: '1000',
-      height: '1000',
+      width: '1024',
+      height: '1024',
       nodes: [],
       edges: [],
     },

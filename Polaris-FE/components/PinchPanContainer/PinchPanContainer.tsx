@@ -9,15 +9,18 @@ import { useZoomAndPan } from './useZoomAndPan';
 import { FloorPlanObject } from '@/constants/floorPlans';
 import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
 import { NodeNav } from '@/app/NodeNav';
+import { FLOOR_PLANS } from '@/constants/floorPlans';
 
 type PinchPanContainerProps = {
   floorPlan: FloorPlanObject;
-  path: NodeNav[];
+  filteredDjsNodes: NodeNav[];
+  djsEdges: any;
 };
 
 const PinchPanContainer: React.FC<PinchPanContainerProps> = ({
   floorPlan,
-  path,
+  filteredDjsNodes,
+  djsEdges,
 }) => {
   const { zoomLevel, panTranslateX, panTranslateY, gesture } = useZoomAndPan(
     1,
@@ -35,6 +38,9 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({
     ],
   }));
 
+  const verifyNodes = (filteredDjsNodes: NodeNav[], nodeObj: NodeNav) =>
+    filteredDjsNodes.find((node: NodeNav) => node.id === nodeObj.id);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <GestureDetector gesture={gesture}>
@@ -47,63 +53,51 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({
           >
             <SvgComponent width="100%" height="100%" />
 
-            {path.map(node => (
+            {filteredDjsNodes.map(node => (
               <React.Fragment key={node.id}>
                 <Circle
                   cx={node.getAbsoluteX(parseFloat(floorPlan.width))}
                   cy={node.getAbsoluteY(parseFloat(floorPlan.height))}
                   r={15}
-                  fill="red" // changed from 'red' to 'blue'
+                  fill="red"
                 />
               </React.Fragment>
             ))}
 
-            {/* {floorPlan?.edges?.map((edge, index) => {
-              const fromNode = floorPlan.nodes.find(n => n.id === edge.from);
-              const toNode = floorPlan.nodes.find(n => n.id === edge.to);
+            {djsEdges.map((edge, index) => {
+              const { from, to } = edge;
 
-              if (!fromNode || !toNode) return null;
-              const graphEdge = graph.edges
-                .get(edge.from)
-                ?.find(e => e.to === edge.to);
-              const distance = graphEdge ? graphEdge.weight.toFixed(2) : 'N/A';
+              const isStartingNodeInCurrentFloorPlan = verifyNodes(
+                filteredDjsNodes,
+                from
+              );
+              const isDestinationNodeInCurrentFloorPlan = verifyNodes(
+                filteredDjsNodes,
+                to
+              );
 
-              const midX =
-                (fromNode.getAbsoluteX(parseFloat(floorPlan.width)) +
-                  toNode.getAbsoluteX(parseFloat(floorPlan.width))) /
-                2;
-              const midY =
-                (fromNode.getAbsoluteY(parseFloat(floorPlan.height)) +
-                  toNode.getAbsoluteY(parseFloat(floorPlan.height))) /
-                2;
+              if (
+                isStartingNodeInCurrentFloorPlan &&
+                isDestinationNodeInCurrentFloorPlan
+              ) {
+                const fromX = from.xRatio * floorPlan.width;
+                const fromY = from.yRatio * floorPlan.height;
+                const toX = to.xRatio * floorPlan.width;
+                const toY = to.yRatio * floorPlan.height;
 
-              return (
-                <React.Fragment key={index}>
+                return (
                   <Line
-                    x1={fromNode.getAbsoluteX(parseFloat(floorPlan.width))}
-                    y1={fromNode.getAbsoluteY(parseFloat(floorPlan.height))}
-                    x2={toNode.getAbsoluteX(parseFloat(floorPlan.width))}
-                    y2={toNode.getAbsoluteY(parseFloat(floorPlan.height))}
-                    stroke={
-                      shortestPath.includes(fromNode.id) &&
-                      shortestPath.includes(toNode.id)
-                        ? 'red'
-                        : 'transparent'
-                    }
+                    key={index}
+                    x1={fromX}
+                    y1={fromY}
+                    x2={toX}
+                    y2={toY}
+                    stroke="red"
                     strokeWidth={5}
                   />
-                  <SvgText
-                    x={midX}
-                    y={midY}
-                    fontSize="18"
-                    fill="purple"
-                    textAnchor="middle"
-                  >
-                    {distance}
-                  </SvgText>
-                </React.Fragment>
-              );
-            })} */}
+                );
+              }
+            })}
           </Svg>
         </Animated.View>
       </GestureDetector>
@@ -116,7 +110,7 @@ export default PinchPanContainer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#fceed4',
   },
   svgContainer: {
     width: '100%',
