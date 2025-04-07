@@ -1,7 +1,7 @@
 import React from 'react';
 import MapView, { Geojson, Region } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
-import { downtownBuildings, loyolaBuildings } from '@/constants/buildings';
+import { campusBuildings } from '@/constants/buildings';
 import { Buildings } from '@/components/Buildings/Buildings';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { mapRef } from '@/utils/refs';
@@ -9,6 +9,7 @@ import { NavigationPolyline } from '@/components/Navigation/NavigationPolyline';
 import { useCurrentBuilding } from '@/hooks/useCurrentBuilding';
 import { useNavigation } from '@/contexts/NavigationContext/NavigationContext';
 import useTheme from '@/hooks/useTheme';
+import { NavigationMarkers } from '@/components/Navigation/NavigationMarkers';
 
 interface MapComponentProps {
   region: Region | undefined;
@@ -40,13 +41,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         showsTraffic={navigationState === 'navigating'}
       >
         <Geojson
-          geojson={downtownBuildings as GeoJSON.FeatureCollection}
+          geojson={campusBuildings as GeoJSON.FeatureCollection}
           fillColor={theme.colors.primary}
         />
-        <Geojson
-          geojson={loyolaBuildings as GeoJSON.FeatureCollection}
-          fillColor={theme.colors.primary}
-        />
+
         <NavigationPolyline />
 
         {currentBuilding && (
@@ -70,6 +68,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           />
         )}
         <Buildings />
+        <NavigationMarkers />
       </MapView>
       <Navigation />
     </View>

@@ -93,7 +93,7 @@ describe('MapComponent', () => {
     const buildingGeojsons = geojsons.filter(
       g => g.props.fillColor === themes.default.colors.primary //theme.colors.primary
     );
-    expect(buildingGeojsons.length).toBe(2);
+    expect(buildingGeojsons.length).toBe(1);
   });
 
   it('renders NavigationPolyline, Buildings, and Navigation components', () => {

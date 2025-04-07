@@ -1,10 +1,14 @@
-export const downtownBuildings = {
+export const campusBuildings = {
   type: 'FeatureCollection',
   features: [
     {
       type: 'Feature',
       properties: {
         name: 'Engineering, Computer Science and Visual Arts Integrated Complex',
+        campus: 'SGW',
+        building: 'EV',
+        shortName: 'EV Building',
+        address: '1515 Ste-Catherine W.',
       },
       geometry: {
         type: 'Polygon',
@@ -44,6 +48,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'John Molson Building',
+        campus: 'SGW',
+        building: 'MB',
+        shortName: 'MB Building',
+        address: '1450 Guy Street',
       },
       geometry: {
         type: 'Polygon',
@@ -76,10 +84,11 @@ export const downtownBuildings = {
     {
       type: 'Feature',
       properties: {
-        '@id': 'way/103892957',
-        'addr:housenumber': '2010',
-        'addr:street': 'Rue Mackay',
-        building: 'university',
+        name: 'Q Annex',
+        campus: 'SGW',
+        building: 'Q',
+        shortName: 'Q Building',
+        address: '2010 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -99,6 +108,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'B Annex',
+        campus: 'SGW',
+        building: 'B',
+        shortName: 'B Building',
+        address: '2160 Bishop Street',
       },
       geometry: {
         type: 'Polygon',
@@ -118,6 +131,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'CI Annex',
+        campus: 'SGW',
+        building: 'CI',
+        shortName: 'CI Building',
+        address: '2149 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -141,6 +158,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'D Annex',
+        campus: 'SGW',
+        building: 'D',
+        shortName: 'D Building',
+        address: '2140 Bishop Street',
       },
       geometry: {
         type: 'Polygon',
@@ -163,6 +184,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'EN Annex',
+        campus: 'SGW',
+        building: 'EN',
+        shortName: 'EN Building',
+        address: '2070 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -188,6 +213,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'ER Building',
+        campus: 'SGW',
+        building: 'ER',
+        shortName: 'ER Building',
+        address: '2155 Guy Street',
       },
       geometry: {
         type: 'Polygon',
@@ -210,6 +239,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'FA Annex',
+        campus: 'SGW',
+        building: 'FA',
+        shortName: 'FA Building',
+        address: '2060 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -228,7 +261,11 @@ export const downtownBuildings = {
     {
       type: 'Feature',
       properties: {
-        name: 'FB Building',
+        name: 'Faubourg Building',
+        campus: 'SGW',
+        building: 'FB',
+        shortName: 'FB Building',
+        address: '1250 Guy Street',
       },
       geometry: {
         type: 'Polygon',
@@ -264,7 +301,11 @@ export const downtownBuildings = {
     {
       type: 'Feature',
       properties: {
-        name: 'Le Faubourg Building',
+        name: 'Le Faubourg Ste-Catherine Building',
+        campus: 'SGW',
+        building: 'FG',
+        shortName: 'FG Building',
+        address: '1610 Ste-Catherine W.',
       },
       geometry: {
         type: 'Polygon',
@@ -291,6 +332,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'Guy-De Maisonneuve Building',
+        campus: 'SGW',
+        building: 'GM',
+        shortName: 'GM Building',
+        address: '1550 De Maisonneuve W.',
       },
       geometry: {
         type: 'Polygon',
@@ -315,6 +360,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'Henry F. Hall Building',
+        campus: 'SGW',
+        building: 'H',
+        shortName: 'Hall Building',
+        address: '1455 De Maisonneuve W.',
       },
       geometry: {
         type: 'Polygon',
@@ -341,6 +390,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'K Annex',
+        campus: 'SGW',
+        building: 'K',
+        shortName: 'K Building',
+        address: '2150 Bishop Street',
       },
       geometry: {
         type: 'Polygon',
@@ -367,6 +420,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'J. W. McConnell Building (Library Building)',
+        campus: 'SGW',
+        building: 'LB',
+        shortName: 'LB Building',
+        address: '1400 De Maisonneuve W.',
       },
       geometry: {
         type: 'Polygon',
@@ -409,6 +466,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'Learning Square',
+        campus: 'SGW',
+        building: 'LS',
+        shortName: 'LS Building',
+        address: '1535 De Maisonneuve W.',
       },
       geometry: {
         type: 'Polygon',
@@ -429,6 +490,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'M Annex',
+        campus: 'SGW',
+        building: 'M',
+        shortName: 'M Building',
+        address: '2135 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -452,6 +517,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'MI Annex',
+        campus: 'SGW',
+        building: 'MI',
+        shortName: 'MI Building',
+        address: '2130 Bishop Street',
       },
       geometry: {
         type: 'Polygon',
@@ -476,6 +545,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'MU Annex',
+        campus: 'SGW',
+        building: 'MU',
+        shortName: 'MU Building',
+        address: '2170 Bishop Street',
       },
       geometry: {
         type: 'Polygon',
@@ -496,6 +569,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'P Annex',
+        campus: 'SGW',
+        building: 'P',
+        shortName: 'P Building',
+        address: '2020 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -515,6 +592,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'PR Annex',
+        campus: 'SGW',
+        building: 'PR',
+        shortName: 'PR Building',
+        address: '2100 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -546,6 +627,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'R Annex',
+        campus: 'SGW',
+        building: 'R',
+        shortName: 'R Building',
+        address: '2050 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -564,6 +649,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'RR Annex',
+        campus: 'SGW',
+        building: 'RR',
+        shortName: 'RR Building',
+        address: '2040 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -585,6 +674,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'S Annex',
+        campus: 'SGW',
+        building: 'S',
+        shortName: 'S Building',
+        address: '2145 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -609,6 +702,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'T Annex',
+        campus: 'SGW',
+        building: 'T',
+        shortName: 'T Building',
+        address: '2030 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -627,6 +724,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'X Annex',
+        campus: 'SGW',
+        building: 'X',
+        shortName: 'X Building',
+        address: '2080 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -645,6 +746,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'Z Annex',
+        campus: 'SGW',
+        building: 'Z',
+        shortName: 'Z Building',
+        address: '2090 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -670,6 +775,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'V Annex',
+        campus: 'SGW',
+        building: 'V',
+        shortName: 'V Building',
+        address: '2110 Mackay Street',
       },
       geometry: {
         type: 'Polygon',
@@ -690,7 +799,11 @@ export const downtownBuildings = {
     {
       type: 'Feature',
       properties: {
-        name: 'CL Building',
+        name: 'CL Annex',
+        campus: 'SGW',
+        building: 'CL',
+        shortName: 'CL Building',
+        address: '1665 Ste-Catherine W.',
       },
       geometry: {
         type: 'Polygon',
@@ -712,7 +825,11 @@ export const downtownBuildings = {
     {
       type: 'Feature',
       properties: {
-        name: 'TD Bank Building',
+        name: 'Toronto-Dominion Bank',
+        campus: 'SGW',
+        building: 'TD',
+        shortName: 'TD Building',
+        address: '1410 Guy Street',
       },
       geometry: {
         type: 'Polygon',
@@ -738,6 +855,10 @@ export const downtownBuildings = {
       type: 'Feature',
       properties: {
         name: 'Visual Arts Building',
+        campus: 'SGW',
+        building: 'VA',
+        shortName: 'VA Building',
+        address: '1395 Rene Levesque W.',
       },
       geometry: {
         type: 'Polygon',
@@ -758,15 +879,14 @@ export const downtownBuildings = {
         ],
       },
     },
-  ],
-};
-export const loyolaBuildings = {
-  type: 'FeatureCollection',
-  features: [
     {
       type: 'Feature',
       properties: {
         name: 'Administration Building',
+        campus: 'LOY',
+        building: 'AD',
+        shortName: 'AD Building',
+        address: '7141, Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -835,6 +955,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'BB Annex',
+        campus: 'LOY',
+        building: 'BB',
+        shortName: 'BB Building',
+        address: '3502 Bermore Avenue',
       },
       geometry: {
         type: 'Polygon',
@@ -853,6 +977,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'BH Annex',
+        campus: 'LOY',
+        building: 'BH',
+        shortName: 'BH Building',
+        address: '3500 Bermore Avenue',
       },
       geometry: {
         type: 'Polygon',
@@ -871,6 +999,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Central Building',
+        campus: 'LOY',
+        building: 'CC',
+        shortName: 'CC Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -909,6 +1041,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Communication Studies and Journalism Building',
+        campus: 'LOY',
+        building: 'CJ',
+        shortName: 'CJ Building',
+        address: '7141, Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -958,6 +1094,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'F.C. Smith Building',
+        campus: 'LOY',
+        building: 'FC',
+        shortName: 'FC Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1002,6 +1142,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Centre for Structural and Functional Genomics',
+        campus: 'LOY',
+        building: 'GE',
+        shortName: 'GE Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1027,6 +1171,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Applied Science Hub',
+        campus: 'LOY',
+        building: 'HU',
+        shortName: 'HU Building',
+        address: '7141, Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1053,7 +1201,11 @@ export const loyolaBuildings = {
     {
       type: 'Feature',
       properties: {
-        name: 'PERFORM Centre (PC)',
+        name: 'PERFORM Centre',
+        campus: 'LOY',
+        building: 'PC',
+        shortName: 'PC Building',
+        address: '7200 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1073,6 +1225,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Oscar Peterson Concert Hall',
+        campus: 'LOY',
+        building: 'PT',
+        shortName: 'PT Building',
+        Address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1095,6 +1251,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Recreation and Athletics Complex',
+        Campus: 'LOY',
+        building: 'RA',
+        shortName: 'RA Building',
+        address: '7200 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1125,6 +1285,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Loyola Jesuit Hall and Conference Center',
+        campus: 'LOY',
+        building: 'RF',
+        shortName: 'RF Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1158,6 +1322,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Student Centre',
+        campus: 'LOY',
+        building: 'SC',
+        shortName: 'SC Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1187,6 +1355,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Solar House',
+        campus: 'LOY',
+        building: 'SH',
+        shortName: 'SH Building',
+        address: '7141 Sherbrooke W',
       },
       geometry: {
         type: 'Polygon',
@@ -1205,6 +1377,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Saint Ignatius of Loyola Church',
+        campus: 'LOY',
+        building: 'SI',
+        shortName: 'SI Building',
+        address: '4455 West Broadway',
       },
       geometry: {
         type: 'Polygon',
@@ -1251,7 +1427,11 @@ export const loyolaBuildings = {
     {
       type: 'Feature',
       properties: {
-        name: 'Richard J Renaud Science Complex',
+        name: 'Richard J. Renaud Science Complex',
+        campus: 'LOY',
+        building: 'SP',
+        shortName: 'SP Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1314,12 +1494,11 @@ export const loyolaBuildings = {
     {
       type: 'Feature',
       properties: {
-        '@id': 'way/352622559',
-        'addr:city': 'Montréal',
-        'addr:housenumber': '7079',
-        'addr:street': 'Rue de Terrebonne',
-        building: 'university',
-        name: 'Concordia Terrebonne Building (TA)',
+        name: 'Terrebonne Building',
+        campus: 'LOY',
+        building: 'TA',
+        shortName: 'TA Building',
+        address: '7079 Terrebonne',
       },
       geometry: {
         type: 'Polygon',
@@ -1338,6 +1517,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Vanier Extension',
+        campus: 'LOY',
+        building: 'VE',
+        shortName: 'VE Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1355,7 +1538,11 @@ export const loyolaBuildings = {
     {
       type: 'Feature',
       properties: {
-        name: 'Vanier Library',
+        name: 'Vanier Library Building',
+        campus: 'LOY',
+        building: 'VL',
+        shortName: 'VL Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1397,6 +1584,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Stinger Dome',
+        campus: 'LOY',
+        building: 'DO',
+        shortName: 'DO Building',
+        address: '7200 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
@@ -1425,6 +1616,10 @@ export const loyolaBuildings = {
       type: 'Feature',
       properties: {
         name: 'Physical Services',
+        campus: 'LOY',
+        building: 'PS',
+        shortName: 'PS Building',
+        address: '7141 Sherbrooke W.',
       },
       geometry: {
         type: 'Polygon',
