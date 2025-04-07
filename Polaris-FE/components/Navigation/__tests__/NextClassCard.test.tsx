@@ -77,4 +77,32 @@ describe('NextClassCard Component', () => {
     renderWithQueryProvider(<NextClassCard />);
     expect(screen.queryByText('Sign Out')).toBeNull();
   });
+
+  it('displays event details when there is an upcoming event', () => {
+    mockNextEvent.mockReturnValue({
+      data: {
+        summary: 'Team Meeting',
+        location: 'Conference Room',
+        start: { dateTime: '2025-04-01T10:00:00Z' },
+        end: { dateTime: '2025-04-01T11:00:00Z' },
+      },
+    });
+
+    renderWithQueryProvider(<NextClassCard />);
+    expect(screen.getByText('Team Meeting')).toBeTruthy();
+    expect(screen.getByText('Conference Room')).toBeTruthy();
+  });
+
+  it('formats the timer correctly', () => {
+    mockNextEvent.mockReturnValue({
+      data: {
+        summary: 'Team Meeting',
+        start: { dateTime: '2025-04-01T10:00:00Z' },
+      },
+    });
+
+    renderWithQueryProvider(<NextClassCard />);
+    const timerText = screen.getByText(/h \d+m/); // Matches "xh ym" format
+    expect(timerText).toBeTruthy();
+  });
 });
