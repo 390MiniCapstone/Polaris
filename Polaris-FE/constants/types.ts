@@ -8,7 +8,7 @@ export type LocationPermissionStatus =
 
 export type NavigationState = 'default' | 'planning' | 'navigating';
 
-export type TravelMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE';
+export type TravelMode = 'DRIVE' | 'WALK' | 'TRANSIT' | 'BICYCLE' | 'SHUTTLE';
 
 export type Step = {
   startLocation: LatLng;
@@ -25,4 +25,46 @@ export type RouteData = {
   totalDistance: number;
   totalDuration: number;
   steps: Step[];
+};
+
+export type BusLeg = {
+  busData: RouteData;
+  busPoints: LatLng[];
+} | null;
+
+export type ShuttleLeg = 'legOne' | 'legTwo' | 'legThree' | null;
+
+export type ShuttleData = {
+  legOne: RouteData;
+  legTwo: BusLeg;
+  legThree: RouteData;
+} | null;
+
+export type ShuttleBusResponse = {
+  d: {
+    Points: {
+      ID: string;
+      Latitude: number;
+      Longitude: number;
+    }[];
+  };
+};
+
+export type ShuttleBusStop = {
+  name: string;
+  shortName: string;
+  location: LatLng;
+  schedule: {
+    MonThu: string[];
+    Fri: string[];
+  };
+};
+
+export type stepType = {
+  distanceMeters: number;
+  polyline: { encodedPolyline: string };
+  staticDuration: string;
+  navigationInstruction?: { instructions: string };
+  startLocation: { latLng: { latitude: number; longitude: number } };
+  endLocation: { latLng: { latitude: number; longitude: number } };
 };

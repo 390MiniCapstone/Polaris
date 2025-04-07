@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMapLocation } from './useMapLocation';
-import { downtownBuildings, loyolaBuildings } from '../constants/buildings';
+import { campusBuildings } from '@/constants/buildings';
 
 interface Building {
   geometry: {
@@ -29,7 +29,7 @@ const findCurrentBuilding = (latitude: number, longitude: number) => {
     });
   };
 
-  return searchBuildings(downtownBuildings) || searchBuildings(loyolaBuildings);
+  return searchBuildings(campusBuildings);
 };
 
 export const useCurrentBuilding = () => {

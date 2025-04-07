@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useCurrentBuilding } from '../useCurrentBuilding';
-import { downtownBuildings } from '../../constants/buildings';
+import { campusBuildings } from '@/constants/buildings';
 
 describe('useCurrentBuilding', () => {
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe('useCurrentBuilding', () => {
 
     const { result } = renderHook(() => useCurrentBuilding());
 
-    const expectedBuilding = downtownBuildings.features[12];
+    const expectedBuilding = campusBuildings.features[12];
 
     expect(result.current).toEqual(expectedBuilding);
   });
@@ -28,7 +28,7 @@ describe('useCurrentBuilding', () => {
 
     const { result } = renderHook(() => useCurrentBuilding());
 
-    const expectedBuilding = downtownBuildings.features[14];
+    const expectedBuilding = campusBuildings.features[14];
 
     expect(result.current).toEqual(expectedBuilding);
   });
@@ -52,7 +52,7 @@ describe('useCurrentBuilding', () => {
 
     const { result } = renderHook(() => useCurrentBuilding());
 
-    const expectedBuilding = downtownBuildings.features[1];
+    const expectedBuilding = campusBuildings.features[1];
 
     expect(result.current).toEqual(expectedBuilding);
   });
