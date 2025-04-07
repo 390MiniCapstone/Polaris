@@ -265,7 +265,5 @@ describe('GooglePlacesInput', () => {
       expect(global.fetch).toHaveBeenCalled();
       expect(consoleErrorMock).toHaveBeenCalledWith(expect.any(Error));
     });
-
-    consoleErrorMock.mockRestore();
   });
 });

@@ -170,8 +170,6 @@ describe('mapHandlers', () => {
         'Error getting location:',
         expect.any(Error)
       );
-
-      consoleErrorSpy.mockRestore();
     });
   });
 });
