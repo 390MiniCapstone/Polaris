@@ -1,46 +1,47 @@
 import { useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-import PinchPanContainer from '@/components/PinchPanContainer/PinchPanContainer';
-import { FLOOR_PLANS } from '@/constants/floorPlans';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { IndoorBottomSheetComponent } from '@/components/BottomSheetComponent/IndoorBottomSheetComponent';
+import PinchPanContainer from '@/components/PinchPanContainer/PinchPanContainer';
+import { FLOOR_PLANS, FloorPlanObject } from '@/constants/floorPlans';
 import { useBuildingContext } from '@/contexts/BuildingContext/BuildingContext';
-import { BuildingFlyWeight } from './indoor-logic/buildingFlyWeight';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Building } from './indoor-logic/building';
-import { AdjacencyListGraph } from './indoor-logic/graph';
+import { BuildingFlyWeight } from './indoor-logic/buildingFlyWeight';
 import { Dijkstra } from './indoor-logic/dijkstra';
+import NodeInput from './NodeInputComponent';
 import { NodeNav } from './NodeNav';
-import { FloorPlanObject } from '@/constants/floorPlans';
 
 const Indoor = () => {
   const { indoorBuilding } = useBuildingContext();
   const DEFAULT_FLOOR = FLOOR_PLANS?.[indoorBuilding]?.floors[0];
   const buildingRef = useRef<Building>();
   const [floorPlan, setFloorPlan] = useState(DEFAULT_FLOOR);
+  const [startNode, setStartNode] = useState('');
+  const [destinationNode, setDestinationNode] = useState('');
 
   const { djsNodes, djsEdges } = useMemo(() => {
     buildingRef.current = BuildingFlyWeight.getBuilding(indoorBuilding);
     const graph = buildingRef.current.getGraph();
 
-    // const djs = new Dijkstra(buildingRef.current.getNode('109-1')!, graph);
-    const djs = new Dijkstra(buildingRef.current.getNode('R9')!, graph);
-    const path = djs.getPathFromSource(
-      // new NodeNav('39', 0.61, 0.89, 'hallway'),
-      // buildingRef.current.getNode('H43')!,
-      buildingRef.current.getNode('3')!
-    );
-    // console.log('can we see',buildingRef.current.getNode('H119')!,)
+    if (
+      !buildingRef.current.getNode(startNode) ||
+      !buildingRef.current.getNode(destinationNode)
+    ) {
+      return { djsNodes: [], djsEdges: [] };
+    }
 
+    const djs = new Dijkstra(buildingRef.current.getNode(startNode)!, graph);
+    const path = djs.getPathFromSource(
+      buildingRef.current.getNode(destinationNode)!
+    );
     const edges = djs.getEdgesFromSource(
-      // new NodeNav('39', 0.61, 0.89, 'hallway'),
-      // buildingRef.current.getNode('H43')!,
-      buildingRef.current.getNode('3')!,
+      buildingRef.current.getNode(destinationNode)!,
       graph
     );
 
     return { djsNodes: path, djsEdges: edges };
-  }, [indoorBuilding]);
+  }, [indoorBuilding, startNode, destinationNode]);
 
   const filterDjsNodes = (floorPlan: FloorPlanObject, djsNodes: NodeNav[]) => {
     const nodeSet = new Set();
@@ -58,6 +59,18 @@ const Indoor = () => {
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
         <View style={styles.floorPlanWrapper}>
+          <View style={styles.inputContainer}>
+            <NodeInput
+              label="Start"
+              value={startNode}
+              onChangeText={setStartNode}
+            />
+            <NodeInput
+              label="Destination"
+              value={destinationNode}
+              onChangeText={setDestinationNode}
+            />
+          </View>
           <PinchPanContainer
             floorPlan={floorPlan}
             filteredDjsNodes={filteredDjsNodes}
@@ -74,8 +87,6 @@ const Indoor = () => {
   );
 };
 
-export default Indoor;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -84,4 +95,12 @@ const styles = StyleSheet.create({
   floorPlanWrapper: {
     flex: 1,
   },
+  inputContainer: {
+    padding: 32,
+    backgroundColor: '#1e1e1e',
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
 });
+
+export default Indoor;
