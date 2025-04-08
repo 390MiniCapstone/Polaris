@@ -1,4 +1,4 @@
-import { HashMap, PriorityQueueTemp } from '@/utils/collections';
+import { HashMap, PriorityQueue } from '@/utils/collections';
 import { Hashable } from '@/utils/interfaces';
 import { AdjacencyListGraph, Unexplored, Weight } from './graph';
 
@@ -11,7 +11,7 @@ export class Dijkstra<T extends Hashable> {
     this.source = start;
     this.distances = new HashMap();
     this.previous = new HashMap();
-    const pq = new PriorityQueueTemp<T>();
+    const pq = new PriorityQueue<T>();
 
     // Initialize distances
     for (let node of graph.keys()) {

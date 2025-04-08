@@ -7,7 +7,7 @@ export const handleFloorChange = (
 ) => {
   if (!indoorBuilding) return;
 
-  const selected = FLOOR_PLANS[indoorBuilding]?.find(
+  const selected = FLOOR_PLANS[indoorBuilding]?.floors.find(
     (floor: FloorPlanObject) => floor.name === itemValue
   );
 

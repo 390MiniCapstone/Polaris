@@ -15,7 +15,7 @@ import { FloorPlanObject } from '@/constants/floorPlans';
 
 const Indoor = () => {
   const { indoorBuilding } = useBuildingContext();
-  const DEFAULT_FLOOR = FLOOR_PLANS?.[indoorBuilding]?.[0];
+  const DEFAULT_FLOOR = FLOOR_PLANS?.[indoorBuilding]?.floors[0];
   const buildingRef = useRef<Building>();
   const [floorPlan, setFloorPlan] = useState(DEFAULT_FLOOR);
 
@@ -23,15 +23,16 @@ const Indoor = () => {
     buildingRef.current = BuildingFlyWeight.getBuilding(indoorBuilding);
     const graph = buildingRef.current.getGraph();
 
-    const djs = new Dijkstra(new NodeNav('23', 0.27, 0.7, 'room'), graph);
+    const djs = new Dijkstra(buildingRef.current.getNode('109-1')!, graph);
     const path = djs.getPathFromSource(
-      // new NodeNav('199-40', 0.58, 0.53, 'room')
-      new NodeNav('224-1', 0.55, 0.33, 'room')
+      // new NodeNav('39', 0.61, 0.89, 'hallway'),
+      buildingRef.current.getNode('H43')!
     );
+    // console.log('can we see',buildingRef.current.getNode('H119')!,)
 
     const edges = djs.getEdgesFromSource(
-      // new NodeNav('199-40', 0.58, 0.53, 'room'),
-      new NodeNav('224-1', 0.55, 0.33, 'room'),
+      // new NodeNav('39', 0.61, 0.89, 'hallway'),
+      buildingRef.current.getNode('H43')!,
       graph
     );
 
@@ -40,10 +41,11 @@ const Indoor = () => {
 
   const filterDjsNodes = (floorPlan: FloorPlanObject, djsNodes: NodeNav[]) => {
     const nodeSet = new Set();
-    // const edgeSet = new Set(); if both node ids are in the set then display the edge later on no need or a set
-    FLOOR_PLANS[indoorBuilding]
-      .find(floorObj => floorObj.name === floorPlan.name)
+
+    FLOOR_PLANS[indoorBuilding].floors
+      ?.find(floorObj => floorObj.name === floorPlan.name)
       ?.nodes.forEach(node => nodeSet.add(node.id));
+
     return djsNodes?.filter((node: NodeNav) => nodeSet.has(node.id));
   };
 

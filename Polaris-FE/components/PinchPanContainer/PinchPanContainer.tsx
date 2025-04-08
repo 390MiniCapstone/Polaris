@@ -41,6 +41,8 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({
   const verifyNodes = (filteredDjsNodes: NodeNav[], nodeObj: NodeNav) =>
     filteredDjsNodes.find((node: NodeNav) => node.id === nodeObj.id);
 
+  console.log('TEST', filteredDjsNodes);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <GestureDetector gesture={gesture}>
@@ -58,7 +60,7 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({
                 <Circle
                   cx={node.getAbsoluteX(parseFloat(floorPlan.width))}
                   cy={node.getAbsoluteY(parseFloat(floorPlan.height))}
-                  r={15}
+                  r={1}
                   fill="red"
                 />
               </React.Fragment>
@@ -93,7 +95,7 @@ const PinchPanContainer: React.FC<PinchPanContainerProps> = ({
                     x2={toX}
                     y2={toY}
                     stroke="red"
-                    strokeWidth={5}
+                    strokeWidth={0.005 * parseFloat(floorPlan.width)}
                   />
                 );
               }

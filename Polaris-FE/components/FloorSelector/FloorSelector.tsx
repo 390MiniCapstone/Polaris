@@ -15,7 +15,7 @@ export const FloorSelector: React.FC<FloorSelectorProps> = ({
   selectFloor,
   indoorBuilding,
 }) => {
-  const availableFloors = FLOOR_PLANS[indoorBuilding] || [];
+  const availableFloors = FLOOR_PLANS[indoorBuilding].floors;
   return (
     <View style={styles.pickerContainer} testID="picker-container">
       <Picker
