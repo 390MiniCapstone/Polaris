@@ -1,4 +1,4 @@
-import { FloorPlanObject } from '@/constants/floorPlans';
+import { BuildingFloorPlan } from '@/constants/floorPlans';
 import { Floor } from './floor';
 import { AdjacencyListGraph, Edge } from './graph';
 import { NodeNav } from '../NodeNav';
@@ -8,17 +8,17 @@ export class Building {
   private layerEdges: Edge<NodeNav>[] = [];
   private adjGraph: AdjacencyListGraph<NodeNav>;
   public readonly name: string;
-  constructor(name: string, floorPlans: FloorPlanObject[]) {
+  constructor(name: string, building: BuildingFloorPlan) {
     this.name = name;
-
+    const floorPlans = building.floors;
     // get the floors
     floorPlans.forEach(fp => {
       this.floors.set(fp.name, new Floor(fp));
     });
 
-    // get the layered edges
+    // // get the layered edges
     floorPlans.forEach(fp => {
-      (fp.multiLayeredEdges || []).forEach(e => {
+      building.multiLayerEdges.forEach(e => {
         let n1 = this.getNode(e[0]);
         let n2 = this.getNode(e[1]);
         if (!n1 || !n2)
@@ -47,6 +47,14 @@ export class Building {
       const node = floor.getNode(id);
       if (node) {
         return node;
+      }
+    }
+  }
+  getFloorFromNodeId(id: string) {
+    for (const floor of Array.from(this.floors.values())) {
+      const node = floor.getNode(id);
+      if (node) {
+        return floor;
       }
     }
   }
