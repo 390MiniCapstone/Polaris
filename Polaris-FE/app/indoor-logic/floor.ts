@@ -22,7 +22,9 @@ export class Floor {
       });
     });
   }
-
+  getNode(id: string) {
+    return this.nodes.get(id);
+  }
   getEdges() {
     return this.edges;
   }
