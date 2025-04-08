@@ -95,11 +95,14 @@ const styles = StyleSheet.create({
   floorPlanWrapper: {
     flex: 1,
   },
+
   inputContainer: {
     padding: 32,
+    paddingBottom: 0,
     backgroundColor: '#1e1e1e',
     borderBottomWidth: 1,
     borderBottomColor: '#333',
+    zIndex: 10, // 10 might be overkill but whatever
   },
 });
 

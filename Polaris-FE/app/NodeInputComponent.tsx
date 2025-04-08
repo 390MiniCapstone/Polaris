@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   nodeInputLabel: {
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 2,
     color: '#fff',
   },
   nodeInput: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1e1e1e',
     color: '#fff',
     borderRadius: 8,
-    padding: 12,
+    padding: 8,
     fontSize: 16,
   },
 });
