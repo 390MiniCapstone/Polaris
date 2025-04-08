@@ -23,16 +23,19 @@ const Indoor = () => {
     buildingRef.current = BuildingFlyWeight.getBuilding(indoorBuilding);
     const graph = buildingRef.current.getGraph();
 
-    const djs = new Dijkstra(buildingRef.current.getNode('109-1')!, graph);
+    // const djs = new Dijkstra(buildingRef.current.getNode('109-1')!, graph);
+    const djs = new Dijkstra(buildingRef.current.getNode('R9')!, graph);
     const path = djs.getPathFromSource(
       // new NodeNav('39', 0.61, 0.89, 'hallway'),
-      buildingRef.current.getNode('H43')!
+      // buildingRef.current.getNode('H43')!,
+      buildingRef.current.getNode('3')!
     );
     // console.log('can we see',buildingRef.current.getNode('H119')!,)
 
     const edges = djs.getEdgesFromSource(
       // new NodeNav('39', 0.61, 0.89, 'hallway'),
-      buildingRef.current.getNode('H43')!,
+      // buildingRef.current.getNode('H43')!,
+      buildingRef.current.getNode('3')!,
       graph
     );
 

@@ -549,8 +549,8 @@ export const FLOOR_PLANS: Record<string, BuildingFloorPlan> = {
       {
         SvgComponent: MB1,
         name: 'MB 1',
-        width: '1250',
-        height: '1200',
+        width: '1024',
+        height: '1024',
         nodes: [
           new NodeNav('H1', 0.45, 0.12, 'hallway'),
           new NodeNav('H2', 0.46, 0.22, 'hallway'),
@@ -620,7 +620,7 @@ export const FLOOR_PLANS: Record<string, BuildingFloorPlan> = {
           new NodeNav('1.115', 0.73, 0.93, 'room'),
         ],
         edges: [
-          ['H0', 'H1', 'hallway'],
+          // ['H0', 'H1', 'hallway'],
           ['H1', 'H2', 'hallway'],
           ['H2', '1.249', 'hallway'],
           ['H2', 'H3', 'hallway'],
@@ -682,14 +682,14 @@ export const FLOOR_PLANS: Record<string, BuildingFloorPlan> = {
           ['H29', 'H30', 'hallway'],
           ['H30', '1.436', 'hallway'],
           ['H10', 'H31', 'escalator'],
-          ['H32', 'H33', 'stairs'],
+          // ['H32', 'H33', 'stairs'],
         ],
       },
       {
         SvgComponent: MBS2,
         name: 'MB S2',
-        width: '1000',
-        height: '1300',
+        width: '1024',
+        height: '1024',
         nodes: [
           new NodeNav('0', 0.1, 0.48, 'hallway'),
           new NodeNav('1', 0.41, 0.46, 'hallway'),
@@ -812,7 +812,7 @@ export const FLOOR_PLANS: Record<string, BuildingFloorPlan> = {
           ['22', 'S2.494', 'stairs'], //room
           ['22', 'S2.437', 'hallway'], //room
           ['22', '23', 'hallway'],
-          ['23', 'R34', 'hallway'], //room
+          ['23', 'S2.428', 'hallway'], //room
           ['23', '24', 'hallway'],
           ['24', 'S2.435', 'hallway'], //room
           ['24', 'S2.445', 'hallway'], //room
@@ -832,7 +832,7 @@ export const FLOOR_PLANS: Record<string, BuildingFloorPlan> = {
       ['H10', 'H31', 'escalator'],
       ['H13', 'R8', 'elevator'],
       ['H13', 'R14', 'elevator'],
-      ['H32', 'H33', 'stairs'],
+      // ['H32', 'H33', 'stairs'],
 
       // mb s2
       ['0', '1', 'stairs'],
